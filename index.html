@@ -122,9 +122,9 @@ var SUPABASE_KEY = 'sb_publishable_7NDD7fqCwVlDIVxZ9vryHQ_ZsC2Db0C';
 (function(){
   var START = new Date(2027,1,14), A2_LAST = 11;
   var DAYS = ['ne','po','út','st','čt','pá','so'];
-  var STATUSES = ['Nerezervováno.','Rezervováno!','Zaplaceno','Zrušené!'];
+  var STATUSES = ['Nerezervováno. >:(','Rezervováno. :)','Zaplaceno! :D','Zrušené! ;('];
   var PEOPLE = ['Maty','Lucie','Jasan','Adéla 1','Adéla 2'];
-  var STAV_CLASS = {'Nerezervováno.':'s-no','Rezervováno!':'s-yes','Zaplaceno':'s-paid','Zrušené!':'s-x'};
+  var STAV_CLASS = {'Nerezervováno >:(':'s-no','Rezervováno. :)':'s-yes','Zaplaceno! :D':'s-paid','Zrušené! ;(':'s-x'};
   var tbody = document.getElementById('rows'), saveEl = document.getElementById('save');
   var rows = [], pending = 0, timers = {}, editingLinks = false, needsRender = false;
   function setSave(t){ saveEl.textContent = t; }
