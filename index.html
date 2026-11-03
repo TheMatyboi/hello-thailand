@@ -6,114 +6,369 @@
 <title>Hello Thailand! 2027</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@100..900&display=swap" rel="stylesheet">
 <style>
+/* Design system: white + near-black neutrals, one UI accent, semantic accents for status and people */
 :root{
-  --bg:#f6f1e7; --surface:#fffdf8; --ink:#1f2a2a; --muted:#6b7473; --line:#e4dccb;
-  --accent:#0f6b63; --accent-soft:#d8ece8; --head:#123b38; --head-ink:#f6f1e7;
-  --s-no-bg:#fde0c7; --s-no-ink:#8a3b06;
-  --s-yes-bg:#cfeed6; --s-yes-ink:#13612b;
-  --s-x-bg:#fbd3d3; --s-x-ink:#9b1414;
-  --p1-bg:#d6e6f7; --p1-ink:#1f4e79;
-  --p2-bg:#eadcf8; --p2-ink:#5b2c83;
-  --p3-bg:#fbefc0; --p3-ink:#6e5300;
-  --p4-bg:#cdefe9; --p4-ink:#0b5d57;
-  --p5-bg:#fbd9e8; --p5-ink:#8c1d4f;
-  color-scheme: light;
-  box-sizing:border-box;
-  padding-top:env(safe-area-inset-top,0px);
-  padding-bottom:env(safe-area-inset-bottom,0px);
+  /* neutrals */
+  --white:#ffffff; --gray-50:#f5f5f6; --gray-100:#ebebed; --gray-200:#e2e2e5; --gray-600:#5f5f67; --near-black:#111113;
+  /* roles */
+  --page:var(--white); --surface:var(--gray-50); --surface-2:var(--white); --fill:var(--gray-100); --line:var(--gray-200);
+  --ink:var(--near-black); --muted:var(--gray-600);
+  /* UI accent: links, save state, day pills, actions */
+  --accent:#1e5bd7; --accent-soft:#e3ecfc; --on-accent:var(--white);
+  /* danger: today, weekend labels, remove */
+  --danger:#c42b2b; --on-danger:var(--white);
+  /* complementary red for weekday abbreviations */
+  --day:#c4392f;
+  /* reservation status */
+  --s-no-bg:#fdd3ad; --s-no-ink:#8a3a05; --s-no-dot:#e2741c;
+  --s-yes-bg:#fbeaa6; --s-yes-ink:#6a5000; --s-yes-dot:#e2b417;
+  --s-paid-bg:#cdebd5; --s-paid-ink:#145c2a; --s-paid-dot:#2f9a55;
+  --s-x-bg:#f8cfd1; --s-x-ink:#96151c; --s-x-dot:#c8303c;
+  /* person */
+  --who-bg:#ece3f7; --who-ink:#55308a;
+  color-scheme:light;
 }
 @media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]){
-    --bg:#121817; --surface:#1a2221; --ink:#e9e4d8; --muted:#9aa3a1; --line:#2c3836;
-    --accent:#5cc2b5; --accent-soft:#1f3a37; --head:#0c2b28; --head-ink:#e9e4d8;
-    --s-no-bg:#5a2e0e; --s-no-ink:#ffd2ad;
-    --s-yes-bg:#173f22; --s-yes-ink:#b8f0c6;
-    --s-x-bg:#4d1717; --s-x-ink:#ffc4c4;
-    --p1-bg:#1d3550; --p1-ink:#c9e0f7;
-    --p2-bg:#3a2552; --p2-ink:#e5d2fa;
-    --p3-bg:#463a0e; --p3-ink:#f8e7a4;
-    --p4-bg:#14403b; --p4-ink:#bdeee7;
-    --p5-bg:#4d1d33; --p5-ink:#fbcde1;
-    color-scheme: dark;
+  :root{
+  --page:#0e0e10; --surface:#18181b; --surface-2:#26262b; --fill:#26262b; --line:#2e2e33;
+  --ink:#f2f2f3; --muted:#a1a1aa;
+  --accent:#7fa8ff; --accent-soft:#1b2a4a; --on-accent:#0e0e10;
+  --danger:#ff7b7b; --on-danger:#0e0e10; --day:#ff8a7a;
+  --s-no-bg:#5c2e0b; --s-no-ink:#ffcfa5; --s-no-dot:#f0913f;
+  --s-yes-bg:#4a3c08; --s-yes-ink:#fbe7a0; --s-yes-dot:#efc63c;
+  --s-paid-bg:#173f22; --s-paid-ink:#b8f0c6; --s-paid-dot:#4cbf72;
+  --s-x-bg:#4d1717; --s-x-ink:#ffc4c4; --s-x-dot:#e2525e;
+  --who-bg:#33254d; --who-ink:#e3d6f8;
+  color-scheme:dark;
   }
 }
-:root[data-theme="dark"]{
-  --bg:#121817; --surface:#1a2221; --ink:#e9e4d8; --muted:#9aa3a1; --line:#2c3836;
-  --accent:#5cc2b5; --accent-soft:#1f3a37; --head:#0c2b28; --head-ink:#e9e4d8;
-  --s-no-bg:#5a2e0e; --s-no-ink:#ffd2ad;
-  --s-yes-bg:#173f22; --s-yes-ink:#b8f0c6;
-  --s-x-bg:#4d1717; --s-x-ink:#ffc4c4;
-  --p1-bg:#1d3550; --p1-ink:#c9e0f7;
-  --p2-bg:#3a2552; --p2-ink:#e5d2fa;
-  --p3-bg:#463a0e; --p3-ink:#f8e7a4;
-  --p4-bg:#14403b; --p4-ink:#bdeee7;
-  --p5-bg:#4d1d33; --p5-ink:#fbcde1;
-  color-scheme: dark;
+
+/* Geist typography scale — values measured from https://vercel.com/geist/typography
+   Load Geist Sans + Geist Mono (variable fonts): `geist` package on Next.js, @fontsource-variable/geist(-mono) or Google Fonts elsewhere. */
+:root {
+  --font-geist-sans: "Geist Variable", "Geist", "GeistSans", ui-sans-serif, system-ui, sans-serif;
+  --font-geist-mono: "Geist Mono Variable", "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
 }
-html{scroll-padding-top:env(safe-area-inset-top,0px)}
+
+/* Headings — weight 600; <strong> = Subtle (500) */
+.text-heading-48 { font: 600 48px/56px var(--font-geist-sans); letter-spacing: -2.88px; }
+.text-heading-40 { font: 600 40px/48px var(--font-geist-sans); letter-spacing: -2.4px; }
+.text-heading-32 { font: 600 32px/40px var(--font-geist-sans); letter-spacing: -1.28px; }
+.text-heading-24 { font: 600 24px/32px var(--font-geist-sans); letter-spacing: -0.96px; }
+:is(.text-heading-32, .text-heading-24) strong { font-weight: 500; }
+
+/* Buttons — weight 500, only inside button components */
+.text-button-16 { font: 500 16px/20px var(--font-geist-sans); }
+.text-button-14 { font: 500 14px/20px var(--font-geist-sans); }
+
+/* Labels — single line, weight 400; <strong> = 500 */
+.text-label-16      { font: 400 16px/20px var(--font-geist-sans); }
+.text-label-14      { font: 400 14px/20px var(--font-geist-sans); }
+.text-label-13      { font: 400 13px/16px var(--font-geist-sans); }
+.text-label-12      { font: 400 12px/16px var(--font-geist-sans); }
+:is(.text-label-16, .text-label-14, .text-label-13, .text-label-12) strong { font-weight: 500; }
+
+/* Copy — multi-line, weight 400; <strong> = 550 */
+.text-copy-20      { font: 400 20px/36px var(--font-geist-sans); }
+.text-copy-16      { font: 400 16px/24px var(--font-geist-sans); }
+.text-copy-14      { font: 400 14px/20px var(--font-geist-sans); }
+.text-copy-13      { font: 400 13px/18px var(--font-geist-sans); }
+.text-copy-13-mono { font: 400 13px/18px var(--font-geist-mono); }
+:is(.text-copy-20, .text-copy-16, .text-copy-14) strong { font-weight: 550; }
+
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 "Work Sans",system-ui,-apple-system,"Segoe UI",sans-serif}
-header{padding:28px 20px 18px;max-width:1500px;margin:0 auto}
-h1{font-family:"Fraunces",Georgia,"Times New Roman",serif;font-weight:700;font-size:clamp(28px,5vw,44px);line-height:1.1;margin:0 0 6px;letter-spacing:-.01em}
-.sub{color:var(--muted);margin:0;max-width:70ch}
-.bar{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;margin-top:14px;font-size:13px;color:var(--muted)}
-.save{padding:3px 10px;border-radius:999px;background:var(--accent-soft);color:var(--accent);font-weight:600}
-.wrap{max-width:1500px;margin:0 auto 40px;padding:0 12px}
-.scroller{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
-table{border-collapse:separate;border-spacing:0;width:100%;min-width:1180px}
-th{position:sticky;top:0;background:var(--head);color:var(--head-ink);text-align:left;font-weight:600;font-size:13px;padding:10px 12px;z-index:2;white-space:nowrap}
-td{padding:10px 12px;border-top:1px solid var(--line);vertical-align:top}
-tr.week td{border-top:2px solid var(--accent)}
-td.den{font-family:"Fraunces",Georgia,serif;font-weight:600;white-space:nowrap;position:sticky;left:0;background:var(--surface);z-index:1}
-th.den{left:0;z-index:3}
-td.datum{white-space:nowrap;color:var(--muted);font-variant-numeric:tabular-nums}
-td.datum b{color:var(--ink);font-weight:600}
-[contenteditable]{outline:none;min-height:1.5em;border-radius:6px;padding:2px 4px;margin:-2px -4px}
-[contenteditable]:hover{background:var(--accent-soft)}
-[contenteditable]:focus{background:var(--accent-soft);box-shadow:0 0 0 2px var(--accent)}
-[contenteditable]:empty::before{content:"…";color:var(--line)}
-.ro [contenteditable]:hover{background:none}
-td.lok{min-width:130px;font-weight:500}
-td.prog{min-width:260px}
-td.notes{min-width:240px}
-td.ubyt{min-width:170px}
-.links{display:flex;flex-direction:column;gap:4px}
-.links a{color:var(--accent);font-weight:500;text-decoration:none;word-break:break-word}
-.links a:hover{text-decoration:underline}
-.edit-links{font:inherit;font-size:12px;color:var(--muted);background:none;border:1px dashed var(--line);border-radius:6px;padding:2px 8px;cursor:pointer;margin-top:4px;align-self:flex-start}
-.ro .edit-links{display:none}
-textarea{width:100%;min-height:90px;font:12px/1.4 ui-monospace,Menlo,Consolas,monospace;background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:6px;padding:6px}
-select{font:inherit;font-size:13px;font-weight:600;border:0;border-radius:999px;padding:4px 26px 4px 10px;cursor:pointer;appearance:none;-webkit-appearance:none;background-color:transparent;color:var(--muted);background-image:linear-gradient(45deg,transparent 50%,currentColor 50%),linear-gradient(135deg,currentColor 50%,transparent 50%);background-position:calc(100% - 13px) 55%,calc(100% - 8px) 55%;background-size:5px 5px;background-repeat:no-repeat;outline:1px dashed var(--line)}
-select:disabled{cursor:default;background-image:none;padding-right:10px}
-select.s-no{background-color:var(--s-no-bg);color:var(--s-no-ink);outline:0}
-select.s-yes{background-color:var(--s-yes-bg);color:var(--s-yes-ink);outline:0}
-select.s-paid{background-color:#1e7b3a;color:#ffffff;outline:0}
-select.s-x{background-color:var(--s-x-bg);color:var(--s-x-ink);outline:0}
-select.p1{background-color:var(--p1-bg);color:var(--p1-ink);outline:0}
-select.p2{background-color:var(--p2-bg);color:var(--p2-ink);outline:0}
-select.p3{background-color:var(--p3-bg);color:var(--p3-ink);outline:0}
-select.p4{background-color:var(--p4-bg);color:var(--p4-ink);outline:0}
-select.p5{background-color:var(--p5-bg);color:var(--p5-ink);outline:0}
+.tabular-nums{font-variant-numeric:tabular-nums}
+/* overline: short all-caps titles need a little tracking to stay legible */
+.caps{text-transform:uppercase;letter-spacing:.06em}
+.sec-head{margin:0 0 28px;padding-left:2px}
+.sec-head h2{margin:0;color:var(--ink)}
+html{scroll-behavior:smooth;scroll-padding-top:16px;background:var(--page)}
+body{margin:0;background:var(--page);color:var(--ink);font-family:var(--font-geist-sans);padding-bottom:env(safe-area-inset-bottom,0px)}
+
+/* ---------- hero ---------- */
+.hero{position:relative;overflow:hidden;color:var(--ink);padding:calc(env(safe-area-inset-top,0px) + 56px) 0 48px}
+.hero-in{position:relative;max-width:393px;margin:0 auto;padding:0 16px;container-type:inline-size}
+.toast{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:10;display:flex;align-items:center;gap:8px;transform:translateX(-50%);transition:opacity .25s,transform .25s}
+.toast.off{opacity:0;transform:translate(-50%,8px);pointer-events:none}
+.toast > *{box-shadow:0 2px 12px rgba(0,0,0,.12)}
+.retry{border:1px solid var(--s-x-ink);color:var(--s-x-ink);background:var(--page);border-radius:999px;padding:2px 12px;cursor:pointer}
+.retry[hidden]{display:none}
+/* phone: the title fills the column edge to edge. "Hello Thailand! 2027" in Geist 600 at -0.06em
+   is 8.53× its font size wide, so 11.7% of the column width makes it exactly fit */
+.hero h1{margin:0;white-space:nowrap;font-size:11.7cqw;line-height:1.2;letter-spacing:-0.06em}
+.hero h1 span{color:var(--accent)}
+.subrow{display:flex;flex-wrap:wrap;align-items:center;gap:10px 24px;margin-top:18px}
+.subrow .sub,.subrow .dates{flex:1 1 100%}
+.subrow .people{margin-top:6px}
+.hero .sub{margin:0;color:var(--muted)}
+.dates{margin:0;display:flex;align-items:baseline;gap:8px;color:var(--ink)}
+.dates span{color:var(--muted)}
+.people{flex:1 1 100%;display:flex;align-items:center;gap:6px}
+.people span{flex:1;min-width:0;text-align:center;padding:3px 4px;border-radius:999px;background:var(--who-bg);color:var(--who-ink)}
+.save.err{background:var(--s-x-bg);color:var(--s-x-ink)}
+.save{flex:none;padding:6px 14px;border-radius:999px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+
+/* ---------- overview ---------- */
+.wrap{max-width:393px;margin:0 auto;padding:0 16px}
+.overview{display:grid;grid-template-columns:1fr;gap:20px;align-items:start;margin:0 0 64px}
+.overview .col{display:grid;gap:20px;align-content:start}
+.panel{background:var(--surface);border-radius:20px;padding:22px 20px}
+.panel h2{margin:0 0 16px;color:var(--muted)}
+.panel-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:-6px 0 16px}
+.panel-head h2{margin:0}
+.route{display:flex;flex-wrap:wrap;align-items:center;gap:6px 4px;margin:0;padding:0;list-style:none}
+.route li{display:flex;align-items:center;gap:4px}
+.route li+li::before{content:"→";color:var(--muted);margin:0 4px}
+.stop{display:inline-flex;align-items:center;background:var(--surface-2);border-radius:10px;transition:background .15s}
+.stop:hover{background:var(--fill)}
+.stop a{display:inline-flex;align-items:baseline;gap:6px;text-decoration:none;color:var(--ink);padding:6px 11px}
+.stop a small{color:var(--muted)}
+.stop a.empty{font-style:italic;color:var(--muted)}
+.stop .rm{border:0;background:none;color:var(--muted);cursor:pointer;width:32px;height:32px;padding:0;margin-left:-8px;display:grid;place-items:center;border-radius:8px}
+.stop .rm:hover{color:var(--danger)}
+.add-stop{color:var(--accent);background:none;border:1px solid var(--accent);border-radius:999px;padding:6px 14px;cursor:pointer;transition:background .15s}
+.add-stop:hover{background:var(--accent-soft)}
+.stop-form{display:flex;flex-wrap:wrap;align-items:flex-end;gap:10px;margin-top:18px;padding:18px;border-radius:14px;background:var(--surface-2)}
+.stop-form[hidden]{display:none}
+.stop-form label{display:flex;flex-direction:column;gap:4px;color:var(--muted);flex:1 1 140px}
+.stop-form input,.stop-form select{color:var(--ink);background:var(--surface);border:0;border-radius:8px;padding:8px 10px;outline:0;background-image:none}
+.stop-form input:focus-visible,.stop-form select:focus-visible{background:var(--accent-soft)}
+.stop-form .btns{display:flex;gap:8px}
+.btn{border-radius:8px;padding:8px 14px;cursor:pointer;border:0;background:none;color:var(--muted)}
+.btn.primary{background:var(--accent);color:var(--on-accent)}
+.stats{display:flex;flex-direction:column;gap:14px}
+.stats h2{margin:0}
+.count{display:flex;align-items:baseline;gap:8px}
+.count b{color:var(--ink)}
+.count span{color:var(--muted)}
+.meter{display:flex;height:10px;border-radius:999px;overflow:hidden;background:var(--surface-2);gap:2px}
+.meter i{display:block;height:100%}
+.legend{display:flex;flex-wrap:wrap;gap:4px 14px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend span::before{content:"";width:9px;height:9px;border-radius:3px;background:var(--c)}
+.cal-title{margin:0 0 12px;color:var(--muted)}
+.cal-grid{display:grid;grid-template-columns:22px repeat(7,1fr);gap:4px}
+.cal-month{writing-mode:vertical-rl;transform:rotate(180deg);display:flex;align-items:center;justify-content:center;color:var(--muted);margin:2px 0}
+.cal-wd{color:var(--muted);text-align:center;padding-bottom:2px}
+.cal-day{min-height:36px;padding:2px;border:0;border-radius:8px;background:var(--surface-2);color:var(--ink);display:flex;align-items:center;justify-content:center;text-align:center;position:relative}
+button.cal-day{cursor:pointer;transition:filter .12s}
+button.cal-day:hover{filter:brightness(.94)}
+.cal-day.off{background:none;color:var(--muted);opacity:.4}
+.cal-day.s-no{background:var(--s-no-bg);color:var(--s-no-ink)}
+.cal-day.s-yes{background:var(--s-yes-bg);color:var(--s-yes-ink)}
+.cal-day.s-paid{background:var(--s-paid-bg);color:var(--s-paid-ink)}
+.cal-day.s-x{background:var(--s-x-bg);color:var(--s-x-ink)}
+.cal-day[data-mark]::before{content:attr(data-mark);position:absolute;left:0;right:0;bottom:2px;font-size:9px;line-height:1;opacity:.85}
+.cal-note{display:flex;align-items:center;gap:6px;margin:12px 0 0;color:var(--muted)}
+.cal-note::before{content:"";width:5px;height:5px;border-radius:50%;background:var(--who-ink)}
+.cal-day.a2::after{content:"";position:absolute;top:4px;right:4px;width:5px;height:5px;border-radius:50%;background:var(--who-ink)}
+.cal-day.today{background:var(--danger);color:var(--on-danger)}
+@keyframes flash{0%,40%{background:var(--accent-soft)}100%{background:var(--surface)}}
+.day.flash{animation:flash 1.8s ease-out}
+
+/* ---------- timeline ---------- */
+.seg{position:relative;margin:0 0 24px;padding-left:28px}
+.seg::before{content:"";position:absolute;left:5px;top:17px;bottom:-8px;width:2px;background:linear-gradient(var(--ink),transparent)}
+.seg-head{position:relative;display:grid;grid-template-columns:1fr auto;align-items:center;gap:2px 14px;margin:0;cursor:pointer;list-style:none;border-radius:10px}
+.seg[open] .seg-head{margin-bottom:16px}
+.seg-head:focus{outline:none}
+.seg-head:focus-visible{outline:2px solid var(--accent);outline-offset:4px}
+.seg-head::-webkit-details-marker{display:none}
+.seg-head::before{content:"";box-sizing:border-box;position:absolute;left:-31px;top:8px;width:18px;height:18px;border-radius:50%;transform:scale(.5);background:var(--ink)}
+.seg-head h3{margin:0;color:var(--ink);grid-column:1;grid-row:1}
+.seg-meta{grid-column:1;grid-row:2;display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.seg-head .range{color:var(--muted)}
+.seg-head .len{color:var(--accent);background:var(--accent-soft);border-radius:999px;padding:1px 9px}
+.seg-head .chev{grid-column:2;grid-row:1;align-self:center;box-sizing:border-box;width:28px;height:28px;display:grid;place-items:center;border:1.5px solid currentColor;border-radius:50%;color:var(--muted);transition:transform .2s,color .15s}
+.seg-head .chev::before{content:"";width:7px;height:7px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:translateY(-2px) rotate(45deg)}
+.seg-head:hover .chev{color:var(--ink)}
+.seg[open] .chev{transform:rotate(180deg)}
+.seg.unplanned h3{color:var(--muted);font-style:italic}
+.days{display:grid;gap:16px}
+
+.day{display:grid;grid-template-columns:62px 1fr;background:var(--surface);border-radius:18px;overflow:hidden}
+.when{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:20px 6px;text-align:center}
+.when .dw{color:var(--day)}
+.when .dmon{color:var(--muted)}
+.when .tag{margin-top:8px}
+.body{padding:18px 16px 20px 2px;min-width:0;display:flex;flex-direction:column;gap:12px}
+.top{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px}
+.lok{color:var(--muted)}
+.tag{border-radius:999px;padding:1px 9px}
+.tag.a2{background:var(--who-bg);color:var(--who-ink)}
+.tag.now{background:var(--danger);color:var(--on-danger)}
+.row{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px}
+.lbl{color:var(--muted);width:100%}
+.row.meta .lbl{display:none}
+.links{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.links a{color:var(--accent);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px;max-width:100%;overflow-wrap:anywhere;padding:2px 0}
+.links a:hover{text-decoration-thickness:2px}
+.links a::after{content:" ↗";text-decoration:none;display:inline-block;margin-left:2px}
+.notes{color:var(--muted)}
+
+[contenteditable]{cursor:text;outline:none;white-space:pre-wrap;overflow-wrap:anywhere;min-height:1.4em;border-radius:6px;padding:2px 5px;margin:-2px -5px;transition:background .12s}
+[contenteditable]:hover{background:var(--surface-2)}
+[contenteditable]:focus{background:var(--surface-2);box-shadow:inset 0 -2px 0 var(--accent)}
+[contenteditable]:empty::before{content:attr(data-ph);color:var(--muted);font-style:italic;text-transform:none;letter-spacing:0}
+.edit-links{color:var(--muted);background:none;border:1px solid var(--line);border-radius:999px;padding:3px 12px;cursor:pointer;transition:border-color .15s,color .15s}
+.edit-links:hover{border-color:var(--ink);color:var(--ink)}
+.link-edit{display:flex;flex-direction:column;gap:6px;width:100%}
+.link-err{margin:0;color:var(--s-x-ink)}
+textarea{width:100%;min-height:90px;background:var(--surface-2);color:var(--ink);border:0;outline:0;border-radius:10px;padding:10px}
+.link-btns{display:flex;gap:8px;align-items:center}
+
+select{border:0;border-radius:999px;padding:4px 28px 4px 12px;cursor:pointer;appearance:none;-webkit-appearance:none;color:var(--muted);background-image:linear-gradient(45deg,transparent 50%,currentColor 50%),linear-gradient(135deg,currentColor 50%,transparent 50%);background-position:calc(100% - 15px) 55%,calc(100% - 10px) 55%;background-size:5px 5px;background-repeat:no-repeat;outline:0;background-color:var(--surface-2)}
+select.s-no{background-color:var(--s-no-bg);color:var(--s-no-ink)}
+select.s-yes{background-color:var(--s-yes-bg);color:var(--s-yes-ink)}
+select.s-paid{background-color:var(--s-paid-bg);color:var(--s-paid-ink)}
+select.s-x{background-color:var(--s-x-bg);color:var(--s-x-ink)}
+select.who{background-color:var(--who-bg);color:var(--who-ink)}
+select.fit{field-sizing:content;min-width:0}
 select option{background:var(--surface);color:var(--ink)}
-tr.a2end td{background:color-mix(in srgb,var(--accent-soft) 45%,var(--surface))}
-tr.a2end td.den{background:color-mix(in srgb,var(--accent-soft) 45%,var(--surface))}
-footer{max-width:1500px;margin:0 auto;padding:0 20px 30px;color:var(--muted);font-size:13px}
+
+/* ---------- faq ---------- */
+.faq{margin:96px 0 0;padding:0 0 calc(48px + env(safe-area-inset-bottom,0px))}
+.faq .sec-head{margin-bottom:24px}
+.faq details{background:var(--surface);border-radius:16px;margin-bottom:8px}
+.faq summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:12px;padding:18px 22px}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";margin-left:auto;font-size:20px;line-height:1;color:var(--muted)}
+.faq details[open] summary::after{content:"−"}
+.faq .a{padding:0 22px 20px 18px;color:var(--ink)}
+.faq .a p{margin:0 0 8px}
+.faq .a p:last-child{margin-bottom:0}
+.faq .ui{color:var(--accent)}
+.faq code{background:var(--surface-2);border-radius:6px;padding:3px 7px;overflow-wrap:anywhere}
+.faq-status{list-style:none;margin:0 0 10px;padding:0;display:grid;gap:8px}
+.faq-status li{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px}
+.sw{border-radius:999px;padding:3px 12px;white-space:nowrap}
+.sw.s-no{background:var(--s-no-bg);color:var(--s-no-ink)}
+.sw.s-yes{background:var(--s-yes-bg);color:var(--s-yes-ink)}
+.sw.s-paid{background:var(--s-paid-bg);color:var(--s-paid-ink)}
+.sw.s-x{background:var(--s-x-bg);color:var(--s-x-ink)}
+/* touch screens have no hover: mark editable text */
+@media (hover:none){
+  [contenteditable]:not(:empty){text-decoration:underline dotted;text-decoration-color:color-mix(in srgb,var(--muted) 50%,transparent);text-underline-offset:4px}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *{transition:none !important;animation:none !important}
+}
+
+/* phone-first: below 760px one column capped at the iPhone 15 Pro width (393px); desktop from 760px */
+@media (min-width:760px){
+  .hero-in,.wrap{max-width:1040px}
+  .hero-in,.wrap{padding:0 24px}
+  .subrow .sub,.subrow .dates{flex:0 1 auto}
+  .subrow .people{margin-top:0}
+  .people{flex:0 1 auto;flex-wrap:wrap}
+  .people span{flex:none;padding:3px 12px}
+  /* text-heading-72 values; the scale classes are not responsive on their own */
+  .hero h1{font:600 72px/72px var(--font-geist-sans);letter-spacing:-4.32px}
+  .overview{grid-template-columns:1.35fr 1fr}
+  .panel{padding:28px}
+  .day{grid-template-columns:84px 1fr}
+  .body{padding:20px 24px 22px 4px}
+  .seg{padding-left:34px}
+  .seg::before{left:8px}
+  .seg-head::before{left:-34px}
+  .lbl{min-width:82px;width:auto}
+  .row.meta .lbl{display:inline}
+  .faq .a{padding-left:22px}
+}
+/* keyboard focus, everywhere */
+button:focus-visible,select:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,summary:focus-visible,[contenteditable]:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 </style>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 </head>
-<body>
-<header>
-  <h1>Hello Thailand! 2027</h1>
-  <p class="sub">14. 2. – 17. 3. · Maty, Lucie, Jasan a A² (do 24. 2.). Klikněte do buňky a pište, změny se ukládají samy.</p>
-  <div class="bar"><span class="save" id="save">Načítám…</span><span>Zvýrazněné řádky = dny s A²</span></div>
+<body class="text-copy-16">
+<header class="hero">
+  <div class="hero-in">
+    <h1 class="text-heading-40">Hello <span>Thailand!</span> 2027</h1>
+    <div class="subrow">
+      <p class="sub text-copy-20">Official Tourist Guide™</p>
+      <p class="dates text-label-14 tabular-nums" id="dates"><strong>14. 2. – 17. 3. 2027</strong><span>32 dní</span></p>
+      <div class="people"><span class="text-label-14"><strong>Maty</strong></span><span class="text-label-14"><strong>Lucie</strong></span><span class="text-label-14"><strong>Jasan</strong></span><span class="text-label-14" title="A²"><strong>Špony</strong></span><span class="text-label-14" title="A²"><strong>Adéla</strong></span></div>
+    </div>
+  </div>
 </header>
-<div class="wrap"><div class="scroller"><table>
-  <thead><tr><th class="den">Den</th><th>Datum</th><th>Lokalita</th><th>Program</th><th>Ubytování</th><th>Stav</th><th>Rezervoval(a)</th><th>Poznámky</th></tr></thead>
-  <tbody id="rows"></tbody>
-</table></div></div>
-<footer>Ubytování: tlačítkem Upravit odkazy vložte jeden odkaz na řádek, volitelně s popiskem ve tvaru „a) Hotel | https://…“.</footer>
+<main class="wrap">
+  <section class="overview">
+    <div class="col">
+    <div class="panel">
+      <div class="panel-head"><h2 class="text-label-12 caps"><strong>Trasa</strong></h2><button type="button" class="add-stop text-button-14" id="addStop" hidden>+ Přidat zastávku</button></div>
+      <ol class="route" id="route"></ol>
+      <form class="stop-form" id="stopForm" hidden>
+        <label class="text-label-13">Místo<input class="text-label-14" id="stopName" required placeholder="např. Chiang Mai"></label>
+        <label class="text-label-13">Od<select class="text-label-14" id="stopFrom"></select></label>
+        <label class="text-label-13">Do<select class="text-label-14" id="stopTo"></select></label>
+        <div class="btns"><button type="submit" class="btn primary text-button-14">Uložit</button><button type="button" class="btn text-button-14" id="stopCancel">Zrušit</button></div>
+      </form>
+    </div>
+      <div class="panel stats" id="stats"></div>
+    </div>
+    <div class="panel" id="calendar"></div>
+  </section>
+  <header class="sec-head"><h2 class="text-heading-32">Itinerář</h2></header>
+  <div id="timeline"></div>
+  <section class="faq" id="faq">
+    <header class="sec-head"><h2 class="text-heading-32">Jak to funguje</h2></header>
+    <details>
+      <summary class="text-label-16"><strong>Jak upravím program, místo nebo poznámky?</strong></summary>
+      <div class="a text-copy-16"><p>Rozbalte místo v časové ose a klikněte do textu u konkrétního dne – do názvu místa, programu nebo poznámek – a pište. Nic dalšího není potřeba: změny se po chvíli uloží samy.</p>
+      <p>Jak to vypadá s ukládáním, ukazuje štítek vpravo nahoře v záhlaví: <strong class="ui">Neuložené změny…</strong>, <strong class="ui">Ukládám…</strong> a nakonec <strong class="ui">Uloženo</strong>.</p></div>
+    </details>
+    <details>
+      <summary class="text-label-16"><strong>Uvidí ostatní moje změny?</strong></summary>
+      <div class="a text-copy-16"><p>Ano, hned a bez obnovování stránky. Pokud zrovna píšete vy, stránka s překreslením počká, až dopíšete, aby vám nic nezmizelo pod rukama.</p>
+      <p>Když dva lidé upravují stejné políčko zároveň, platí ta změna, která se uložila jako poslední.</p></div>
+    </details>
+    <details>
+      <summary class="text-label-16"><strong>Jak přidám odkaz na ubytování?</strong></summary>
+      <div class="a text-copy-16"><p>U dne klikněte na <strong class="ui">+ Přidat odkaz</strong> (nebo <strong class="ui">Upravit odkazy</strong>, pokud už nějaký je). Vložte jeden odkaz na řádek, volitelně s popiskem před svislou čarou:</p>
+      <p><code class="text-copy-13-mono">a) Hotel u pláže | https://www.booking.com/…</code></p>
+      <p>Potvrďte tlačítkem <strong class="ui">Hotovo</strong>. Bez popisku se zobrazí jen název webu.</p></div>
+    </details>
+    <details>
+      <summary class="text-label-16"><strong>Co znamenají barvy u stavu rezervace?</strong></summary>
+      <div class="a text-copy-16"><ul class="faq-status">
+        <li><span class="sw s-no text-label-14"><strong>Nerezervováno! &gt;:(</strong></span>ubytování ještě nikdo nezajistil</li>
+        <li><span class="sw s-yes text-label-14"><strong>Rezervováno. :)</strong></span>je zarezervováno, ale ještě nezaplaceno</li>
+        <li><span class="sw s-paid text-label-14"><strong>Zaplaceno! :D</strong></span>hotovo a zaplaceno</li>
+        <li><span class="sw s-x text-label-14"><strong>Zrušeno! &lt;:(</strong></span>rezervace byla zrušena</li>
+      </ul>
+      <p>Vedle stavu vyberte v modrém štítku, kdo rezervaci zařídil. Stejné barvy uvidíte i v kalendáři a v přehledu nahoře.</p></div>
+    </details>
+    <details>
+      <summary class="text-label-16"><strong>Jak přidám nebo odeberu zastávku na trase?</strong></summary>
+      <div class="a text-copy-16"><p><strong>Přidání:</strong> v kartě Trasa klikněte na <strong class="ui">+ Přidat zastávku</strong>, napište místo a vyberte, od kterého do kterého dne tam budeme. Tlačítko zmizí, jakmile mají všechny dny cesty nějaké místo.</p>
+      <p><strong>Odebrání:</strong> klikněte na <strong class="ui">×</strong> u zastávky. Dnům se smaže jen místo – program, ubytování i poznámky zůstanou.</p>
+      <p>Poslední položka trasy („21 dní zbývá“ apod.) ukazuje, kolik dní ještě nemá místo.</p></div>
+    </details>
+    <details>
+      <summary class="text-label-16"><strong>Jak funguje kalendář?</strong></summary>
+      <div class="a text-copy-16"><p>Kalendář ukazuje všechny dny cesty, obarvené podle stavu rezervace. Fialová tečka označuje dny, kdy je s námi A². Značka dole v políčku ukazuje stav i bez barev: <strong class="ui">!</strong> nerezervováno, <strong class="ui">✓</strong> rezervováno, <strong class="ui">✓✓</strong> zaplaceno, <strong class="ui">×</strong> zrušeno.</p>
+      <p>Po kliknutí na den se rozbalí příslušné místo a stránka sjede přímo k tomu dni.</p></div>
+    </details>
+    <details>
+      <summary class="text-label-16"><strong>Proč jsou místa v časové ose sbalená?</strong></summary>
+      <div class="a text-copy-16"><p>Aby byla stránka přehledná. Místo rozbalíte i sbalíte kliknutím na jeho název nebo šipku vpravo.</p>
+      <p>Dny se do míst seskupují samy podle toho, co je napsané v poli místa. Když dni místo přepíšete, přesune se po dopsání do správné skupiny.</p></div>
+    </details>
+    <details>
+      <summary class="text-label-16"><strong>Co dělat, když se změna neuloží?</strong></summary>
+      <div class="a text-copy-16"><p>Štítek v záhlaví v tom případě zčervená a ukáže <strong class="ui">Uložení se nepovedlo</strong>. Vedle něj klikněte na <strong class="ui">Zkusit znovu</strong> – neuložené změny se odešlou znovu. Pokud to nepomůže, zkontrolujte připojení k internetu.</p></div>
+    </details>
+    <details>
+      <summary class="text-label-16"><strong>Funguje to i na mobilu?</strong></summary>
+      <div class="a text-copy-16"><p>Ano, stránka je přizpůsobená telefonu. Tip: v prohlížeči zvolte <strong class="ui">Přidat na plochu</strong> a budete mít plán po ruce jako aplikaci.</p></div>
+    </details>
+  </section>
+</main>
+<!-- save status floats above the page so it is visible wherever you edit -->
+<div class="toast" id="toast"><span class="save text-label-13" id="save" role="status" aria-live="polite">Načítám…</span><button type="button" class="retry text-button-14" id="retry" hidden>Zkusit znovu</button></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script>
 // ====== VLOŽTE SVOJE ÚDAJE ZE SUPABASE (Project Settings → API) ======
 var SUPABASE_URL = 'https://wjlezsrlfoiwxpnftgiv.supabase.co';
@@ -122,104 +377,379 @@ var SUPABASE_KEY = 'sb_publishable_7NDD7fqCwVlDIVxZ9vryHQ_ZsC2Db0C';
 (function(){
   var START = new Date(2027,1,14), A2_LAST = 11;
   var DAYS = ['ne','po','út','st','čt','pá','so'];
-  var STATUSES = ['Nerezervováno. >:(','Rezervováno. :)','Zaplaceno! :D','Zrušené! ;('];
-  var PEOPLE = ['Maty','Lucie','Jasan','Adéla 1','Adéla 2'];
-  var STAV_CLASS = {'Nerezervováno >:(':'s-no','Rezervováno. :)':'s-yes','Zaplaceno! :D':'s-paid','Zrušené! ;(':'s-x'};
-  var tbody = document.getElementById('rows'), saveEl = document.getElementById('save');
-  var rows = [], pending = 0, timers = {}, editingLinks = false, needsRender = false;
-  function setSave(t){ saveEl.textContent = t; }
-  if (!window.supabase || SUPABASE_URL.indexOf('VAS-PROJEKT') >= 0) { setSave('Chybí nastavení Supabase'); return; }
+  var MONTH_NAMES = ['leden','únor','březen','duben','květen','červen','červenec','srpen','září','říjen','listopad','prosinec'];
+  var MONTHS = ['led','úno','bře','dub','kvě','čvn','čvc','srp','zář','říj','lis','pro'];
+  var STATUSES = ['Nerezervováno! >:(','Rezervováno. :)','Zaplaceno! :D','Zrušeno! <:('];
+  var PEOPLE = ['Maty','Lucie','Jasan','Špony','Adéla'];
+  var STAV_CLASS = {'Nerezervováno! >:(':'s-no','Rezervováno. :)':'s-yes','Zaplaceno! :D':'s-paid','Zrušeno! <:(':'s-x'};
+  var STAV_MARK = {'s-no':'!','s-yes':'✓','s-paid':'✓✓','s-x':'×'};
+  var timeline = document.getElementById('timeline'), routeEl = document.getElementById('route'),
+      statsEl = document.getElementById('stats'), calEl = document.getElementById('calendar'), saveEl = document.getElementById('save');
+  var rows = [], pending = 0, timers = {}, needsRender = false, renderQueued = false, opened = {};
+  var retryEl = document.getElementById('retry'), failed = [], retryAction = null;
+  var toastEl = document.getElementById('toast'), toastTimer = null;
+  function setSave(t, isErr){
+    saveEl.textContent = t; saveEl.classList.toggle('err', !!isErr);
+    clearTimeout(toastTimer); toastEl.classList.remove('off');
+    if (t === 'Uloženo') toastTimer = setTimeout(function(){ toastEl.classList.add('off'); }, 1600);
+  }
+  function showRetry(action){ retryAction = action; retryEl.hidden = !action; }
+  retryEl.addEventListener('click', function(){ var a = retryAction; showRetry(null); if (a) a(); });
+  if (!window.supabase || SUPABASE_URL.indexOf('VAS-PROJEKT') >= 0) { setSave('Chybí nastavení Supabase', true); return; }
   var db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
   function send(id, col, value){
+    var patch = {}; patch[col] = value; write([id], patch);
+  }
+  function write(ids, patch){
     pending++; setSave('Ukládám…');
-    var patch = {}; patch[col] = value;
-    db.from('days').update(patch).eq('id', id).then(function(res){
+    db.from('days').update(patch).in('id', ids).then(function(res){
       pending--;
-      if (res.error) setSave('Uložení se nepovedlo: ' + res.error.message);
-      else if (!pending) { setSave('Uloženo'); if (needsRender && !busy()) { needsRender = false; render(); } }
+      if (res.error) {
+        console.error('Supabase update failed:', res.error);
+        failed.push({ids: ids, patch: patch});
+        setSave('Uložení se nepovedlo', true);
+        showRetry(function(){ var f = failed; failed = []; f.forEach(function(x){ write(x.ids, x.patch); }); });
+      }
+      if (pending) return;
+      if (failed.length) setSave('Uložení se nepovedlo', true);
+      else { setSave('Uloženo'); if (needsRender && !busy()) { needsRender = false; render(); } }
     });
   }
   function queue(id, col, value){
-    var k = id + ':' + col; clearTimeout(timers[k]); setSave('Neuložené změny…');
-    timers[k] = setTimeout(function(){ delete timers[k]; send(id, col, value); }, 1200);
+    var k = id + ':' + col; if (timers[k]) clearTimeout(timers[k].t); setSave('Neuložené změny…');
+    timers[k] = {id: id, col: col, value: value, t: setTimeout(function(){ delete timers[k]; send(id, col, value); }, 1200)};
   }
-  function personClass(n){ var k = PEOPLE.indexOf(n); return k >= 0 ? 'p' + (k % 5 + 1) : ''; }
+  function flushQueued(){
+    Object.keys(timers).forEach(function(k){ var q = timers[k]; clearTimeout(q.t); delete timers[k]; send(q.id, q.col, q.value); });
+  }
+  // send typed-but-not-yet-saved text right away when the tab is hidden, and warn before closing mid-save
+  document.addEventListener('visibilitychange', function(){ if (document.visibilityState === 'hidden') flushQueued(); });
+  window.addEventListener('beforeunload', function(e){
+    if (Object.keys(timers).length || pending || failed.length) { flushQueued(); e.preventDefault(); e.returnValue = ''; }
+  });
+  function el(tag, cls, text){ var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+  function dateOf(row){ var d = new Date(START); d.setDate(START.getDate() + row.id - 1); return d; }
+  function fmt(d){ return d.getDate() + '. ' + (d.getMonth()+1) + '.'; }
+  function sameDay(a, b){ return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate(); }
+  function dny(n){ return n === 1 ? 'den' : n < 5 ? 'dny' : 'dní'; }
+  // map any saved variant ("Nerezervováno.", "Zrušené!" …) to the current label
+  function stavKey(v){
+    v = v || '';
+    if (/^nerez/i.test(v)) return STATUSES[0];
+    if (/^rezerv/i.test(v)) return STATUSES[1];
+    if (/^zapl/i.test(v)) return STATUSES[2];
+    if (/^zruš/i.test(v)) return STATUSES[3];
+    return '';
+  }
+  function personClass(n){ return n ? 'who' : ''; }
   function parseLinks(text){
     return (text || '').split('\n').map(function(line){
       line = line.trim(); var m = line.match(/^(.*?)\s*\|?\s*(https?:\/\/\S+)$/i);
       return m ? {label: m[1].replace(/\|\s*$/,'').trim(), url: m[2]} : null;
     }).filter(Boolean);
   }
-  function makeSelect(opts, val, cls, onch){
-    var s = document.createElement('select');
-    var e = document.createElement('option'); e.value = ''; e.textContent = '–'; s.appendChild(e);
-    opts.forEach(function(o){ var op = document.createElement('option'); op.value = o; op.textContent = o; s.appendChild(op); });
-    s.value = val || ''; s.className = cls(s.value);
-    s.addEventListener('change', function(){ s.className = cls(s.value); onch(s.value); });
+  // a <select> is as wide as its longest option; size the pill to the chosen one instead
+  var FIELD_SIZING = window.CSS && CSS.supports('field-sizing', 'content');
+  var measureCtx = document.createElement('canvas').getContext('2d');
+  function fitSelect(s){
+    if (FIELD_SIZING) return;
+    var cs = getComputedStyle(s);
+    measureCtx.font = cs.fontWeight + ' ' + cs.fontSize + ' ' + cs.fontFamily;
+    var text = s.options[s.selectedIndex] ? s.options[s.selectedIndex].text : '';
+    s.style.width = Math.ceil(measureCtx.measureText(text).width + parseFloat(cs.paddingLeft) + parseFloat(cs.paddingRight) + 2) + 'px';
+  }
+  function fitAll(){ if (!FIELD_SIZING) document.querySelectorAll('select.fit').forEach(fitSelect); }
+  if (document.fonts) document.fonts.ready.then(fitAll);
+  function makeSelect(opts, val, cls, onch, label, hint){
+    var s = document.createElement('select'); s.setAttribute('aria-label', label);
+    var e = document.createElement('option'); e.value = ''; e.textContent = hint; s.appendChild(e);
+    opts.concat(val && opts.indexOf(val) < 0 ? [val] : []).forEach(function(o){ var op = document.createElement('option'); op.value = o; op.textContent = o; s.appendChild(op); });
+    s.value = val || ''; s.className = 'fit text-button-14 ' + cls(s.value);
+    s.addEventListener('change', function(){ s.className = 'fit text-button-14 ' + cls(s.value); fitSelect(s); onch(s.value); });
     return s;
   }
-  function editable(td, row, col){
-    var d = document.createElement('div'); d.textContent = row[col] || '';
+  function editable(parent, cls, row, col, ph, onInput, label, multiline){
+    var d = el('div', cls); d.textContent = row[col] || ''; d.setAttribute('data-ph', ph);
+    d.setAttribute('role', 'textbox'); d.setAttribute('aria-label', label); d.setAttribute('aria-placeholder', ph);
+    if (multiline) d.setAttribute('aria-multiline', 'true');
+    else d.addEventListener('keydown', function(e){ if (e.key === 'Enter') { e.preventDefault(); d.blur(); } });
     try { d.contentEditable = 'plaintext-only'; } catch(e) { d.contentEditable = 'true'; }
-    d.addEventListener('input', function(){ row[col] = d.innerText.replace(/\n+$/,''); queue(row.id, col, row[col]); });
+    d.addEventListener('input', function(){ row[col] = d.innerText.replace(/\n+$/,''); queue(row.id, col, row[col]); if (onInput) onInput(); });
     d.addEventListener('blur', function(){ if (needsRender && !busy()) { needsRender = false; render(); } });
-    td.appendChild(d);
+    parent.appendChild(d);
+    return d;
   }
-  function renderLinks(td, row){
-    td.innerHTML = ''; var box = document.createElement('div'); box.className = 'links';
+  function renderLinks(box, row){
+    box.innerHTML = ''; box.className = 'links';
     parseLinks(row.links).forEach(function(l){
-      var a = document.createElement('a'); a.href = l.url; a.target = '_blank'; a.rel = 'noopener';
-      a.textContent = l.label || l.url.replace(/^https?:\/\/(www\.)?/,'').split('/')[0]; box.appendChild(a);
+      var a = el('a', 'text-label-14', l.label || l.url.replace(/^https?:\/\/(www\.)?/,'').split('/')[0]);
+      a.href = l.url; a.target = '_blank'; a.rel = 'noopener'; a.setAttribute('aria-label', a.textContent + ' (otevře se v novém okně)'); box.appendChild(a);
     });
-    var b = document.createElement('button'); b.className = 'edit-links'; b.type = 'button';
-    b.textContent = row.links ? 'Upravit odkazy' : '+ Přidat odkaz';
+    var b = el('button', 'edit-links text-button-14', row.links ? 'Upravit odkazy' : '+ Přidat odkaz'); b.type = 'button';
     b.addEventListener('click', function(){
-      editingLinks = true;
-      var ta = document.createElement('textarea'); ta.value = row.links || ''; ta.placeholder = 'a) Hotel | https://…';
-      var ok = document.createElement('button'); ok.className = 'edit-links'; ok.type = 'button'; ok.textContent = 'Hotovo';
-      ok.addEventListener('click', function(){ row.links = ta.value.trim(); editingLinks = false; send(row.id, 'links', row.links); renderLinks(td, row); });
-      td.innerHTML = ''; td.appendChild(ta); td.appendChild(ok); ta.focus();
+      var wrap = el('div', 'link-edit');
+      var ta = el('textarea', 'text-copy-13-mono'); ta.value = row.links || ''; ta.placeholder = 'a) Hotel | https://…';
+      var ok = el('button', 'edit-links text-button-14', 'Hotovo'); ok.type = 'button';
+      var cancel = el('button', 'btn text-button-14', 'Zrušit'); cancel.type = 'button';
+      function close(){ renderLinks(box, row); if (needsRender && !busy()) { needsRender = false; render(); } }
+      cancel.addEventListener('click', close);
+      ta.addEventListener('keydown', function(e){ if (e.key === 'Escape') close(); });
+      var err = el('p', 'link-err text-copy-13'); err.setAttribute('role', 'alert'); err.hidden = true;
+      ta.setAttribute('aria-label', 'Odkazy na ubytování, ' + 'den ' + row.id);
+      ok.addEventListener('click', function(){
+        var bad = ta.value.split('\n').map(function(l, i){ return {l: l.trim(), n: i + 1}; })
+          .filter(function(x){ return x.l && !parseLinks(x.l).length; });
+        if (bad.length) {
+          err.textContent = (bad.length === 1 ? 'Řádek ' : 'Řádky ') + bad.map(function(x){ return x.n; }).join(', ') + ' nemá platný odkaz. Každý řádek musí končit adresou https://…';
+          err.hidden = false; ta.focus(); return;
+        }
+        row.links = ta.value.trim(); send(row.id, 'links', row.links); renderLinks(box, row); renderOverview();
+      });
+      var btns = el('div', 'link-btns'); btns.appendChild(ok); btns.appendChild(cancel);
+      wrap.appendChild(ta); wrap.appendChild(err); wrap.appendChild(btns);
+      box.innerHTML = ''; box.className = ''; box.appendChild(wrap); ta.focus();
     });
-    box.appendChild(b); td.appendChild(box);
+    box.appendChild(b);
+  }
+  function segments(){
+    var segs = [];
+    rows.forEach(function(row){
+      var name = (row.lok || '').trim(), last = segs[segs.length - 1];
+      if (last && last.name === name) last.rows.push(row);
+      else segs.push({name: name, rows: [row]});
+    });
+    return segs;
+  }
+  function renderOverview(){
+    var segs = segments();
+    routeEl.innerHTML = '';
+    segs.forEach(function(s, i){
+      var li = el('li'), chip = el('span', 'stop'), a = el('a', 'text-label-14' + (s.name ? '' : ' empty'));
+      a.href = '#seg-' + i;
+      if (s.name) { a.appendChild(el('strong', null, s.name)); a.appendChild(el('small', 'text-label-13 tabular-nums', s.rows.length + ' ' + dny(s.rows.length))); }
+      else a.textContent = s.rows.length + ' ' + dny(s.rows.length) + ' zbývá';
+      a.addEventListener('click', function(){ document.getElementById('seg-' + i).open = true; });
+      chip.appendChild(a);
+      if (s.name) {
+        var rm = el('button', 'rm text-button-16', '×'); rm.type = 'button'; rm.title = 'Odebrat zastávku'; rm.setAttribute('aria-label', 'Odebrat zastávku ' + s.name);
+        rm.addEventListener('click', function(){
+          var a0 = dateOf(s.rows[0]), b0 = dateOf(s.rows[s.rows.length - 1]);
+          if (!confirm('Odebrat zastávku ' + s.name + ' (' + (s.rows.length > 1 ? fmt(a0) + ' – ' + fmt(b0) : fmt(a0)) + ')?\nU těchto dní se smaže jen místo, program a ubytování zůstanou.')) return;
+          setLok(s.rows, '');
+        });
+        chip.appendChild(rm);
+      }
+      li.appendChild(chip); routeEl.appendChild(li);
+    });
+    // every day already has a place → nothing left to add
+    var hasFree = rows.some(function(r){ return !(r.lok || '').trim(); });
+    if (stopForm.hidden) addStop.hidden = !hasFree;
+
+    var total = rows.length, c = {};
+    STATUSES.forEach(function(st){ c[st] = 0; });
+    rows.forEach(function(r){ var k = stavKey(r.stav); if (k) c[k]++; });
+    var done = c[STATUSES[1]] + c[STATUSES[2]];
+    var today = new Date(); today.setHours(0,0,0,0);
+    var diff = Math.round((START - today) / 864e5), end = new Date(START); end.setDate(START.getDate() + total - 1);
+    var big, small;
+    if (diff > 0) { big = diff; small = (diff === 1 ? 'den' : diff < 5 ? 'dny' : 'dní') + ' do odletu'; }
+    else if (today <= end) { big = 'Den ' + (1 - diff); small = 'z ' + total + ', jsme na cestě'; }
+    else { big = total; small = 'dní za námi'; }
+
+    statsEl.innerHTML = '';
+    var h = el('h2', 'text-label-12 caps'); h.appendChild(el('strong', null, 'Přehled')); statsEl.appendChild(h);
+    var cd = el('div', 'count'); cd.appendChild(el('b', 'text-heading-48 tabular-nums', big)); cd.appendChild(el('span', 'text-label-14', small)); statsEl.appendChild(cd);
+    statsEl.appendChild(el('div', 'text-copy-14', 'Ubytování vyřešeno pro ' + done + ' z ' + total + ' dní'));
+    var meter = el('div', 'meter'), legend = el('div', 'legend text-label-12 tabular-nums');
+    [2, 1, 0, 3].forEach(function(k){
+      var st = STATUSES[k], col = 'var(--' + STAV_CLASS[st] + '-dot)';
+      if (!c[st]) return;
+      var i = el('i'); i.style.width = (c[st] / total * 100) + '%'; i.style.background = col; i.title = st + ': ' + c[st]; meter.appendChild(i);
+      var s = el('span', null, STAV_MARK[STAV_CLASS[st]] + ' ' + st.replace(/[.!].*$/,'') + ' ' + c[st]); s.style.setProperty('--c', col); legend.appendChild(s);
+    });
+    statsEl.appendChild(meter); statsEl.appendChild(legend);
+    calEl.innerHTML = ""; calEl.appendChild(renderCalendar());
+  }
+  // month grid from the Monday before departure to the Sunday after return
+  function renderCalendar(){
+    var cal = el('div', 'cal'), today = new Date();
+    var first = dateOf(rows[0]), last = dateOf(rows[rows.length - 1]);
+    var ct = el('h2', 'cal-title text-label-12 caps'); ct.appendChild(el('strong', null, 'Kalendář')); cal.appendChild(ct);
+    var grid = el('div', 'cal-grid');
+    grid.appendChild(el('span'));
+    ['po','út','st','čt','pá','so','ne'].forEach(function(d){ grid.appendChild(el('span', 'cal-wd text-label-12', d)); });
+    // collect whole weeks; each week belongs to the month its Thursday falls in
+    var weeks = [], d = new Date(first); d.setDate(d.getDate() - (d.getDay() + 6) % 7);
+    for (; d <= last; d.setDate(d.getDate() + 7)) {
+      var thu = new Date(d); thu.setDate(thu.getDate() + 3);
+      weeks.push({start: new Date(d), month: thu.getMonth()});
+    }
+    weeks.forEach(function(w, wi){
+      if (wi === 0 || weeks[wi - 1].month !== w.month) {
+        var span = 0; for (var k = wi; k < weeks.length && weeks[k].month === w.month; k++) span++;
+        var m = el('span', 'cal-month text-label-12 caps', MONTH_NAMES[w.month]); m.style.gridRow = 'span ' + span;
+        grid.appendChild(m);
+      }
+      for (var i = 0; i < 7; i++) {
+        var day = new Date(w.start); day.setDate(day.getDate() + i);
+        var id = Math.round((day - START) / 864e5) + 1, row = rows[id - 1];
+        if (!row) { grid.appendChild(el('span', 'cal-day off text-label-13 tabular-nums', day.getDate())); continue; }
+        var st = stavKey(row.stav), sc = STAV_CLASS[st] || '';
+        var b = el('button', 'cal-day text-label-13 tabular-nums ' + sc, day.getDate()); b.type = 'button';
+        if (row.id <= A2_LAST) b.classList.add('a2');
+        if (sameDay(day, today)) b.classList.add('today');
+        b.title = 'Den ' + row.id + (row.lok ? ', ' + row.lok : '') + (st ? ', ' + st : '');
+        b.setAttribute('aria-label', DAYS[day.getDay()] + ' ' + fmt(day) + ', den ' + row.id + (row.lok ? ', ' + row.lok : '') + ', ' + (st ? st.replace(/[.!].*$/,'') : 'bez stavu') + (row.id <= A2_LAST ? ', s A²' : ''));
+        if (sc) b.setAttribute('data-mark', STAV_MARK[sc]);
+        b.addEventListener('click', goToDay.bind(null, row.id));
+        grid.appendChild(b);
+      }
+    });
+    cal.appendChild(grid);
+    cal.appendChild(el('p', 'cal-note text-label-12', '= Dny s A²'));
+    return cal;
+  }
+  function goToDay(id){
+    var card = document.getElementById('day-' + id);
+    if (!card) return;
+    card.closest('details').open = true;
+    card.scrollIntoView({behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'center'});
+    card.classList.remove('flash'); void card.offsetWidth; card.classList.add('flash');
+  }
+  function setLok(list, value){
+    list.forEach(function(r){ r.lok = value; });
+    render();
+    write(list.map(function(r){ return r.id; }), {lok: value});
+  }
+  var stopForm = document.getElementById('stopForm'), addStop = document.getElementById('addStop'),
+      stopName = document.getElementById('stopName'), stopFrom = document.getElementById('stopFrom'), stopTo = document.getElementById('stopTo');
+  function closeStopForm(){ stopForm.hidden = true; if (needsRender && !busy()) { needsRender = false; render(); } else renderOverview(); }
+  addStop.addEventListener('click', function(){
+    [stopFrom, stopTo].forEach(function(sel){
+      sel.innerHTML = '';
+      rows.forEach(function(r){
+        var d = dateOf(r), o = el('option', null, DAYS[d.getDay()] + ' ' + fmt(d) + ' (Den ' + r.id + ')');
+        o.value = r.id; sel.appendChild(o);
+      });
+    });
+    var free = rows.filter(function(r){ return !(r.lok || '').trim(); })[0] || rows[0];
+    stopFrom.value = stopTo.value = free.id;
+    stopName.value = '';
+    stopForm.hidden = false; addStop.hidden = true; stopName.focus();
+  });
+  stopFrom.addEventListener('change', function(){ if (+stopTo.value < +stopFrom.value) stopTo.value = stopFrom.value; });
+  stopTo.addEventListener('change', function(){ if (+stopTo.value < +stopFrom.value) stopFrom.value = stopTo.value; });
+  document.getElementById('stopCancel').addEventListener('click', closeStopForm);
+  stopForm.addEventListener('submit', function(e){
+    e.preventDefault();
+    var name = stopName.value.trim(), from = +stopFrom.value, to = +stopTo.value;
+    if (!name) return;
+    var hit = segments().filter(function(sg){
+      return sg.name && sg.name !== name && sg.rows.some(function(r){ return r.id >= from && r.id <= to; });
+    }).map(function(sg){
+      var inRange = sg.rows.filter(function(r){ return r.id >= from && r.id <= to; });
+      var a = dateOf(inRange[0]), b = dateOf(inRange[inRange.length - 1]);
+      return sg.name + ' (' + (inRange.length > 1 ? fmt(a) + ' – ' + fmt(b) : fmt(a)) + ')';
+    });
+    if (hit.length && !confirm('Tímto přepíšete místo u dní: ' + hit.join(', ') + '.\nProgram, ubytování ani poznámky se nezmění. Pokračovat?')) return;
+    stopForm.hidden = true;
+    setLok(rows.filter(function(r){ return r.id >= from && r.id <= to; }), name);
+  });
+  function renderDay(row){
+    var date = dateOf(row), today = new Date();
+    var card = el('article', 'day'); card.id = 'day-' + row.id;
+
+    var when = el('div', 'when');
+    var dw = el('span', 'dw text-label-12 caps'); dw.appendChild(el('strong', null, DAYS[date.getDay()])); when.appendChild(dw);
+    when.appendChild(el('span', 'dnum text-heading-24 tabular-nums', date.getDate()));
+    when.appendChild(el('span', 'dmon text-label-12', MONTHS[date.getMonth()]));
+    if (row.id <= A2_LAST) { var a2 = el('span', 'tag a2 text-label-12'); a2.title = 'Špony a Adéla'; a2.appendChild(el('strong', null, 'A²')); when.appendChild(a2); }
+    card.appendChild(when);
+
+    var dayName = 'den ' + row.id + ', ' + DAYS[date.getDay()] + ' ' + fmt(date);
+    var body = el('div', 'body'), top = el('div', 'top');
+    editable(top, 'lok text-label-12 caps', row, 'lok', 'Kde budeme?', function(){ needsRender = true; }, 'Místo, ' + dayName);
+    if (sameDay(date, today)) { var now = el('span', 'tag now text-label-12'); now.appendChild(el('strong', null, 'Dnes')); top.appendChild(now); }
+    body.appendChild(top);
+    editable(body, 'prog text-copy-16', row, 'prog', 'Program dne…', null, 'Program, ' + dayName, true);
+
+    var stay = el('div', 'row'); stay.appendChild(el('span', 'lbl text-label-13', 'Ubytování'));
+    var links = el('div'); renderLinks(links, row); stay.appendChild(links); body.appendChild(stay);
+
+    var meta = el('div', 'row meta'); meta.appendChild(el('span', 'lbl text-label-13', 'Stav'));
+    meta.appendChild(makeSelect(STATUSES, stavKey(row.stav), function(v){ return STAV_CLASS[v] || ''; }, function(v){ row.stav = v; send(row.id, 'stav', v); renderOverview(); }, 'Stav ubytování, ' + dayName, 'Stav?'));
+    meta.appendChild(makeSelect(PEOPLE, row.booked_by, personClass, function(v){ row.booked_by = v; send(row.id, 'booked_by', v); }, 'Kdo rezervoval, ' + dayName, 'Kdo?'));
+    body.appendChild(meta);
+
+    editable(body, 'notes text-copy-14', row, 'notes', 'Poznámky…', null, 'Poznámky, ' + dayName, true);
+    card.appendChild(body);
+    return card;
   }
   function render(){
-    tbody.innerHTML = '';
-    rows.forEach(function(row){
-      var i = row.id - 1;
-      var date = new Date(START); date.setDate(START.getDate() + i);
-      var tr = document.createElement('tr'), td;
-      if (date.getDay() === 1) tr.className = 'week';
-      if (row.id <= A2_LAST) tr.classList.add('a2end');
-      td = document.createElement('td'); td.className = 'den'; td.textContent = 'Den ' + row.id; tr.appendChild(td);
-      td = document.createElement('td'); td.className = 'datum';
-      var b = document.createElement('b'); b.textContent = DAYS[date.getDay()]; td.appendChild(b);
-      td.appendChild(document.createTextNode(' ' + date.getDate() + '. ' + (date.getMonth()+1) + '.')); tr.appendChild(td);
-      td = document.createElement('td'); td.className = 'lok'; editable(td, row, 'lok'); tr.appendChild(td);
-      td = document.createElement('td'); td.className = 'prog'; editable(td, row, 'prog'); tr.appendChild(td);
-      td = document.createElement('td'); td.className = 'ubyt'; renderLinks(td, row); tr.appendChild(td);
-      td = document.createElement('td');
-      td.appendChild(makeSelect(STATUSES, row.stav, function(v){ return STAV_CLASS[v] || ''; }, function(v){ row.stav = v; send(row.id, 'stav', v); }));
-      tr.appendChild(td);
-      td = document.createElement('td');
-      td.appendChild(makeSelect(PEOPLE, row.booked_by, personClass, function(v){ row.booked_by = v; send(row.id, 'booked_by', v); }));
-      tr.appendChild(td);
-      td = document.createElement('td'); td.className = 'notes'; editable(td, row, 'notes'); tr.appendChild(td);
-      tbody.appendChild(tr);
+    renderOverview();
+    timeline.innerHTML = '';
+    segments().forEach(function(s, i){
+      var key = s.name + ':' + s.rows[0].id;
+      var seg = el('details', 'seg' + (s.name ? '' : ' unplanned')); seg.id = 'seg-' + i; seg.open = !!opened[key];
+      seg.addEventListener('toggle', function(){ opened[key] = seg.open; });
+      var head = el('summary', 'seg-head');
+      head.appendChild(el('h3', 'text-heading-24', s.name || 'Zatím nenaplánováno'));
+      var a = dateOf(s.rows[0]), b = dateOf(s.rows[s.rows.length - 1]);
+      var meta = el('div', 'seg-meta'); head.appendChild(meta);
+      meta.appendChild(el('span', 'range text-label-14 tabular-nums', s.rows.length > 1 ? fmt(a) + ' – ' + fmt(b) : fmt(a)));
+      var len = el('span', 'len text-label-12 tabular-nums'); len.appendChild(el('strong', null, s.rows.length + ' ' + dny(s.rows.length))); meta.appendChild(len);
+      var chev = el('span', 'chev');
+      head.appendChild(chev);
+      seg.appendChild(head);
+      var days = el('div', 'days');
+      s.rows.forEach(function(r){ days.appendChild(renderDay(r)); });
+      seg.appendChild(days);
+      timeline.appendChild(seg);
     });
+    fitAll();
   }
+  // true while a re-render would throw away something the user is in the middle of
   function busy(){
     var a = document.activeElement;
-    return pending > 0 || Object.keys(timers).length > 0 || editingLinks ||
-      (a && (a.isContentEditable || a.tagName === 'TEXTAREA'));
+    return pending > 0 || Object.keys(timers).length > 0 || !stopForm.hidden || !!document.querySelector('.link-edit') ||
+      !!(a && (a.isContentEditable || /^(TEXTAREA|SELECT|INPUT)$/.test(a.tagName)));
+  }
+  // H: several updates in a row (e.g. a whole stop) cost one re-render
+  function scheduleRender(){
+    if (renderQueued) return;
+    renderQueued = true;
+    requestAnimationFrame(function(){
+      renderQueued = false;
+      if (busy()) { needsRender = true; renderOverview(); } else { needsRender = false; render(); }
+    });
+  }
+  // D: update rows in place so open fields keep pointing at the live object; never overwrite text still waiting to be saved
+  function applyRow(n){
+    var row = rows.filter(function(r){ return r.id === n.id; })[0];
+    if (!row) return;
+    Object.keys(n).forEach(function(col){ if (!timers[n.id + ':' + col]) row[col] = n[col]; });
+  }
+  // I: catch up on anything missed while offline or asleep
+  function refetch(){
+    db.from('days').select('*').order('id').then(function(res){
+      if (res.error) { console.error('Supabase refresh failed:', res.error); return; }
+      res.data.forEach(applyRow); scheduleRender();
+    });
   }
   db.from('days').select('*').order('id').then(function(res){
-    if (res.error) { setSave('Nepodařilo se načíst data: ' + res.error.message); return; }
+    if (res.error) { console.error('Supabase load failed:', res.error); setSave('Data se nepodařilo načíst', true); showRetry(function(){ location.reload(); }); return; }
     rows = res.data; render(); setSave('Uloženo');
+    var first = dateOf(rows[0]), last = dateOf(rows[rows.length - 1]), dates = document.getElementById('dates');
+    dates.firstChild.textContent = fmt(first) + ' – ' + fmt(last) + ' ' + last.getFullYear();
+    dates.lastChild.textContent = rows.length + ' ' + dny(rows.length);
+    var connected = false;
     db.channel('days').on('postgres_changes', {event: 'UPDATE', schema: 'public', table: 'days'}, function(p){
-      var n = p.new; for (var k = 0; k < rows.length; k++) if (rows[k].id === n.id) rows[k] = n;
-      if (busy()) needsRender = true; else render();
-    }).subscribe();
+      applyRow(p.new); scheduleRender();
+    }).subscribe(function(status){
+      if (status === 'SUBSCRIBED') { if (connected) refetch(); connected = true; }
+    });
+    document.addEventListener('visibilitychange', function(){ if (document.visibilityState === 'visible') refetch(); });
   });
 })();
 </script>
