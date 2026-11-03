@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hello Thailand! 2027</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f6f1e7; --surface:#fffdf8; --ink:#1f2a2a; --muted:#6b7473; --line:#e4dccb;
+  --accent:#0f6b63; --accent-soft:#d8ece8; --head:#123b38; --head-ink:#f6f1e7;
+  --s-no-bg:#fde0c7; --s-no-ink:#8a3b06;
+  --s-yes-bg:#cfeed6; --s-yes-ink:#13612b;
+  --s-x-bg:#fbd3d3; --s-x-ink:#9b1414;
+  --p1-bg:#d6e6f7; --p1-ink:#1f4e79;
+  --p2-bg:#eadcf8; --p2-ink:#5b2c83;
+  --p3-bg:#fbefc0; --p3-ink:#6e5300;
+  --p4-bg:#cdefe9; --p4-ink:#0b5d57;
+  --p5-bg:#fbd9e8; --p5-ink:#8c1d4f;
+  color-scheme: light;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#121817; --surface:#1a2221; --ink:#e9e4d8; --muted:#9aa3a1; --line:#2c3836;
+    --accent:#5cc2b5; --accent-soft:#1f3a37; --head:#0c2b28; --head-ink:#e9e4d8;
+    --s-no-bg:#5a2e0e; --s-no-ink:#ffd2ad;
+    --s-yes-bg:#173f22; --s-yes-ink:#b8f0c6;
+    --s-x-bg:#4d1717; --s-x-ink:#ffc4c4;
+    --p1-bg:#1d3550; --p1-ink:#c9e0f7;
+    --p2-bg:#3a2552; --p2-ink:#e5d2fa;
+    --p3-bg:#463a0e; --p3-ink:#f8e7a4;
+    --p4-bg:#14403b; --p4-ink:#bdeee7;
+    --p5-bg:#4d1d33; --p5-ink:#fbcde1;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#121817; --surface:#1a2221; --ink:#e9e4d8; --muted:#9aa3a1; --line:#2c3836;
+  --accent:#5cc2b5; --accent-soft:#1f3a37; --head:#0c2b28; --head-ink:#e9e4d8;
+  --s-no-bg:#5a2e0e; --s-no-ink:#ffd2ad;
+  --s-yes-bg:#173f22; --s-yes-ink:#b8f0c6;
+  --s-x-bg:#4d1717; --s-x-ink:#ffc4c4;
+  --p1-bg:#1d3550; --p1-ink:#c9e0f7;
+  --p2-bg:#3a2552; --p2-ink:#e5d2fa;
+  --p3-bg:#463a0e; --p3-ink:#f8e7a4;
+  --p4-bg:#14403b; --p4-ink:#bdeee7;
+  --p5-bg:#4d1d33; --p5-ink:#fbcde1;
+  color-scheme: dark;
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 "Work Sans",system-ui,-apple-system,"Segoe UI",sans-serif}
+header{padding:28px 20px 18px;max-width:1500px;margin:0 auto}
+h1{font-family:"Fraunces",Georgia,"Times New Roman",serif;font-weight:700;font-size:clamp(28px,5vw,44px);line-height:1.1;margin:0 0 6px;letter-spacing:-.01em}
+.sub{color:var(--muted);margin:0;max-width:70ch}
+.bar{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;margin-top:14px;font-size:13px;color:var(--muted)}
+.save{padding:3px 10px;border-radius:999px;background:var(--accent-soft);color:var(--accent);font-weight:600}
+.wrap{max-width:1500px;margin:0 auto 40px;padding:0 12px}
+.scroller{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+table{border-collapse:separate;border-spacing:0;width:100%;min-width:1180px}
+th{position:sticky;top:0;background:var(--head);color:var(--head-ink);text-align:left;font-weight:600;font-size:13px;padding:10px 12px;z-index:2;white-space:nowrap}
+td{padding:10px 12px;border-top:1px solid var(--line);vertical-align:top}
+tr.week td{border-top:2px solid var(--accent)}
+td.den{font-family:"Fraunces",Georgia,serif;font-weight:600;white-space:nowrap;position:sticky;left:0;background:var(--surface);z-index:1}
+th.den{left:0;z-index:3}
+td.datum{white-space:nowrap;color:var(--muted);font-variant-numeric:tabular-nums}
+td.datum b{color:var(--ink);font-weight:600}
+[contenteditable]{outline:none;min-height:1.5em;border-radius:6px;padding:2px 4px;margin:-2px -4px}
+[contenteditable]:hover{background:var(--accent-soft)}
+[contenteditable]:focus{background:var(--accent-soft);box-shadow:0 0 0 2px var(--accent)}
+[contenteditable]:empty::before{content:"…";color:var(--line)}
+.ro [contenteditable]:hover{background:none}
+td.lok{min-width:130px;font-weight:500}
+td.prog{min-width:260px}
+td.notes{min-width:240px}
+td.ubyt{min-width:170px}
+.links{display:flex;flex-direction:column;gap:4px}
+.links a{color:var(--accent);font-weight:500;text-decoration:none;word-break:break-word}
+.links a:hover{text-decoration:underline}
+.edit-links{font:inherit;font-size:12px;color:var(--muted);background:none;border:1px dashed var(--line);border-radius:6px;padding:2px 8px;cursor:pointer;margin-top:4px;align-self:flex-start}
+.ro .edit-links{display:none}
+textarea{width:100%;min-height:90px;font:12px/1.4 ui-monospace,Menlo,Consolas,monospace;background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:6px;padding:6px}
+select{font:inherit;font-size:13px;font-weight:600;border:0;border-radius:999px;padding:4px 26px 4px 10px;cursor:pointer;appearance:none;-webkit-appearance:none;background-color:transparent;color:var(--muted);background-image:linear-gradient(45deg,transparent 50%,currentColor 50%),linear-gradient(135deg,currentColor 50%,transparent 50%);background-position:calc(100% - 13px) 55%,calc(100% - 8px) 55%;background-size:5px 5px;background-repeat:no-repeat;outline:1px dashed var(--line)}
+select:disabled{cursor:default;background-image:none;padding-right:10px}
+select.s-no{background-color:var(--s-no-bg);color:var(--s-no-ink);outline:0}
+select.s-yes{background-color:var(--s-yes-bg);color:var(--s-yes-ink);outline:0}
+select.s-paid{background-color:#1e7b3a;color:#ffffff;outline:0}
+select.s-x{background-color:var(--s-x-bg);color:var(--s-x-ink);outline:0}
+select.p1{background-color:var(--p1-bg);color:var(--p1-ink);outline:0}
+select.p2{background-color:var(--p2-bg);color:var(--p2-ink);outline:0}
+select.p3{background-color:var(--p3-bg);color:var(--p3-ink);outline:0}
+select.p4{background-color:var(--p4-bg);color:var(--p4-ink);outline:0}
+select.p5{background-color:var(--p5-bg);color:var(--p5-ink);outline:0}
+select option{background:var(--surface);color:var(--ink)}
+tr.a2end td{background:color-mix(in srgb,var(--accent-soft) 45%,var(--surface))}
+tr.a2end td.den{background:color-mix(in srgb,var(--accent-soft) 45%,var(--surface))}
+footer{max-width:1500px;margin:0 auto;padding:0 20px 30px;color:var(--muted);font-size:13px}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+</head>
+<body>
+<header>
+  <h1>Hello Thailand! 2027</h1>
+  <p class="sub">14. 2. – 17. 3. · Maty, Lucie, Jasan a A² (do 24. 2.). Klikněte do buňky a pište, změny se ukládají samy.</p>
+  <div class="bar"><span class="save" id="save">Načítám…</span><span>Zvýrazněné řádky = dny s A²</span></div>
+</header>
+<div class="wrap"><div class="scroller"><table>
+  <thead><tr><th class="den">Den</th><th>Datum</th><th>Lokalita</th><th>Program</th><th>Ubytování</th><th>Stav</th><th>Rezervoval(a)</th><th>Poznámky</th></tr></thead>
+  <tbody id="rows"></tbody>
+</table></div></div>
+<footer>Ubytování: tlačítkem Upravit odkazy vložte jeden odkaz na řádek, volitelně s popiskem ve tvaru „a) Hotel | https://…“.</footer>
+<script>
+// ====== VLOŽTE SVOJE ÚDAJE ZE SUPABASE (Project Settings → API) ======
+var SUPABASE_URL = 'https://wjlezsrlfoiwxpnftgiv.supabase.co';
+var SUPABASE_KEY = 'sb_publishable_7NDD7fqCwVlDIVxZ9vryHQ_ZsC2Db0C';
+// =====================================================================
+(function(){
+  var START = new Date(2027,1,14), A2_LAST = 11;
+  var DAYS = ['ne','po','út','st','čt','pá','so'];
+  var STATUSES = ['Nerezervováno.','Rezervováno!','Zaplaceno','Zrušené!'];
+  var PEOPLE = ['Maty','Lucie','Jasan','Adéla 1','Adéla 2'];
+  var STAV_CLASS = {'Nerezervováno.':'s-no','Rezervováno!':'s-yes','Zaplaceno':'s-paid','Zrušené!':'s-x'};
+  var tbody = document.getElementById('rows'), saveEl = document.getElementById('save');
+  var rows = [], pending = 0, timers = {}, editingLinks = false, needsRender = false;
+  function setSave(t){ saveEl.textContent = t; }
+  if (!window.supabase || SUPABASE_URL.indexOf('VAS-PROJEKT') >= 0) { setSave('Chybí nastavení Supabase'); return; }
+  var db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  function send(id, col, value){
+    pending++; setSave('Ukládám…');
+    var patch = {}; patch[col] = value;
+    db.from('days').update(patch).eq('id', id).then(function(res){
+      pending--;
+      if (res.error) setSave('Uložení se nepovedlo: ' + res.error.message);
+      else if (!pending) { setSave('Uloženo'); if (needsRender && !busy()) { needsRender = false; render(); } }
+    });
+  }
+  function queue(id, col, value){
+    var k = id + ':' + col; clearTimeout(timers[k]); setSave('Neuložené změny…');
+    timers[k] = setTimeout(function(){ delete timers[k]; send(id, col, value); }, 1200);
+  }
+  function personClass(n){ var k = PEOPLE.indexOf(n); return k >= 0 ? 'p' + (k % 5 + 1) : ''; }
+  function parseLinks(text){
+    return (text || '').split('\n').map(function(line){
+      line = line.trim(); var m = line.match(/^(.*?)\s*\|?\s*(https?:\/\/\S+)$/i);
+      return m ? {label: m[1].replace(/\|\s*$/,'').trim(), url: m[2]} : null;
+    }).filter(Boolean);
+  }
+  function makeSelect(opts, val, cls, onch){
+    var s = document.createElement('select');
+    var e = document.createElement('option'); e.value = ''; e.textContent = '–'; s.appendChild(e);
+    opts.forEach(function(o){ var op = document.createElement('option'); op.value = o; op.textContent = o; s.appendChild(op); });
+    s.value = val || ''; s.className = cls(s.value);
+    s.addEventListener('change', function(){ s.className = cls(s.value); onch(s.value); });
+    return s;
+  }
+  function editable(td, row, col){
+    var d = document.createElement('div'); d.textContent = row[col] || '';
+    try { d.contentEditable = 'plaintext-only'; } catch(e) { d.contentEditable = 'true'; }
+    d.addEventListener('input', function(){ row[col] = d.innerText.replace(/\n+$/,''); queue(row.id, col, row[col]); });
+    d.addEventListener('blur', function(){ if (needsRender && !busy()) { needsRender = false; render(); } });
+    td.appendChild(d);
+  }
+  function renderLinks(td, row){
+    td.innerHTML = ''; var box = document.createElement('div'); box.className = 'links';
+    parseLinks(row.links).forEach(function(l){
+      var a = document.createElement('a'); a.href = l.url; a.target = '_blank'; a.rel = 'noopener';
+      a.textContent = l.label || l.url.replace(/^https?:\/\/(www\.)?/,'').split('/')[0]; box.appendChild(a);
+    });
+    var b = document.createElement('button'); b.className = 'edit-links'; b.type = 'button';
+    b.textContent = row.links ? 'Upravit odkazy' : '+ Přidat odkaz';
+    b.addEventListener('click', function(){
+      editingLinks = true;
+      var ta = document.createElement('textarea'); ta.value = row.links || ''; ta.placeholder = 'a) Hotel | https://…';
+      var ok = document.createElement('button'); ok.className = 'edit-links'; ok.type = 'button'; ok.textContent = 'Hotovo';
+      ok.addEventListener('click', function(){ row.links = ta.value.trim(); editingLinks = false; send(row.id, 'links', row.links); renderLinks(td, row); });
+      td.innerHTML = ''; td.appendChild(ta); td.appendChild(ok); ta.focus();
+    });
+    box.appendChild(b); td.appendChild(box);
+  }
+  function render(){
+    tbody.innerHTML = '';
+    rows.forEach(function(row){
+      var i = row.id - 1;
+      var date = new Date(START); date.setDate(START.getDate() + i);
+      var tr = document.createElement('tr'), td;
+      if (date.getDay() === 1) tr.className = 'week';
+      if (row.id <= A2_LAST) tr.classList.add('a2end');
+      td = document.createElement('td'); td.className = 'den'; td.textContent = 'Den ' + row.id; tr.appendChild(td);
+      td = document.createElement('td'); td.className = 'datum';
+      var b = document.createElement('b'); b.textContent = DAYS[date.getDay()]; td.appendChild(b);
+      td.appendChild(document.createTextNode(' ' + date.getDate() + '. ' + (date.getMonth()+1) + '.')); tr.appendChild(td);
+      td = document.createElement('td'); td.className = 'lok'; editable(td, row, 'lok'); tr.appendChild(td);
+      td = document.createElement('td'); td.className = 'prog'; editable(td, row, 'prog'); tr.appendChild(td);
+      td = document.createElement('td'); td.className = 'ubyt'; renderLinks(td, row); tr.appendChild(td);
+      td = document.createElement('td');
+      td.appendChild(makeSelect(STATUSES, row.stav, function(v){ return STAV_CLASS[v] || ''; }, function(v){ row.stav = v; send(row.id, 'stav', v); }));
+      tr.appendChild(td);
+      td = document.createElement('td');
+      td.appendChild(makeSelect(PEOPLE, row.booked_by, personClass, function(v){ row.booked_by = v; send(row.id, 'booked_by', v); }));
+      tr.appendChild(td);
+      td = document.createElement('td'); td.className = 'notes'; editable(td, row, 'notes'); tr.appendChild(td);
+      tbody.appendChild(tr);
+    });
+  }
+  function busy(){
+    var a = document.activeElement;
+    return pending > 0 || Object.keys(timers).length > 0 || editingLinks ||
+      (a && (a.isContentEditable || a.tagName === 'TEXTAREA'));
+  }
+  db.from('days').select('*').order('id').then(function(res){
+    if (res.error) { setSave('Nepodařilo se načíst data: ' + res.error.message); return; }
+    rows = res.data; render(); setSave('Uloženo');
+    db.channel('days').on('postgres_changes', {event: 'UPDATE', schema: 'public', table: 'days'}, function(p){
+      var n = p.new; for (var k = 0; k < rows.length; k++) if (rows[k].id === n.id) rows[k] = n;
+      if (busy()) needsRender = true; else render();
+    }).subscribe();
+  });
+})();
+</script>
+</body>
+</html>
