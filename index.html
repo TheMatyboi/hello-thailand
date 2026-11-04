@@ -4,9 +4,20 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Hello Thailand! 2027</title>
+<!-- home-screen app: icon, full-screen launch, browser bar colour -->
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Thailand">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0e0e10" media="(prefers-color-scheme: dark)">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@100..900&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://wjlezsrlfoiwxpnftgiv.supabase.co" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400..600&display=swap" rel="stylesheet">
 <style>
 /* Design system: white + near-black neutrals, one UI accent, semantic accents for status and people */
 :root{
@@ -49,7 +60,7 @@
    Load Geist Sans + Geist Mono (variable fonts): `geist` package on Next.js, @fontsource-variable/geist(-mono) or Google Fonts elsewhere. */
 :root {
   --font-geist-sans: "Geist Variable", "Geist", "GeistSans", ui-sans-serif, system-ui, sans-serif;
-  --font-geist-mono: "Geist Mono Variable", "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-geist-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
 /* Headings — weight 600; <strong> = Subtle (500) */
@@ -82,13 +93,14 @@
 .tabular-nums{font-variant-numeric:tabular-nums}
 /* overline: short all-caps titles need a little tracking to stay legible */
 .caps{text-transform:uppercase;letter-spacing:.06em}
-.sec-head{margin:0 0 28px;padding-left:2px}
+/* spacing steps: 16px between cards, 24px heading → content, 48px between parts of a screen, 32px before the bottom bar */
+.sec-head{margin:0 0 24px;padding-left:2px}
 .sec-head h2{margin:0;color:var(--ink)}
 html{scroll-behavior:smooth;scroll-padding-top:16px;background:var(--page)}
 body{margin:0;background:var(--page);color:var(--ink);font-family:var(--font-geist-sans);padding-bottom:env(safe-area-inset-bottom,0px)}
 
 /* ---------- hero ---------- */
-.hero{position:relative;overflow:hidden;color:var(--ink);padding:calc(env(safe-area-inset-top,0px) + 56px) 0 48px}
+.hero{position:relative;overflow:hidden;color:var(--ink);padding:calc(env(safe-area-inset-top,0px) + 28px) 0 24px}
 .hero-in{position:relative;max-width:393px;margin:0 auto;padding:0 16px;container-type:inline-size}
 .toast{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:10;display:flex;align-items:center;gap:8px;transform:translateX(-50%);transition:opacity .25s,transform .25s}
 .toast.off{opacity:0;transform:translate(-50%,8px);pointer-events:none}
@@ -99,12 +111,12 @@ body{margin:0;background:var(--page);color:var(--ink);font-family:var(--font-gei
    is 8.53× its font size wide, so 11.7% of the column width makes it exactly fit */
 .hero h1{margin:0;white-space:nowrap;font-size:11.7cqw;line-height:1.2;letter-spacing:-0.06em}
 .hero h1 span{color:var(--accent)}
-.subrow{display:flex;flex-wrap:wrap;align-items:center;gap:10px 24px;margin-top:18px}
-.subrow .sub,.subrow .dates{flex:1 1 100%}
+.subrow{display:flex;flex-wrap:wrap;align-items:center;gap:10px 24px;margin-top:8px}
+/* phone: subtitle and names stay on desktop only, to keep the home cards above the fold */
+/* phone: the header is just the title (subtitle and names are desktop only) */
+.subrow{display:none}
 .subrow .people{margin-top:6px}
 .hero .sub{margin:0;color:var(--muted)}
-.dates{margin:0;display:flex;align-items:baseline;gap:8px;color:var(--ink)}
-.dates span{color:var(--muted)}
 .people{flex:1 1 100%;display:flex;align-items:center;gap:6px}
 .people span{flex:1;min-width:0;text-align:center;padding:3px 4px;border-radius:999px;background:var(--who-bg);color:var(--who-ink)}
 .save.err{background:var(--s-x-bg);color:var(--s-x-ink)}
@@ -112,23 +124,33 @@ body{margin:0;background:var(--page);color:var(--ink);font-family:var(--font-gei
 
 /* ---------- overview ---------- */
 .wrap{max-width:393px;margin:0 auto;padding:0 16px}
-.overview{display:grid;grid-template-columns:1fr;gap:20px;align-items:start;margin:0 0 64px}
-.overview .col{display:grid;gap:20px;align-content:start}
-.panel{background:var(--surface);border-radius:20px;padding:22px 20px}
+.overview{display:grid;grid-template-columns:1fr;gap:16px;align-items:start;margin:0 0 48px}
+.overview .col{display:grid;gap:16px;align-content:start}
+/* let the swipeable route scroll inside its card instead of widening the column */
+.overview > *,.overview .col > *{min-width:0}
+.panel{background:var(--surface);border-radius:20px;padding:20px}
 .panel h2{margin:0 0 16px;color:var(--muted)}
 .panel-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:-6px 0 16px}
 .panel-head h2{margin:0}
-.route{display:flex;flex-wrap:wrap;align-items:center;gap:6px 4px;margin:0;padding:0;list-style:none}
-.route li{display:flex;align-items:center;gap:4px}
+/* phone: one swipeable row that bleeds to the card edges; desktop wraps (see media query) */
+.route{display:flex;flex-wrap:nowrap;align-items:center;gap:6px 4px;margin:-4px -20px;padding:4px 20px;list-style:none;overflow-x:auto;scroll-snap-type:x proximity;scroll-padding-inline:20px;scrollbar-width:none;overscroll-behavior-x:contain;
+  /* chips fade out at the card edges instead of being cut off */
+  -webkit-mask-image:linear-gradient(to right,transparent,#000 20px,#000 calc(100% - 20px),transparent);mask-image:linear-gradient(to right,transparent,#000 20px,#000 calc(100% - 20px),transparent)}
+.route::-webkit-scrollbar{display:none}
+.route li{display:flex;align-items:center;gap:4px;flex:none;scroll-snap-align:start}
 .route li+li::before{content:"→";color:var(--muted);margin:0 4px}
 .stop{display:inline-flex;align-items:center;background:var(--surface-2);border-radius:10px;transition:background .15s}
 .stop:hover{background:var(--fill)}
-.stop a{display:inline-flex;align-items:baseline;gap:6px;text-decoration:none;color:var(--ink);padding:6px 11px}
+.stop a{display:inline-flex;align-items:baseline;gap:6px;text-decoration:none;color:var(--ink);padding:10px 12px}
 .stop a small{color:var(--muted)}
 .stop a.empty{font-style:italic;color:var(--muted)}
-.stop .rm{border:0;background:none;color:var(--muted);cursor:pointer;width:32px;height:32px;padding:0;margin-left:-8px;display:grid;place-items:center;border-radius:8px}
-.stop .rm:hover{color:var(--danger)}
-.add-stop{color:var(--accent);background:none;border:1px solid var(--accent);border-radius:999px;padding:6px 14px;cursor:pointer;transition:background .15s}
+.stop.free{background:none;border:1.5px dashed var(--muted)}
+.stop.free a{padding:8.5px 10.5px}
+/* overview of unplanned days + the add button, together on the right */
+.route-foot{display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-end;gap:8px 12px;margin-top:14px}
+.route-foot[hidden]{display:none}
+.route-free{color:var(--muted);white-space:nowrap}
+.add-stop{white-space:nowrap;color:var(--accent);background:none;border:1px solid var(--accent);border-radius:999px;padding:9px 16px;cursor:pointer;transition:background .15s}
 .add-stop:hover{background:var(--accent-soft)}
 .stop-form{display:flex;flex-wrap:wrap;align-items:flex-end;gap:10px;margin-top:18px;padding:18px;border-radius:14px;background:var(--surface-2)}
 .stop-form[hidden]{display:none}
@@ -139,6 +161,19 @@ body{margin:0;background:var(--page);color:var(--ink);font-family:var(--font-gei
 .btn{border-radius:8px;padding:8px 14px;cursor:pointer;border:0;background:none;color:var(--muted)}
 .btn.primary{background:var(--accent);color:var(--on-accent)}
 .stats{display:flex;flex-direction:column;gap:14px}
+/* Zbývá: collapsible; the whole summary row is the tap target */
+.zbyva{padding:0}
+.zbyva summary{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:12px;padding:20px;cursor:pointer;list-style:none;border-radius:20px}
+.zbyva summary::-webkit-details-marker{display:none}
+.zbyva summary h2{margin:0}
+.zbyva .zb-val{justify-self:end;color:var(--ink)}
+.zb-bar{grid-column:1 / -1;display:flex;align-items:center;gap:10px}
+.zb-bar .meter{flex:1;height:8px}
+.zb-bar span{color:var(--muted);white-space:nowrap}
+.zbyva .chev,.fold .chev{flex:none;box-sizing:border-box;width:24px;height:24px;display:grid;place-items:center;border:1.5px solid currentColor;border-radius:50%;color:var(--muted);transition:transform .2s}
+.zbyva .chev::before,.fold .chev::before{content:"";width:6px;height:6px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:translateY(-1px) rotate(45deg)}
+.zbyva[open] .chev,.fold[open] .chev{transform:rotate(180deg)}
+.zb-body{display:flex;flex-direction:column;gap:12px;padding:0 20px 20px}
 .stats h2{margin:0}
 .count{display:flex;align-items:baseline;gap:8px}
 .count b{color:var(--ink)}
@@ -146,8 +181,9 @@ body{margin:0;background:var(--page);color:var(--ink);font-family:var(--font-gei
 .meter{display:flex;height:10px;border-radius:999px;overflow:hidden;background:var(--surface-2);gap:2px}
 .meter i{display:block;height:100%}
 .legend{display:flex;flex-wrap:wrap;gap:4px 14px;color:var(--muted)}
-.legend span{display:inline-flex;align-items:center;gap:6px}
-.legend span::before{content:"";width:9px;height:9px;border-radius:3px;background:var(--c)}
+.legend{gap:6px}
+.legend .sw{padding:2px 9px 2px 6px;gap:5px}
+.legend .sw .face{width:14px;height:14px}
 .cal-title{margin:0 0 12px;color:var(--muted)}
 .cal-grid{display:grid;grid-template-columns:22px repeat(7,1fr);gap:4px}
 .cal-month{writing-mode:vertical-rl;transform:rotate(180deg);display:flex;align-items:center;justify-content:center;color:var(--muted);margin:2px 0}
@@ -160,8 +196,16 @@ button.cal-day:hover{filter:brightness(.94)}
 .cal-day.s-yes{background:var(--s-yes-bg);color:var(--s-yes-ink)}
 .cal-day.s-paid{background:var(--s-paid-bg);color:var(--s-paid-ink)}
 .cal-day.s-x{background:var(--s-x-bg);color:var(--s-x-ink)}
-.cal-day[data-mark]::before{content:attr(data-mark);position:absolute;left:0;right:0;bottom:2px;font-size:9px;line-height:1;opacity:.85}
-.cal-note{display:flex;align-items:center;gap:6px;margin:12px 0 0;color:var(--muted)}
+.cal-day[data-mark]{padding-bottom:11px}
+.cal-day[data-mark]::before{content:attr(data-mark);position:absolute;left:0;right:0;bottom:3px;font-size:11px;font-weight:600;line-height:1}
+.cal-legend{display:flex;flex-wrap:wrap;gap:6px 12px;margin:12px 0 0;color:var(--muted)}
+.cal-legend > span{display:inline-flex;align-items:center;gap:5px}
+.cal-key{display:inline-grid;place-items:center;min-width:20px;height:18px;padding:0 4px;border-radius:5px;font-size:11px;font-weight:600;line-height:1}
+.cal-key.s-no{background:var(--s-no-bg);color:var(--s-no-ink)}
+.cal-key.s-yes{background:var(--s-yes-bg);color:var(--s-yes-ink)}
+.cal-key.s-paid{background:var(--s-paid-bg);color:var(--s-paid-ink)}
+.cal-key.s-x{background:var(--s-x-bg);color:var(--s-x-ink)}
+.cal-note{display:inline-flex;align-items:center;gap:6px;color:var(--muted)}
 .cal-note::before{content:"";width:5px;height:5px;border-radius:50%;background:var(--who-ink)}
 .cal-day.a2::after{content:"";position:absolute;top:4px;right:4px;width:5px;height:5px;border-radius:50%;background:var(--who-ink)}
 .cal-day.today{background:var(--danger);color:var(--on-danger)}
@@ -170,6 +214,7 @@ button.cal-day:hover{filter:brightness(.94)}
 
 /* ---------- timeline ---------- */
 .seg{position:relative;margin:0 0 24px;padding-left:28px}
+.seg:last-child{margin-bottom:0}
 .seg::before{content:"";position:absolute;left:5px;top:17px;bottom:-8px;width:2px;background:linear-gradient(var(--ink),transparent)}
 .seg-head{position:relative;display:grid;grid-template-columns:1fr auto;align-items:center;gap:2px 14px;margin:0;cursor:pointer;list-style:none;border-radius:10px}
 .seg[open] .seg-head{margin-bottom:16px}
@@ -187,8 +232,17 @@ button.cal-day:hover{filter:brightness(.94)}
 .seg[open] .chev{transform:rotate(180deg)}
 .seg.unplanned h3{color:var(--muted);font-style:italic}
 .days{display:grid;gap:16px}
+.seg-remove{justify-self:start;min-height:40px;padding:0 4px;border:0;background:none;color:var(--muted);cursor:pointer;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px;border-radius:8px}
+.seg-remove:hover{color:var(--danger)}
+.seg-confirm{display:flex;flex-direction:column;gap:10px;padding:14px 16px;border-radius:14px;background:var(--s-x-bg);color:var(--s-x-ink)}
+.seg-confirm p{margin:0}
+.seg-confirm .btns{display:flex;gap:8px}
+.btn{min-height:40px}
+.btn.danger{background:var(--danger);color:var(--on-danger)}
+.stop-warn{flex:1 1 100%;margin:0;padding:10px 12px;border-radius:10px;background:var(--s-x-bg);color:var(--s-x-ink)}
+.stop-warn[hidden]{display:none}
 
-.day{display:grid;grid-template-columns:62px 1fr;background:var(--surface);border-radius:18px;overflow:hidden}
+.day{display:grid;grid-template-columns:52px 1fr;background:var(--surface);border-radius:18px;overflow:hidden}
 .when{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:20px 6px;text-align:center}
 .when .dw{color:var(--day)}
 .when .dmon{color:var(--muted)}
@@ -212,7 +266,7 @@ button.cal-day:hover{filter:brightness(.94)}
 [contenteditable]:hover{background:var(--surface-2)}
 [contenteditable]:focus{background:var(--surface-2);box-shadow:inset 0 -2px 0 var(--accent)}
 [contenteditable]:empty::before{content:attr(data-ph);color:var(--muted);font-style:italic;text-transform:none;letter-spacing:0}
-.edit-links{color:var(--muted);background:none;border:1px solid var(--line);border-radius:999px;padding:3px 12px;cursor:pointer;transition:border-color .15s,color .15s}
+.edit-links{display:inline-flex;align-items:center;min-height:40px;color:var(--muted);background:none;border:1px solid var(--line);border-radius:999px;padding:0 14px;cursor:pointer;transition:border-color .15s,color .15s}
 .edit-links:hover{border-color:var(--ink);color:var(--ink)}
 .link-edit{display:flex;flex-direction:column;gap:6px;width:100%}
 .link-err{margin:0;color:var(--s-x-ink)}
@@ -229,21 +283,32 @@ select.fit{field-sizing:content;min-width:0}
 select option{background:var(--surface);color:var(--ink)}
 
 /* ---------- faq ---------- */
-.faq{margin:96px 0 0;padding:0 0 calc(48px + env(safe-area-inset-bottom,0px))}
-.faq .sec-head{margin-bottom:24px}
+.faq{margin:48px 0 0}
 .faq details{background:var(--surface);border-radius:16px;margin-bottom:8px}
-.faq summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:12px;padding:18px 22px}
+.faq summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:12px;min-height:52px;padding:14px 18px}
 .faq summary::-webkit-details-marker{display:none}
 .faq summary::after{content:"+";margin-left:auto;font-size:20px;line-height:1;color:var(--muted)}
 .faq details[open] summary::after{content:"−"}
-.faq .a{padding:0 22px 20px 18px;color:var(--ink)}
+.faq .a{padding:0 18px 18px;color:var(--ink)}
 .faq .a p{margin:0 0 8px}
 .faq .a p:last-child{margin-bottom:0}
 .faq .ui{color:var(--accent)}
 .faq code{background:var(--surface-2);border-radius:6px;padding:3px 7px;overflow-wrap:anywhere}
 .faq-status{list-style:none;margin:0 0 10px;padding:0;display:grid;gap:8px}
-.faq-status li{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px}
-.sw{border-radius:999px;padding:3px 12px;white-space:nowrap}
+.faq-status li{display:grid;grid-template-columns:10em 1fr;align-items:center;gap:12px}
+.faq-status .sw{justify-self:start}
+.faq .steps{margin:0;padding-left:20px;display:grid;gap:8px}
+.faq .steps code{display:inline-block;margin-top:6px}
+.sw{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:3px 12px;white-space:nowrap}
+.face{width:16px;height:16px;flex:none}
+/* status <select> with its face drawn inside the pill */
+.stav-pick{position:relative;display:inline-flex;align-items:center}
+.stav-pick .face{position:absolute;left:10px;pointer-events:none}
+.stav-pick.has-face select{padding-left:31px}
+.stav-pick.s-no{color:var(--s-no-ink)}
+.stav-pick.s-yes{color:var(--s-yes-ink)}
+.stav-pick.s-paid{color:var(--s-paid-ink)}
+.stav-pick.s-x{color:var(--s-x-ink)}
 .sw.s-no{background:var(--s-no-bg);color:var(--s-no-ink)}
 .sw.s-yes{background:var(--s-yes-bg);color:var(--s-yes-ink)}
 .sw.s-paid{background:var(--s-paid-bg);color:var(--s-paid-ink)}
@@ -261,14 +326,25 @@ select option{background:var(--surface);color:var(--ink)}
 @media (min-width:760px){
   .hero-in,.wrap{max-width:1040px}
   .hero-in,.wrap{padding:0 24px}
-  .subrow .sub,.subrow .dates{flex:0 1 auto}
-  .subrow .people{margin-top:0}
+  .subrow{display:flex}
+  .subrow .sub{flex:0 1 auto}
+  .hero{padding:calc(env(safe-area-inset-top,0px) + 56px) 0 48px}
+  .subrow{margin-top:18px}
+  .subrow .sub{display:block}
+  .subrow .people{display:flex;margin-top:0}
   .people{flex:0 1 auto;flex-wrap:wrap}
   .people span{flex:none;padding:3px 12px}
   /* text-heading-72 values; the scale classes are not responsive on their own */
   .hero h1{font:600 72px/72px var(--font-geist-sans);letter-spacing:-4.32px}
   .overview{grid-template-columns:1.35fr 1fr}
   .panel{padding:28px}
+  .route{flex-wrap:wrap;overflow:visible;margin:0;padding:0;-webkit-mask-image:none;mask-image:none}
+  .zbyva{padding:0}
+  .zbyva summary{padding:24px 28px}
+  .zb-body{padding:0 28px 28px}
+  /* desktop: always open, nothing to toggle */
+  .zbyva summary{cursor:default}
+  .zbyva .chev{display:none}
   .day{grid-template-columns:84px 1fr}
   .body{padding:20px 24px 22px 4px}
   .seg{padding-left:34px}
@@ -276,99 +352,386 @@ select option{background:var(--surface);color:var(--ink)}
   .seg-head::before{left:-34px}
   .lbl{min-width:82px;width:auto}
   .row.meta .lbl{display:inline}
-  .faq .a{padding-left:22px}
+  .faq summary{padding:18px 22px}
+  .faq .a{padding:0 22px 20px}
+}
+/* phones: 16px in fields people type into or pick from, otherwise iPhone Safari zooms the page */
+.stop-form input,.stop-form select,.meta select,.link-edit textarea{font-size:16px}
+/* status / who pills: 40px tall tap targets */
+.meta select{min-height:40px;padding-top:0;padding-bottom:0}
+.notes{font-size:16px;line-height:24px}
+.lok{font-size:16px;line-height:22px;letter-spacing:.02em}
+@media (min-width:760px){
+  .stop-form input,.stop-form select,.meta select{font-size:14px}
+  .link-edit textarea{font-size:13px}
+  .notes{font-size:14px;line-height:20px}
+  .lok{font-size:12px;line-height:16px;letter-spacing:.06em}
+}
+/* ---------- screens + navbar ---------- */
+.screen{padding-bottom:32px}
+/* loading placeholders, shown until the itinerary arrives */
+.skel{display:block;background:var(--fill);border-radius:10px;animation:skel 1.4s ease-in-out infinite}
+.route li.skel{height:40px;flex:none}
+.route li.skel::before{content:none}
+.skel-cal{height:280px}
+.skel-row{height:56px;margin-bottom:24px}
+.skel-card{height:180px;border-radius:20px}
+@keyframes skel{50%{opacity:.45}}
+.screen[hidden]{display:none}
+.screen:focus{outline:none}
+/* phone: bottom bar, always visible. desktop (below): sits in the header */
+.nav{position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--page);padding-bottom:env(safe-area-inset-bottom,0px)}
+.nav::before{content:"";position:absolute;left:0;right:0;bottom:100%;height:28px;background:linear-gradient(to top,var(--page),color-mix(in srgb,var(--page) 0%,transparent));pointer-events:none}
+.nav-in{display:grid;grid-template-columns:repeat(4,1fr);max-width:520px;margin:0 auto}
+.nav a{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-height:56px;padding:6px 4px;color:var(--muted);text-decoration:none;-webkit-tap-highlight-color:transparent}
+.nav svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
+.nav a[aria-current="page"]{color:var(--accent)}
+body{padding-bottom:calc(56px + env(safe-area-inset-bottom,0px))}
+.toast{bottom:calc(68px + env(safe-area-inset-bottom,0px))}
+/* other screens: compact header */
+body[data-screen]:not([data-screen="domu"]) .hero{padding-bottom:20px}
+body[data-screen]:not([data-screen="domu"]) .subrow{display:none}
+.lead{margin:0 0 16px;color:var(--muted)}
+.pre{white-space:pre-wrap;overflow-wrap:anywhere}
+.muted{color:var(--muted)}
+.sw.who{background:var(--who-bg);color:var(--who-ink)}
+
+/* Dnes */
+.today{display:grid;gap:16px}
+.today-card{display:flex;flex-direction:column;gap:12px}
+.today-card p{margin:0}
+.today-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+.today-card .today-head h2{margin:0}
+.today-stay{display:flex;flex-direction:column;gap:8px}
+.today-stay .lbl{width:auto}
+.today-card .edit-links{align-self:flex-start}
+
+/* Slovník */
+.dict-search{display:block;width:100%;margin:0 0 8px;padding:12px 16px;border:0;border-radius:12px;background:var(--surface);color:var(--ink);outline:0}
+.dict-search::placeholder{color:var(--muted)}
+.dict-group{margin:0 0 24px}
+.dict-group:last-child{margin-bottom:0}
+.pron{margin:-8px 0 12px;color:var(--muted)}
+.pron summary{display:inline-flex;align-items:center;min-height:40px;color:var(--accent);cursor:pointer;list-style:none}
+.pron summary::-webkit-details-marker{display:none}
+.pron summary::after{content:"▾";margin-left:6px}
+.pron[open] summary::after{content:"▴"}
+.pron p{margin:0 0 4px}
+/* search + section shortcuts stay at the top while scrolling */
+.dict-bar{position:sticky;top:0;z-index:5;margin:0 -16px 16px;padding:8px 16px;background:var(--page)}
+.dict-bar::after{content:"";position:absolute;left:0;right:0;top:100%;height:16px;background:linear-gradient(var(--page),color-mix(in srgb,var(--page) 0%,transparent));pointer-events:none}
+.dict-jump{display:flex;gap:6px;overflow-x:auto;margin:0 -16px;padding:0 16px;scrollbar-width:none;-webkit-mask-image:linear-gradient(to right,transparent,#000 16px,#000 calc(100% - 16px),transparent);mask-image:linear-gradient(to right,transparent,#000 16px,#000 calc(100% - 16px),transparent)}
+.dict-jump::-webkit-scrollbar{display:none}
+.dict-jump[hidden]{display:none}
+.dict-jump button{flex:none;min-height:40px;padding:0 14px;border:0;border-radius:999px;background:var(--surface);color:var(--ink);cursor:pointer}
+.phrase{cursor:pointer;transition:background .15s}
+.phrase:hover{background:var(--fill)}
+.phrase:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+/* full-screen phrase */
+.show{position:fixed;inset:0;z-index:50;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:24px 24px calc(96px + env(safe-area-inset-bottom,0px));background:var(--page);text-align:center;cursor:pointer}
+.show[hidden]{display:none}
+.show p{margin:0;max-width:100%}
+.show-cs{color:var(--muted)}
+.show-th{font-weight:600;line-height:1.5;color:var(--ink);overflow-wrap:anywhere}
+.show-rom{color:var(--accent)}
+.show-close{position:absolute;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);min-height:44px;padding:0 24px;border:1px solid var(--line);border-radius:999px;background:var(--surface);color:var(--ink);cursor:pointer}
+.dict-group h3{margin:0 0 10px;color:var(--muted)}
+.phrases{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:8px}
+.phrase{background:var(--surface);border-radius:14px;padding:12px 16px;display:grid;align-content:start;gap:2px;min-width:0;overflow-wrap:anywhere}
+.phrase.full{grid-column:span 12}
+.phrase.half{grid-column:span 6}
+.phrase.third{grid-column:span 4;padding:12px}
+.phrase.num{grid-column:span 3;padding:10px 12px}
+.phrase.num .th{font-size:22px}
+.phrase.em{background:var(--s-x-bg)}
+.phrase.em .cs,.phrase.em .rom{color:var(--s-x-ink)}
+.phrase.em .th{font-size:32px}
+.phrase .cs{color:var(--muted)}
+.phrase .th{font-size:24px;line-height:1.6;color:var(--ink)}
+.phrase .rom{color:var(--accent)}
+.dict-empty{margin:0;color:var(--muted)}
+
+/* Dobré vědět */
+.info{display:grid;gap:16px}
+.info .panel h2{margin:0 0 12px}
+.fold{padding:0}
+.fold summary{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:20px;cursor:pointer;list-style:none;border-radius:20px}
+.fold summary::-webkit-details-marker{display:none}
+.info .fold summary h2{margin:0}
+.fold .facts{margin:0 20px 20px}
+.facts a{color:var(--accent);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px;overflow-wrap:anywhere}
+.call{display:flex;align-items:center;justify-content:space-between;min-height:48px;color:var(--ink);text-decoration:none;border-top:1px solid var(--line)}
+.call:first-of-type{border-top:0}
+.call b{color:var(--accent)}
+.facts{margin:0;padding-left:18px;display:grid;gap:8px}
+
+@media (min-width:760px){
+  .nav{position:static;z-index:auto;margin-top:28px;background:none;padding-bottom:0}
+  .nav::before{display:none}
+  .nav-in{display:flex;gap:8px;max-width:1040px;padding:0 24px}
+  .nav a{flex-direction:row;gap:8px;min-height:0;padding:8px 16px;border-radius:999px;background:var(--surface);transition:background .15s,color .15s}
+  .nav a:hover{color:var(--ink)}
+  .nav a[aria-current="page"]{background:var(--accent-soft);color:var(--accent)}
+  .nav svg{width:18px;height:18px}
+  .nav a span{font:500 14px/20px var(--font-geist-sans)}
+  body{padding-bottom:env(safe-area-inset-bottom,0px)}
+  .toast{bottom:calc(16px + env(safe-area-inset-bottom,0px))}
+  body[data-screen]:not([data-screen="domu"]) .hero{padding-bottom:28px}
+  .dict-bar{margin:0 -24px 16px;padding:8px 24px}
+  .dict-jump{margin:0 -24px;padding:0 24px}
+  .phrase.full{grid-column:span 12}
+  .phrase.half{grid-column:span 3}
+  .phrase.third{grid-column:span 4}
+  .phrase.num{grid-column:span 2}
+  .info{grid-template-columns:repeat(2,1fr);align-items:start}
+  .fold{padding:0}
+  .fold summary{padding:24px 28px}
+  .fold .facts{margin:0 28px 28px}
+}
+/* very narrow screens (< 360px): stack instead of squeezing side by side */
+@media (max-width:359px){
+  .zbyva summary{grid-template-columns:1fr auto}
+  .zbyva summary h2{grid-column:1;grid-row:1}
+  .zbyva .chev{grid-column:2;grid-row:1}
+  .zbyva .zb-val{grid-column:1 / -1;grid-row:2;justify-self:start}
+  .faq-status li{grid-template-columns:1fr;gap:4px}
 }
 /* keyboard focus, everywhere */
 button:focus-visible,select:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,summary:focus-visible,[contenteditable]:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 </style>
 </head>
 <body class="text-copy-16">
+<!-- status faces: one colour (currentColor), used by every status pill -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="face-s-no" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="8" cy="8" r="6.75"/><path d="M4.9 5.3 6.8 6.2M11.1 5.3 9.2 6.2"/><circle cx="6" cy="7.9" r=".95" fill="currentColor" stroke="none"/><circle cx="10" cy="7.9" r=".95" fill="currentColor" stroke="none"/><path d="M5.6 11.6c1.3-1.2 3.5-1.2 4.8 0"/></symbol>
+  <symbol id="face-s-yes" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="8" cy="8" r="6.75"/><circle cx="6" cy="6.6" r=".95" fill="currentColor" stroke="none"/><circle cx="10" cy="6.6" r=".95" fill="currentColor" stroke="none"/><path d="M5.3 9.5c1.5 1.7 3.9 1.7 5.4 0"/></symbol>
+  <symbol id="face-s-paid" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="8" cy="8" r="6.75"/><circle cx="6" cy="6.3" r=".95" fill="currentColor" stroke="none"/><circle cx="10" cy="6.3" r=".95" fill="currentColor" stroke="none"/><path d="M4.9 8.9h6.2a3.1 3.1 0 0 1-6.2 0z" fill="currentColor" stroke-linejoin="round"/></symbol>
+  <symbol id="face-s-x" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="8" cy="8" r="6.75"/><path d="M4.9 6.2 6.8 5.3M11.1 6.2 9.2 5.3"/><circle cx="6" cy="7.9" r=".95" fill="currentColor" stroke="none"/><circle cx="10" cy="7.9" r=".95" fill="currentColor" stroke="none"/><path d="M5.6 11.6c1.3-1.2 3.5-1.2 4.8 0"/></symbol>
+</svg>
 <header class="hero">
   <div class="hero-in">
     <h1 class="text-heading-40">Hello <span>Thailand!</span> 2027</h1>
     <div class="subrow">
       <p class="sub text-copy-20">Official Tourist Guide™</p>
-      <p class="dates text-label-14 tabular-nums" id="dates"><strong>14. 2. – 17. 3. 2027</strong><span>32 dní</span></p>
-      <div class="people"><span class="text-label-14"><strong>Maty</strong></span><span class="text-label-14"><strong>Lucie</strong></span><span class="text-label-14"><strong>Jasan</strong></span><span class="text-label-14" title="A²"><strong>Špony</strong></span><span class="text-label-14" title="A²"><strong>Adéla</strong></span></div>
+      <div class="people"><span class="text-label-14" title="A²"><strong>Adéla</strong></span><span class="text-label-14"><strong>Jasan</strong></span><span class="text-label-14"><strong>Lucie</strong></span><span class="text-label-14"><strong>Maty</strong></span><span class="text-label-14" title="A²"><strong>Špony</strong></span></div>
     </div>
   </div>
+  <nav class="nav" aria-label="Hlavní navigace"><div class="nav-in">
+    <a href="#/domu" data-screen="domu"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v9.5h13V10"/><path d="M9.5 19.5V14h5v5.5"/></svg><span class="text-label-12">Domů</span></a>
+    <a href="#/dnes" data-screen="dnes"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="3"/><path d="M3.5 10h17M8 3v4M16 3v4"/><circle cx="12" cy="15" r="1.4" fill="currentColor" stroke="none"/></svg><span class="text-label-12">Dnes</span></a>
+    <a href="#/slovnik" data-screen="slovnik"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5h16v10H12l-4.5 3.5v-3.5H4z"/><path d="M8 9.5h8M8 12h5"/></svg><span class="text-label-12">Slovník</span></a>
+    <a href="#/prakticke" data-screen="prakticke"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 11v5.5"/><circle cx="12" cy="7.9" r="1" fill="currentColor" stroke="none"/></svg><span class="text-label-12">Dobré vědět</span></a>
+  </div></nav>
 </header>
 <main class="wrap">
+<section class="screen" data-screen="domu" id="screen-domu" tabindex="-1">
   <section class="overview">
     <div class="col">
     <div class="panel">
-      <div class="panel-head"><h2 class="text-label-12 caps"><strong>Trasa</strong></h2><button type="button" class="add-stop text-button-14" id="addStop" hidden>+ Přidat zastávku</button></div>
-      <ol class="route" id="route"></ol>
+      <div class="panel-head"><h2 class="text-label-12 caps"><strong>Trasa</strong></h2></div>
+      <ol class="route" id="route"><li class="skel" style="width:128px"></li><li class="skel" style="width:136px"></li><li class="skel" style="width:96px"></li></ol>
+      <div class="route-foot" id="routeFoot" hidden><span class="route-free text-label-14 tabular-nums" id="freeLink"></span><button type="button" class="add-stop text-button-14" id="addStop" hidden>+ Přidat zastávku</button></div>
       <form class="stop-form" id="stopForm" hidden>
         <label class="text-label-13">Místo<input class="text-label-14" id="stopName" required placeholder="např. Chiang Mai"></label>
         <label class="text-label-13">Od<select class="text-label-14" id="stopFrom"></select></label>
         <label class="text-label-13">Do<select class="text-label-14" id="stopTo"></select></label>
-        <div class="btns"><button type="submit" class="btn primary text-button-14">Uložit</button><button type="button" class="btn text-button-14" id="stopCancel">Zrušit</button></div>
+        <p class="stop-warn text-copy-14" id="stopWarn" role="alert" hidden></p>
+        <div class="btns"><button type="submit" class="btn primary text-button-14" id="stopSave">Uložit</button><button type="button" class="btn text-button-14" id="stopCancel">Zrušit</button></div>
       </form>
     </div>
-      <div class="panel stats" id="stats"></div>
+      <details class="panel zbyva" id="stats"><summary><h2 class="text-label-12 caps"><strong>Zbývá</strong></h2></summary></details>
     </div>
-    <div class="panel" id="calendar"></div>
+    <div class="panel" id="calendar"><span class="skel skel-cal"></span></div>
   </section>
   <header class="sec-head"><h2 class="text-heading-32">Itinerář</h2></header>
-  <div id="timeline"></div>
+  <div id="timeline"><span class="skel skel-row"></span><span class="skel skel-row"></span><span class="skel skel-row"></span></div>
+</section>
+
+<section class="screen" data-screen="dnes" id="screen-dnes" tabindex="-1" hidden>
+  <header class="sec-head"><h2 class="text-heading-32">Dnes</h2></header>
+  <div class="today" id="today"><span class="skel skel-card"></span><span class="skel skel-card"></span></div>
+</section>
+
+<section class="screen" data-screen="slovnik" id="screen-slovnik" tabindex="-1" hidden>
+  <header class="sec-head"><h2 class="text-heading-32">Slovník</h2></header>
+  <p class="lead text-copy-14">Ťukněte na frázi a ukažte ji na celé obrazovce.</p>
+  <details class="pron text-copy-14"><summary>Jak číst výslovnost</summary><p>Výslovnost je přepsaná česky a jen orientačně, bez tónů. Písmena kh, ph a th jsou k, p a t s lehkým výdechem. Na konec věty muži dodávají <strong>khráp</strong> (ครับ), ženy <strong>khá</strong> (ค่ะ).</p></details>
+  <div class="dict-bar" id="dictBar">
+    <input type="search" class="dict-search text-copy-16" id="dictSearch" placeholder="Hledat česky nebo thajsky…" aria-label="Hledat ve slovníku" autocomplete="off">
+    <nav class="dict-jump" id="dictJump" aria-label="Sekce slovníku"></nav>
+  </div>
+  <div id="dict"></div>
+</section>
+
+<section class="screen" data-screen="prakticke" id="screen-prakticke" tabindex="-1" hidden>
+  <header class="sec-head"><h2 class="text-heading-32">Dobré vědět</h2></header>
+  <div class="info">
+    <div class="panel">
+      <h2 class="text-label-12 caps"><strong>Tísňová volání</strong></h2>
+      <a class="call text-copy-16" href="tel:1155"><span>Turistická policie (anglicky)</span><b class="tabular-nums">1155</b></a>
+      <a class="call text-copy-16" href="tel:191"><span>Policie</span><b class="tabular-nums">191</b></a>
+      <a class="call text-copy-16" href="tel:1669"><span>Záchranná služba</span><b class="tabular-nums">1669</b></a>
+      <a class="call text-copy-16" href="tel:199"><span>Hasiči</span><b class="tabular-nums">199</b></a>
+    </div>
+    <!-- open until departure, collapsed once the trip starts -->
+    <details class="panel fold" id="beforeTrip" open>
+      <summary><h2 class="text-label-12 caps"><strong>Před odletem</strong></h2><span class="chev" aria-hidden="true"></span></summary>
+      <ul class="facts text-copy-16">
+        <li><strong>Pozor na vízum:</strong> bez víza teď můžeme zůstat 60 dní, ale thajská vláda mluví o zkrácení na 30. Cesta má 32 dní, takže si to před odletem ověřte na webu <a href="https://mzv.gov.cz/jnp/cz/encyklopedie_statu/asie/thajsko/cestovani/index.html" target="_blank" rel="noopener">MZV ČR</a>.</li>
+        <li><strong>Příletová karta TDAC:</strong> vyplňuje se zdarma na <a href="https://tdac.immigration.go.th/" target="_blank" rel="noopener">tdac.immigration.go.th</a>, nejdřív 3 dny před příletem. Pozor na podvodné weby, které za ni chtějí peníze.</li>
+        <li><strong>Pas:</strong> musí platit ještě aspoň 6 měsíců po příletu.</li>
+        <li><strong>Pojištění:</strong> cestovní pojištění a kopie dokladů v telefonu.</li>
+      </ul>
+    </details>
+    <details class="panel fold">
+      <summary><h2 class="text-label-12 caps"><strong>Peníze</strong></h2><span class="chev" aria-hidden="true"></span></summary>
+      <ul class="facts text-copy-16">
+        <li><strong>Měna:</strong> thajský baht (THB, ฿).</li>
+        <li><strong>Hotovost:</strong> na ostrovech se platí hlavně hotově.</li>
+        <li><strong>Bankomaty:</strong> za výběr si berou kolem 220 ฿, takže vybírejte víc najednou.</li>
+        <li><strong>Převod na koruny:</strong> když ho terminál nebo bankomat nabídne, odmítněte a plaťte v bahtech.</li>
+        <li><strong>Spropitné:</strong> nečeká se, ale potěší.</li>
+      </ul>
+    </details>
+    <details class="panel fold">
+      <summary><h2 class="text-label-12 caps"><strong>Doprava</strong></h2><span class="chev" aria-hidden="true"></span></summary>
+      <ul class="facts text-copy-16">
+        <li><strong>Taxi:</strong> přes aplikace Grab nebo Bolt, cenu vidíte předem. V běžném taxíku trvejte na taxametru.</li>
+        <li><strong>Lodě:</strong> mezi Krabi a Koh Lantou jezdí trajekty a minivany, na pláže longtail lodě.</li>
+        <li><strong>Podvod s tuk-tukem:</strong> když řidič tvrdí, že chrám je dnes zavřený, a nabízí jinou cestu, skončíte v obchodě.</li>
+      </ul>
+    </details>
+    <details class="panel fold">
+      <summary><h2 class="text-label-12 caps"><strong>Zdraví a podnebí</strong></h2><span class="chev" aria-hidden="true"></span></summary>
+      <ul class="facts text-copy-16">
+        <li><strong>Počasí:</strong> únor a březen jsou období sucha, kolem 30–34 °C.</li>
+        <li><strong>Slunce:</strong> pálí i přes mraky, opalovací krém je nutnost.</li>
+        <li><strong>Komáři:</strong> repelent kvůli horečce dengue.</li>
+        <li><strong>Moře:</strong> Andamanské moře je klidné, ideální na výlety lodí. Červená vlajka znamená silné proudy, nekoupat.</li>
+        <li><strong>Medúzy:</strong> na některých plážích jsou stojany s octem na popálení.</li>
+        <li><strong>Jídlo:</strong> street food je v pohodě tam, kde jedí místní.</li>
+      </ul>
+    </details>
+    <details class="panel fold">
+      <summary><h2 class="text-label-12 caps"><strong>Tabu</strong></h2><span class="chev" aria-hidden="true"></span></summary>
+      <ul class="facts text-copy-16">
+        <li><strong>Chrámy:</strong> zakrytá ramena a kolena, u vstupu se zujte.</li>
+        <li><strong>Nohy a hlava:</strong> nemiřte nohama na lidi ani na sochy Buddhy a nedotýkejte se cizí hlavy.</li>
+        <li><strong>Mniši:</strong> ženy by se jich neměly dotýkat ani jim nic podávat přímo do ruky.</li>
+        <li><strong>Ladyboys (kathoey):</strong> nesmějte se jim a nefoťte je bez svolení. V Thajsku jsou normální součástí společnosti.</li>
+        <li><strong>Bankovky:</strong> nešlapejte na ně, je na nich král.</li>
+      </ul>
+    </details>
+    <details class="panel fold">
+      <summary><h2 class="text-label-12 caps"><strong>Zákony a pokuty</strong></h2><span class="chev" aria-hidden="true"></span></summary>
+      <ul class="facts text-copy-16">
+        <li><strong>Monarchie:</strong> o královské rodině nemluvte hanlivě, v Thajsku je to trestné.</li>
+        <li><strong>Vape:</strong> elektronické cigarety jsou nelegální, i jen je mít u sebe. Pokuty jsou vysoké.</li>
+        <li><strong>Kouření na plážích:</strong> na mnoha plážích je zakázané, hrozí pokuta.</li>
+        <li><strong>Konopí:</strong> pravidla se v roce 2025 zpřísnila, raději ho vůbec neřešte.</li>
+        <li><strong>Alkohol:</strong> v obchodech (7-Eleven apod.) se prodává jen 11–14 a 17–24 h.</li>
+        <li><strong>Svátky:</strong> o buddhistických svátcích se alkohol neprodává vůbec. Jeden z nich, Makha Bucha, připadá na únor nebo březen; datum pro rok 2027 si ověřte před cestou.</li>
+      </ul>
+    </details>
+    <details class="panel fold">
+      <summary><h2 class="text-label-12 caps"><strong>Základní údaje</strong></h2><span class="chev" aria-hidden="true"></span></summary>
+      <ul class="facts text-copy-16">
+        <li><strong>Časový posun:</strong> +6 hodin oproti Česku (po dobu našeho pobytu).</li>
+        <li><strong>Elektřina:</strong> 230 V. Ploché dvoukolíkové nabíječky obvykle sedí, na velké kulaté vidlice s ochranným kolíkem vezměte redukci.</li>
+        <li><strong>Voda:</strong> z kohoutku se nepije, kupujte balenou.</li>
+        <li><strong>Mobil:</strong> turistická eSIM nebo SIM karta na letišti (AIS, True) je levná a hned vám pojede Grab i mapy.</li>
+      </ul>
+    </details>
+  </div>
   <section class="faq" id="faq">
     <header class="sec-head"><h2 class="text-heading-32">Jak to funguje</h2></header>
     <details>
-      <summary class="text-label-16"><strong>Jak upravím program, místo nebo poznámky?</strong></summary>
-      <div class="a text-copy-16"><p>Rozbalte místo v časové ose a klikněte do textu u konkrétního dne – do názvu místa, programu nebo poznámek – a pište. Nic dalšího není potřeba: změny se po chvíli uloží samy.</p>
-      <p>Jak to vypadá s ukládáním, ukazuje štítek vpravo nahoře v záhlaví: <strong class="ui">Neuložené změny…</strong>, <strong class="ui">Ukládám…</strong> a nakonec <strong class="ui">Uloženo</strong>.</p></div>
+      <summary class="text-label-16"><strong>Jak něco upravím?</strong></summary>
+      <div class="a text-copy-16"><p>Rozbalte místo v itineráři, ťukněte do textu u dne a pište. Upravit jde místo, program i poznámky.</p>
+      <p>Ukládá se to samo. Jak to vypadá, ukazuje štítek dole na obrazovce: <strong class="ui">Ukládám…</strong> a pak <strong class="ui">Uloženo</strong>.</p></div>
     </details>
     <details>
-      <summary class="text-label-16"><strong>Uvidí ostatní moje změny?</strong></summary>
-      <div class="a text-copy-16"><p>Ano, hned a bez obnovování stránky. Pokud zrovna píšete vy, stránka s překreslením počká, až dopíšete, aby vám nic nezmizelo pod rukama.</p>
-      <p>Když dva lidé upravují stejné políčko zároveň, platí ta změna, která se uložila jako poslední.</p></div>
+      <summary class="text-label-16"><strong>Uvidí to ostatní hned?</strong></summary>
+      <div class="a text-copy-16"><p>Ano, bez obnovování stránky. Když zrovna píšete, stránka počká, až dopíšete.</p>
+      <p>Když dva píšou do stejného políčka, platí to, co se uložilo poslední.</p></div>
     </details>
     <details>
       <summary class="text-label-16"><strong>Jak přidám odkaz na ubytování?</strong></summary>
-      <div class="a text-copy-16"><p>U dne klikněte na <strong class="ui">+ Přidat odkaz</strong> (nebo <strong class="ui">Upravit odkazy</strong>, pokud už nějaký je). Vložte jeden odkaz na řádek, volitelně s popiskem před svislou čarou:</p>
-      <p><code class="text-copy-13-mono">a) Hotel u pláže | https://www.booking.com/…</code></p>
-      <p>Potvrďte tlačítkem <strong class="ui">Hotovo</strong>. Bez popisku se zobrazí jen název webu.</p></div>
+      <div class="a text-copy-16"><ol class="steps">
+        <li>U dne ťukněte na <strong class="ui">+ Přidat odkaz</strong>.</li>
+        <li>Vložte odkazy, každý na nový řádek. Popisek napište před svislou čáru:<br><code class="text-copy-13-mono">Hotel u pláže | https://…</code></li>
+        <li>Potvrďte <strong class="ui">Hotovo</strong>.</li>
+      </ol></div>
     </details>
     <details>
-      <summary class="text-label-16"><strong>Co znamenají barvy u stavu rezervace?</strong></summary>
+      <summary class="text-label-16"><strong>Co znamenají barvy?</strong></summary>
       <div class="a text-copy-16"><ul class="faq-status">
-        <li><span class="sw s-no text-label-14"><strong>Nerezervováno! &gt;:(</strong></span>ubytování ještě nikdo nezajistil</li>
-        <li><span class="sw s-yes text-label-14"><strong>Rezervováno. :)</strong></span>je zarezervováno, ale ještě nezaplaceno</li>
-        <li><span class="sw s-paid text-label-14"><strong>Zaplaceno! :D</strong></span>hotovo a zaplaceno</li>
-        <li><span class="sw s-x text-label-14"><strong>Zrušeno! &lt;:(</strong></span>rezervace byla zrušena</li>
+        <li><span class="sw s-no text-label-14"><svg class="face" aria-hidden="true"><use href="#face-s-no"/></svg><strong>Nerezervováno</strong></span>zatím to nikdo nezařídil</li>
+        <li><span class="sw s-yes text-label-14"><svg class="face" aria-hidden="true"><use href="#face-s-yes"/></svg><strong>Rezervováno</strong></span>zamluveno, ale nezaplaceno</li>
+        <li><span class="sw s-paid text-label-14"><svg class="face" aria-hidden="true"><use href="#face-s-paid"/></svg><strong>Zaplaceno</strong></span>hotovo</li>
+        <li><span class="sw s-x text-label-14"><svg class="face" aria-hidden="true"><use href="#face-s-x"/></svg><strong>Zrušeno</strong></span>rezervace padla</li>
       </ul>
-      <p>Vedle stavu vyberte v modrém štítku, kdo rezervaci zařídil. Stejné barvy uvidíte i v kalendáři a v přehledu nahoře.</p></div>
+      <p>V kalendáři mají dny stejné barvy. Fialová tečka znamená, že je s námi A². Ťuknutím na den v kalendáři na něj skočíte.</p></div>
     </details>
     <details>
-      <summary class="text-label-16"><strong>Jak přidám nebo odeberu zastávku na trase?</strong></summary>
-      <div class="a text-copy-16"><p><strong>Přidání:</strong> v kartě Trasa klikněte na <strong class="ui">+ Přidat zastávku</strong>, napište místo a vyberte, od kterého do kterého dne tam budeme. Tlačítko zmizí, jakmile mají všechny dny cesty nějaké místo.</p>
-      <p><strong>Odebrání:</strong> klikněte na <strong class="ui">×</strong> u zastávky. Dnům se smaže jen místo – program, ubytování i poznámky zůstanou.</p>
-      <p>Poslední položka trasy („21 dní zbývá“ apod.) ukazuje, kolik dní ještě nemá místo.</p></div>
+      <summary class="text-label-16"><strong>Jak upravím trasu?</strong></summary>
+      <div class="a text-copy-16"><p><strong>Přidat:</strong> v kartě Trasa ťukněte na <strong class="ui">+ Přidat zastávku</strong>, napište místo a vyberte dny.</p>
+      <p><strong>Odebrat:</strong> rozbalte místo v itineráři a dole ťukněte na <strong class="ui">Odebrat zastávku</strong>. Smaže se jen místo, program a ubytování zůstanou.</p></div>
     </details>
     <details>
-      <summary class="text-label-16"><strong>Jak funguje kalendář?</strong></summary>
-      <div class="a text-copy-16"><p>Kalendář ukazuje všechny dny cesty, obarvené podle stavu rezervace. Fialová tečka označuje dny, kdy je s námi A². Značka dole v políčku ukazuje stav i bez barev: <strong class="ui">!</strong> nerezervováno, <strong class="ui">✓</strong> rezervováno, <strong class="ui">✓✓</strong> zaplaceno, <strong class="ui">×</strong> zrušeno.</p>
-      <p>Po kliknutí na den se rozbalí příslušné místo a stránka sjede přímo k tomu dni.</p></div>
+      <summary class="text-label-16"><strong>Co když se něco neuloží?</strong></summary>
+      <div class="a text-copy-16"><p>Štítek dole zčervená. Ťukněte vedle něj na <strong class="ui">Zkusit znovu</strong>. Když to nepomůže, zkontrolujte připojení.</p></div>
     </details>
     <details>
-      <summary class="text-label-16"><strong>Proč jsou místa v časové ose sbalená?</strong></summary>
-      <div class="a text-copy-16"><p>Aby byla stránka přehledná. Místo rozbalíte i sbalíte kliknutím na jeho název nebo šipku vpravo.</p>
-      <p>Dny se do míst seskupují samy podle toho, co je napsané v poli místa. Když dni místo přepíšete, přesune se po dopsání do správné skupiny.</p></div>
-    </details>
-    <details>
-      <summary class="text-label-16"><strong>Co dělat, když se změna neuloží?</strong></summary>
-      <div class="a text-copy-16"><p>Štítek v záhlaví v tom případě zčervená a ukáže <strong class="ui">Uložení se nepovedlo</strong>. Vedle něj klikněte na <strong class="ui">Zkusit znovu</strong> – neuložené změny se odešlou znovu. Pokud to nepomůže, zkontrolujte připojení k internetu.</p></div>
-    </details>
-    <details>
-      <summary class="text-label-16"><strong>Funguje to i na mobilu?</strong></summary>
-      <div class="a text-copy-16"><p>Ano, stránka je přizpůsobená telefonu. Tip: v prohlížeči zvolte <strong class="ui">Přidat na plochu</strong> a budete mít plán po ruce jako aplikaci.</p></div>
+      <summary class="text-label-16"><strong>Jde to mít v telefonu jako aplikaci?</strong></summary>
+      <div class="a text-copy-16"><p>Ano. Na iPhonu v Safari ťukněte na <strong class="ui">Sdílet</strong> a pak <strong class="ui">Přidat na plochu</strong>. Na Androidu v Chromu otevřete menu <strong class="ui">⋮</strong> a zvolte <strong class="ui">Přidat na plochu</strong>.</p></div>
     </details>
   </section>
+</section>
 </main>
+<!-- Slovník: one phrase full screen, to show to a driver or waiter -->
+<div class="show" id="show" role="dialog" aria-modal="true" aria-label="Fráze na celé obrazovce" hidden>
+  <p class="show-cs text-label-16" id="showCs"></p>
+  <p class="show-th" id="showTh" lang="th"></p>
+  <p class="show-rom text-copy-20" id="showRom"></p>
+  <button type="button" class="show-close text-button-16" id="showClose">Zavřít</button>
+</div>
 <!-- save status floats above the page so it is visible wherever you edit -->
 <div class="toast" id="toast"><span class="save text-label-13" id="save" role="status" aria-live="polite">Načítám…</span><button type="button" class="retry text-button-14" id="retry" hidden>Zkusit znovu</button></div>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script>
+// ====== screens: #/domu, #/dnes, #/slovnik, #/prakticke ======
+(function(){
+  var NAMES = {domu: 'Domů', dnes: 'Dnes', slovnik: 'Slovník', prakticke: 'Dobré vědět'}, secs = {}, current = null;
+  Object.keys(NAMES).forEach(function(n){ secs[n] = document.querySelector('.screen[data-screen="' + n + '"]'); });
+  var links = document.querySelectorAll('.nav a');
+  function parse(){ var m = location.hash.match(/^#\/([a-z]+)/); return m && secs[m[1]] ? m[1] : 'domu'; }
+  function apply(name){
+    if (name === current) return;
+    var first = current === null; current = name;
+    Object.keys(secs).forEach(function(n){ secs[n].hidden = n !== name; });
+    links.forEach(function(a){ if (a.dataset.screen === name) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); });
+    document.body.dataset.screen = name;
+    document.title = (name === 'domu' ? '' : NAMES[name] + ' · ') + 'Hello Thailand! 2027';
+    if (!first) { window.scrollTo({top: 0, left: 0, behavior: 'instant'}); secs[name].focus({preventScroll: true}); }
+  }
+  // switch first, then record the URL: some viewers (e.g. a preview of a local file) refuse URL changes
+  function go(n){
+    if (!secs[n]) return;
+    apply(n);
+    if (location.hash !== '#/' + n) { try { history.pushState(null, '', '#/' + n); } catch (e) {} }
+  }
+  window.HT = {go: go};
+  links.forEach(function(a){
+    a.addEventListener('click', function(e){
+      if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button) return;
+      e.preventDefault(); go(a.dataset.screen);
+    });
+  });
+  window.addEventListener('popstate', function(){ apply(parse()); });
+  window.addEventListener('hashchange', function(){ apply(parse()); });
+  apply(parse());
+})();
+</script>
 <script>
 // ====== VLOŽTE SVOJE ÚDAJE ZE SUPABASE (Project Settings → API) ======
 var SUPABASE_URL = 'https://wjlezsrlfoiwxpnftgiv.supabase.co';
@@ -382,9 +745,33 @@ var SUPABASE_KEY = 'sb_publishable_7NDD7fqCwVlDIVxZ9vryHQ_ZsC2Db0C';
   var STATUSES = ['Nerezervováno! >:(','Rezervováno. :)','Zaplaceno! :D','Zrušeno! <:('];
   var PEOPLE = ['Maty','Lucie','Jasan','Špony','Adéla'];
   var STAV_CLASS = {'Nerezervováno! >:(':'s-no','Rezervováno. :)':'s-yes','Zaplaceno! :D':'s-paid','Zrušeno! <:(':'s-x'};
+  // stored values keep their emoticons (older data and other open pages rely on them); the UI shows a face icon instead
+  var STAV_LABEL = {'s-no':'Nerezervováno','s-yes':'Rezervováno','s-paid':'Zaplaceno','s-x':'Zrušeno'};
+  var SVG_NS = 'http://www.w3.org/2000/svg';
+  function faceEl(sc){
+    var svg = document.createElementNS(SVG_NS, 'svg'), use = document.createElementNS(SVG_NS, 'use');
+    svg.setAttribute('class', 'face'); svg.setAttribute('aria-hidden', 'true'); use.setAttribute('href', '#face-' + sc);
+    svg.appendChild(use); return svg;
+  }
+  function stavPill(sc){
+    var pill = document.createElement('span'); pill.className = 'sw text-label-14 ' + sc;
+    pill.appendChild(faceEl(sc)); var b = document.createElement('strong'); b.textContent = STAV_LABEL[sc]; pill.appendChild(b);
+    return pill;
+  }
   var STAV_MARK = {'s-no':'!','s-yes':'✓','s-paid':'✓✓','s-x':'×'};
   var timeline = document.getElementById('timeline'), routeEl = document.getElementById('route'),
-      statsEl = document.getElementById('stats'), calEl = document.getElementById('calendar'), saveEl = document.getElementById('save');
+      statsEl = document.getElementById('stats'), todayEl = document.getElementById('today'), calEl = document.getElementById('calendar'), saveEl = document.getElementById('save');
+  // Zbývá: always open on desktop; on phones collapsed by default and remembers the viewer's own choice
+  var desk = matchMedia('(min-width:760px)'), zbSaved = null;
+  try { zbSaved = localStorage.getItem('ht-zbyva-open'); } catch (e) {}
+  function zbSync(){ statsEl.open = desk.matches || zbSaved === '1'; }
+  zbSync();
+  if (desk.addEventListener) desk.addEventListener('change', zbSync);
+  statsEl.addEventListener('click', function(e){
+    if (!e.target.closest('summary')) return;
+    if (desk.matches) { e.preventDefault(); return; }
+    setTimeout(function(){ zbSaved = statsEl.open ? '1' : '0'; try { localStorage.setItem('ht-zbyva-open', zbSaved); } catch (x) {} }, 0);
+  });
   var rows = [], pending = 0, timers = {}, needsRender = false, renderQueued = false, opened = {};
   var retryEl = document.getElementById('retry'), failed = [], retryAction = null;
   var toastEl = document.getElementById('toast'), toastTimer = null;
@@ -395,26 +782,34 @@ var SUPABASE_KEY = 'sb_publishable_7NDD7fqCwVlDIVxZ9vryHQ_ZsC2Db0C';
   }
   function showRetry(action){ retryAction = action; retryEl.hidden = !action; }
   retryEl.addEventListener('click', function(){ var a = retryAction; showRetry(null); if (a) a(); });
-  if (!window.supabase || SUPABASE_URL.indexOf('VAS-PROJEKT') >= 0) { setSave('Chybí nastavení Supabase', true); return; }
-  var db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  // data goes straight through Supabase's REST API (no library needed to load or save);
+  // the Supabase library is fetched later, in the background, only for live updates
+  var REST = SUPABASE_URL + '/rest/v1/days', SB_LIB = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js';
+  function api(method, query, body){
+    var headers = {apikey: SUPABASE_KEY};
+    if (body) { headers['Content-Type'] = 'application/json'; headers.Prefer = 'return=minimal'; }
+    return fetch(REST + query, {method: method, headers: headers, body: body ? JSON.stringify(body) : undefined})
+      .then(function(r){ if (!r.ok) throw new Error('HTTP ' + r.status); return method === 'GET' ? r.json() : null; });
+  }
 
   function send(id, col, value){
     var patch = {}; patch[col] = value; write([id], patch);
   }
   function write(ids, patch){
     pending++; setSave('Ukládám…');
-    db.from('days').update(patch).in('id', ids).then(function(res){
+    function done(err){
       pending--;
-      if (res.error) {
-        console.error('Supabase update failed:', res.error);
+      if (err) {
+        console.error('Supabase update failed:', err);
         failed.push({ids: ids, patch: patch});
-        setSave('Uložení se nepovedlo', true);
+        setSave(navigator.onLine === false ? 'Offline – změny se neuloží' : 'Uložení se nepovedlo', true);
         showRetry(function(){ var f = failed; failed = []; f.forEach(function(x){ write(x.ids, x.patch); }); });
       }
       if (pending) return;
-      if (failed.length) setSave('Uložení se nepovedlo', true);
-      else { setSave('Uloženo'); if (needsRender && !busy()) { needsRender = false; render(); } }
-    });
+      if (failed.length) setSave(navigator.onLine === false ? 'Offline – změny se neuloží' : 'Uložení se nepovedlo', true);
+      else { setSave('Uloženo'); saveCache(); if (needsRender && !busy()) { needsRender = false; render(); } }
+    }
+    api('PATCH', '?id=in.(' + ids.join(',') + ')', patch).then(function(){ done(null); }, done);
   }
   function queue(id, col, value){
     var k = id + ':' + col; if (timers[k]) clearTimeout(timers[k].t); setSave('Neuložené změny…');
@@ -429,6 +824,11 @@ var SUPABASE_KEY = 'sb_publishable_7NDD7fqCwVlDIVxZ9vryHQ_ZsC2Db0C';
     if (Object.keys(timers).length || pending || failed.length) { flushQueued(); e.preventDefault(); e.returnValue = ''; }
   });
   function el(tag, cls, text){ var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+  // ?today=2027-02-20 pretends it is that day (preview the trip without waiting for it)
+  function nowDate(){
+    var m = location.search.match(/[?&]today=(\d{4})-(\d{2})-(\d{2})/);
+    return m ? new Date(+m[1], +m[2] - 1, +m[3], 12) : new Date();
+  }
   function dateOf(row){ var d = new Date(START); d.setDate(START.getDate() + row.id - 1); return d; }
   function fmt(d){ return d.getDate() + '. ' + (d.getMonth()+1) + '.'; }
   function sameDay(a, b){ return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate(); }
@@ -461,10 +861,10 @@ var SUPABASE_KEY = 'sb_publishable_7NDD7fqCwVlDIVxZ9vryHQ_ZsC2Db0C';
   }
   function fitAll(){ if (!FIELD_SIZING) document.querySelectorAll('select.fit').forEach(fitSelect); }
   if (document.fonts) document.fonts.ready.then(fitAll);
-  function makeSelect(opts, val, cls, onch, label, hint){
+  function makeSelect(opts, val, cls, onch, label, hint, textOf){
     var s = document.createElement('select'); s.setAttribute('aria-label', label);
     var e = document.createElement('option'); e.value = ''; e.textContent = hint; s.appendChild(e);
-    opts.concat(val && opts.indexOf(val) < 0 ? [val] : []).forEach(function(o){ var op = document.createElement('option'); op.value = o; op.textContent = o; s.appendChild(op); });
+    opts.concat(val && opts.indexOf(val) < 0 ? [val] : []).forEach(function(o){ var op = document.createElement('option'); op.value = o; op.textContent = textOf ? textOf(o) : o; s.appendChild(op); });
     s.value = val || ''; s.className = 'fit text-button-14 ' + cls(s.value);
     s.addEventListener('change', function(){ s.className = 'fit text-button-14 ' + cls(s.value); fitSelect(s); onch(s.value); });
     return s;
@@ -476,15 +876,20 @@ var SUPABASE_KEY = 'sb_publishable_7NDD7fqCwVlDIVxZ9vryHQ_ZsC2Db0C';
     else d.addEventListener('keydown', function(e){ if (e.key === 'Enter') { e.preventDefault(); d.blur(); } });
     try { d.contentEditable = 'plaintext-only'; } catch(e) { d.contentEditable = 'true'; }
     d.addEventListener('input', function(){ row[col] = d.innerText.replace(/\n+$/,''); queue(row.id, col, row[col]); if (onInput) onInput(); });
-    d.addEventListener('blur', function(){ if (needsRender && !busy()) { needsRender = false; render(); } });
+    // rebuild a moment after leaving the field, so a tap that caused the blur (e.g. on a Trasa chip) still lands
+    d.addEventListener('blur', function(){ setTimeout(function(){ if (needsRender && !busy()) { needsRender = false; render(); } }, 250); });
     parent.appendChild(d);
     return d;
+  }
+  function linkEl(l){
+    var a = el('a', 'text-label-14', l.label || l.url.replace(/^https?:\/\/(www\.)?/,'').split('/')[0]);
+    a.href = l.url; a.target = '_blank'; a.rel = 'noopener'; a.setAttribute('aria-label', a.textContent + ' (otevře se v novém okně)');
+    return a;
   }
   function renderLinks(box, row){
     box.innerHTML = ''; box.className = 'links';
     parseLinks(row.links).forEach(function(l){
-      var a = el('a', 'text-label-14', l.label || l.url.replace(/^https?:\/\/(www\.)?/,'').split('/')[0]);
-      a.href = l.url; a.target = '_blank'; a.rel = 'noopener'; a.setAttribute('aria-label', a.textContent + ' (otevře se v novém okně)'); box.appendChild(a);
+      box.appendChild(linkEl(l));
     });
     var b = el('button', 'edit-links text-button-14', row.links ? 'Upravit odkazy' : '+ Přidat odkaz'); b.type = 'button';
     b.addEventListener('click', function(){
@@ -522,58 +927,140 @@ var SUPABASE_KEY = 'sb_publishable_7NDD7fqCwVlDIVxZ9vryHQ_ZsC2Db0C';
     return segs;
   }
   function renderOverview(){
-    var segs = segments();
+    var segs = segments(), free = 0;
     routeEl.innerHTML = '';
+    // open the place in the timeline and scroll to it (without touching the URL, which the screen router owns).
+    // targets the place's first day, not its position: positions shift when the itinerary is
+    // rebuilt later than Trasa (e.g. someone else's change arrives while you are typing)
+    function jumpTo(firstDay){
+      return function(e){
+        e.preventDefault();
+        var day = document.getElementById('day-' + firstDay), seg = day && day.closest('.seg'); if (!seg) return;
+        seg.open = true;
+        seg.scrollIntoView({behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start'});
+      };
+    }
     segs.forEach(function(s, i){
-      var li = el('li'), chip = el('span', 'stop'), a = el('a', 'text-label-14' + (s.name ? '' : ' empty'));
-      a.href = '#seg-' + i;
+      if (!s.name) free += s.rows.length;
+      // days without a place at the end are shown below the row, not in it
+      if (!s.name && i === segs.length - 1) return;
+      var li = el('li'), chip = el('span', 'stop' + (s.name ? '' : ' free')), a = el('a', 'text-label-14' + (s.name ? '' : ' empty'));
+      a.href = '#day-' + s.rows[0].id;
       if (s.name) { a.appendChild(el('strong', null, s.name)); a.appendChild(el('small', 'text-label-13 tabular-nums', s.rows.length + ' ' + dny(s.rows.length))); }
-      else a.textContent = s.rows.length + ' ' + dny(s.rows.length) + ' zbývá';
-      a.addEventListener('click', function(){ document.getElementById('seg-' + i).open = true; });
+      else a.textContent = s.rows.length + ' ' + dny(s.rows.length) + ' bez místa';
+      a.addEventListener('click', jumpTo(s.rows[0].id));
       chip.appendChild(a);
-      if (s.name) {
-        var rm = el('button', 'rm text-button-16', '×'); rm.type = 'button'; rm.title = 'Odebrat zastávku'; rm.setAttribute('aria-label', 'Odebrat zastávku ' + s.name);
-        rm.addEventListener('click', function(){
-          var a0 = dateOf(s.rows[0]), b0 = dateOf(s.rows[s.rows.length - 1]);
-          if (!confirm('Odebrat zastávku ' + s.name + ' (' + (s.rows.length > 1 ? fmt(a0) + ' – ' + fmt(b0) : fmt(a0)) + ')?\nU těchto dní se smaže jen místo, program a ubytování zůstanou.')) return;
-          setLok(s.rows, '');
-        });
-        chip.appendChild(rm);
-      }
       li.appendChild(chip); routeEl.appendChild(li);
     });
     // every day already has a place → nothing left to add
-    var hasFree = rows.some(function(r){ return !(r.lok || '').trim(); });
+    var hasFree = free > 0;
+    routeFoot.hidden = !hasFree;
+    if (hasFree) freeLink.textContent = free + ' ' + (free === 1 ? 'den volný' : free < 5 ? 'dny volné' : 'dní volných');
     if (stopForm.hidden) addStop.hidden = !hasFree;
 
     var total = rows.length, c = {};
     STATUSES.forEach(function(st){ c[st] = 0; });
     rows.forEach(function(r){ var k = stavKey(r.stav); if (k) c[k]++; });
     var done = c[STATUSES[1]] + c[STATUSES[2]];
-    var today = new Date(); today.setHours(0,0,0,0);
+    var today = nowDate(); today.setHours(0,0,0,0);
     var diff = Math.round((START - today) / 864e5), end = new Date(START); end.setDate(START.getDate() + total - 1);
-    var big, small;
-    if (diff > 0) { big = diff; small = (diff === 1 ? 'den' : diff < 5 ? 'dny' : 'dní') + ' do odletu'; }
-    else if (today <= end) { big = 'Den ' + (1 - diff); small = 'z ' + total + ', jsme na cestě'; }
-    else { big = total; small = 'dní za námi'; }
+    var head = 'Zbývá', num, txt;
+    if (diff > 0) { num = diff; txt = dny(diff) + ' do odletu'; }
+    else if (today <= end) {
+      var left = Math.round((end - today) / 864e5);
+      if (left > 0) { num = left; txt = dny(left) + ' do návratu'; } else { num = ''; txt = 'poslední den cesty'; }
+    }
+    else { head = 'Za námi'; num = total; txt = dny(total) + ' cesty'; }
 
     statsEl.innerHTML = '';
-    var h = el('h2', 'text-label-12 caps'); h.appendChild(el('strong', null, 'Přehled')); statsEl.appendChild(h);
-    var cd = el('div', 'count'); cd.appendChild(el('b', 'text-heading-48 tabular-nums', big)); cd.appendChild(el('span', 'text-label-14', small)); statsEl.appendChild(cd);
-    statsEl.appendChild(el('div', 'text-copy-14', 'Ubytování vyřešeno pro ' + done + ' z ' + total + ' dní'));
-    var meter = el('div', 'meter'), legend = el('div', 'legend text-label-12 tabular-nums');
+    var sum = el('summary'), h = el('h2', 'text-label-12 caps'), val = el('span', 'zb-val text-label-16');
+    h.appendChild(el('strong', null, head)); sum.appendChild(h);
+    if (num !== '') { val.appendChild(el('strong', 'tabular-nums', num)); val.appendChild(document.createTextNode(' ')); }
+    val.appendChild(document.createTextNode(txt)); sum.appendChild(val);
+    sum.appendChild(el('span', 'chev')); statsEl.appendChild(sum);
+    // the accommodation bar sits in the summary, so it shows even when the card is collapsed
+    var bar = el('span', 'zb-bar'), meter = el('span', 'meter'), legend = el('div', 'legend tabular-nums');
     [2, 1, 0, 3].forEach(function(k){
-      var st = STATUSES[k], col = 'var(--' + STAV_CLASS[st] + '-dot)';
+      var st = STATUSES[k], sc = STAV_CLASS[st];
       if (!c[st]) return;
-      var i = el('i'); i.style.width = (c[st] / total * 100) + '%'; i.style.background = col; i.title = st + ': ' + c[st]; meter.appendChild(i);
-      var s = el('span', null, STAV_MARK[STAV_CLASS[st]] + ' ' + st.replace(/[.!].*$/,'') + ' ' + c[st]); s.style.setProperty('--c', col); legend.appendChild(s);
+      var i = el('i'); i.style.width = (c[st] / total * 100) + '%'; i.style.background = 'var(--' + sc + '-dot)'; i.title = STAV_LABEL[sc] + ': ' + c[st]; meter.appendChild(i);
+      var pill = stavPill(sc); pill.className = 'sw text-label-12 ' + sc; pill.appendChild(document.createTextNode(c[st])); legend.appendChild(pill);
     });
-    statsEl.appendChild(meter); statsEl.appendChild(legend);
+    bar.appendChild(meter); bar.appendChild(el('span', 'text-label-12 tabular-nums', total - done ? (total - done) + ' bez ubytování' : 'vše zařízeno'));
+    sum.appendChild(bar);
+    var zb = el('div', 'zb-body'); statsEl.appendChild(zb);
+    var need = total - done;
+    zb.appendChild(el('div', 'text-copy-14', need ? 'Zbývá zařídit ubytování na ' + need + ' ' + dny(need) + '.' : 'Ubytování máme na všechny dny.'));
+    zb.appendChild(legend);
     calEl.innerHTML = ""; calEl.appendChild(renderCalendar());
+    renderToday();
+  }
+  // ---------- Dnes screen ----------
+  function dayCard(row, label, compact){
+    var d = dateOf(row), card = el('div', 'panel today-card'), head = el('div', 'today-head');
+    var h = el('h2', 'text-label-12 caps'); h.appendChild(el('strong', null, label)); head.appendChild(h);
+    head.appendChild(el('span', 'text-label-14 tabular-nums', DAYS[d.getDay()] + ' ' + fmt(d)));
+    card.appendChild(head);
+    card.appendChild(el('p', compact ? 'text-heading-24' : 'text-heading-32', (row.lok || '').trim() || 'Místo zatím není určeno'));
+    var prog = (row.prog || '').trim();
+    card.appendChild(el('p', 'text-copy-16 pre' + (prog ? '' : ' muted'), prog || 'Program zatím není vyplněný.'));
+    if (compact) return card;
+    var links = parseLinks(row.links), st = stavKey(row.stav);
+    if (links.length || st || row.booked_by) {
+      var stay = el('div', 'today-stay'), meta = el('div', 'row');
+      stay.appendChild(el('span', 'lbl text-label-13', 'Ubytování'));
+      if (st) meta.appendChild(stavPill(STAV_CLASS[st]));
+      if (row.booked_by) meta.appendChild(el('span', 'sw who text-label-14', row.booked_by));
+      if (st || row.booked_by) stay.appendChild(meta);
+      if (links.length) { var box = el('div', 'links'); links.forEach(function(l){ box.appendChild(linkEl(l)); }); stay.appendChild(box); }
+      card.appendChild(stay);
+    }
+    var notes = (row.notes || '').trim();
+    if (notes) card.appendChild(el('p', 'text-copy-14 pre muted', notes));
+    var b = el('button', 'edit-links text-button-14', 'Otevřít v itineráři'); b.type = 'button';
+    b.addEventListener('click', function(){ if (window.HT) window.HT.go('domu'); goToDay(row.id); });
+    card.appendChild(b);
+    return card;
+  }
+  function renderToday(){
+    if (!todayEl || !rows.length) return;
+    todayEl.innerHTML = '';
+    var t = nowDate(); t.setHours(0,0,0,0);
+    var total = rows.length, diff = Math.round((START - t) / 864e5), n = 1 - diff;
+    if (diff > 0) {
+      // before departure: not the countdown again (Zbývá has it), but what still needs sorting out
+      var open = rows.filter(function(r){ var k = stavKey(r.stav); return k !== STATUSES[1] && k !== STATUSES[2]; });
+      var p = el('div', 'panel stats'), h = el('h2', 'text-label-12 caps'), cd = el('div', 'count');
+      h.appendChild(el('strong', null, 'Zbývá zařídit')); p.appendChild(h);
+      if (open.length) {
+        cd.appendChild(el('b', 'text-heading-48 tabular-nums', open.length)); cd.appendChild(el('span', 'text-label-14', dny(open.length) + ' bez ubytování')); p.appendChild(cd);
+        p.appendChild(el('div', 'text-copy-14 muted', 'Odlet za ' + diff + ' ' + dny(diff) + ', ' + DAYS[START.getDay()] + ' ' + fmt(START)));
+      } else p.appendChild(el('div', 'text-copy-16', 'Ubytování máme na všechny dny.'));
+      todayEl.appendChild(p);
+      if (open.length) todayEl.appendChild(dayCard(open[0], 'Nejbližší noc bez ubytování'));
+      var pre = el('div', 'panel today-card'), ph = el('h2', 'text-label-12 caps');
+      ph.appendChild(el('strong', null, 'Před odletem')); pre.appendChild(ph);
+      pre.appendChild(el('p', 'text-copy-16', 'Vízum, příletová karta TDAC, pas a pojištění.'));
+      var go = el('button', 'edit-links text-button-14', 'Otevřít Dobré vědět'); go.type = 'button';
+      go.addEventListener('click', function(){
+        if (!window.HT) return;
+        window.HT.go('prakticke');
+        var bt = document.getElementById('beforeTrip'); if (bt) { bt.open = true; bt.scrollIntoView({block: 'start'}); }
+      });
+      pre.appendChild(go); todayEl.appendChild(pre);
+    } else if (n <= total) {
+      todayEl.appendChild(dayCard(rows[n - 1], 'Dnes · den ' + n + ' z ' + total));
+      if (n < total) todayEl.appendChild(dayCard(rows[n], 'Zítra', true));
+    } else {
+      var q = el('div', 'panel stats'), qh = el('h2', 'text-label-12 caps'), qc = el('div', 'count');
+      qh.appendChild(el('strong', null, 'Cesta skončila')); q.appendChild(qh);
+      qc.appendChild(el('b', 'text-heading-48 tabular-nums', total)); qc.appendChild(el('span', 'text-label-14', 'dní za námi')); q.appendChild(qc);
+      todayEl.appendChild(q);
+    }
   }
   // month grid from the Monday before departure to the Sunday after return
   function renderCalendar(){
-    var cal = el('div', 'cal'), today = new Date();
+    var cal = el('div', 'cal'), today = nowDate();
     var first = dateOf(rows[0]), last = dateOf(rows[rows.length - 1]);
     var ct = el('h2', 'cal-title text-label-12 caps'); ct.appendChild(el('strong', null, 'Kalendář')); cal.appendChild(ct);
     var grid = el('div', 'cal-grid');
@@ -594,12 +1081,12 @@ var SUPABASE_KEY = 'sb_publishable_7NDD7fqCwVlDIVxZ9vryHQ_ZsC2Db0C';
       for (var i = 0; i < 7; i++) {
         var day = new Date(w.start); day.setDate(day.getDate() + i);
         var id = Math.round((day - START) / 864e5) + 1, row = rows[id - 1];
-        if (!row) { grid.appendChild(el('span', 'cal-day off text-label-13 tabular-nums', day.getDate())); continue; }
+        if (!row) { var off = el('span', 'cal-day off'); off.setAttribute('aria-hidden', 'true'); grid.appendChild(off); continue; }
         var st = stavKey(row.stav), sc = STAV_CLASS[st] || '';
         var b = el('button', 'cal-day text-label-13 tabular-nums ' + sc, day.getDate()); b.type = 'button';
         if (row.id <= A2_LAST) b.classList.add('a2');
         if (sameDay(day, today)) b.classList.add('today');
-        b.title = 'Den ' + row.id + (row.lok ? ', ' + row.lok : '') + (st ? ', ' + st : '');
+        b.title = 'Den ' + row.id + (row.lok ? ', ' + row.lok : '') + (sc ? ', ' + STAV_LABEL[sc] : '');
         b.setAttribute('aria-label', DAYS[day.getDay()] + ' ' + fmt(day) + ', den ' + row.id + (row.lok ? ', ' + row.lok : '') + ', ' + (st ? st.replace(/[.!].*$/,'') : 'bez stavu') + (row.id <= A2_LAST ? ', s A²' : ''));
         if (sc) b.setAttribute('data-mark', STAV_MARK[sc]);
         b.addEventListener('click', goToDay.bind(null, row.id));
@@ -607,7 +1094,13 @@ var SUPABASE_KEY = 'sb_publishable_7NDD7fqCwVlDIVxZ9vryHQ_ZsC2Db0C';
       }
     });
     cal.appendChild(grid);
-    cal.appendChild(el('p', 'cal-note text-label-12', '= Dny s A²'));
+    // legend next to the colours it explains
+    var key = el('p', 'cal-legend text-label-12');
+    [['s-paid', 'zaplaceno'], ['s-yes', 'rezervováno'], ['s-no', 'nerezervováno'], ['s-x', 'zrušeno']].forEach(function(k){
+      var item = el('span'); item.appendChild(el('span', 'cal-key ' + k[0], STAV_MARK[k[0]])); item.appendChild(document.createTextNode(k[1])); key.appendChild(item);
+    });
+    key.appendChild(el('span', 'cal-note', 'dny s A²'));
+    cal.appendChild(key);
     return cal;
   }
   function goToDay(id){
@@ -622,6 +1115,7 @@ var SUPABASE_KEY = 'sb_publishable_7NDD7fqCwVlDIVxZ9vryHQ_ZsC2Db0C';
     render();
     write(list.map(function(r){ return r.id; }), {lok: value});
   }
+  var routeFoot = document.getElementById('routeFoot'), freeLink = document.getElementById('freeLink');
   var stopForm = document.getElementById('stopForm'), addStop = document.getElementById('addStop'),
       stopName = document.getElementById('stopName'), stopFrom = document.getElementById('stopFrom'), stopTo = document.getElementById('stopTo');
   function closeStopForm(){ stopForm.hidden = true; if (needsRender && !busy()) { needsRender = false; render(); } else renderOverview(); }
@@ -635,12 +1129,16 @@ var SUPABASE_KEY = 'sb_publishable_7NDD7fqCwVlDIVxZ9vryHQ_ZsC2Db0C';
     });
     var free = rows.filter(function(r){ return !(r.lok || '').trim(); })[0] || rows[0];
     stopFrom.value = stopTo.value = free.id;
-    stopName.value = '';
+    stopName.value = ''; resetWarn();
     stopForm.hidden = false; addStop.hidden = true; stopName.focus();
   });
   stopFrom.addEventListener('change', function(){ if (+stopTo.value < +stopFrom.value) stopTo.value = stopFrom.value; });
   stopTo.addEventListener('change', function(){ if (+stopTo.value < +stopFrom.value) stopFrom.value = stopTo.value; });
   document.getElementById('stopCancel').addEventListener('click', closeStopForm);
+  // overwriting other places needs a second tap on "Přepsat" (instead of a confirm() dialog)
+  var stopWarn = document.getElementById('stopWarn'), stopSave = document.getElementById('stopSave'), overwriteOk = null;
+  function resetWarn(){ stopWarn.hidden = true; stopSave.textContent = 'Uložit'; overwriteOk = null; }
+  ['input', 'change'].forEach(function(ev){ stopForm.addEventListener(ev, resetWarn); });
   stopForm.addEventListener('submit', function(e){
     e.preventDefault();
     var name = stopName.value.trim(), from = +stopFrom.value, to = +stopTo.value;
@@ -652,19 +1150,25 @@ var SUPABASE_KEY = 'sb_publishable_7NDD7fqCwVlDIVxZ9vryHQ_ZsC2Db0C';
       var a = dateOf(inRange[0]), b = dateOf(inRange[inRange.length - 1]);
       return sg.name + ' (' + (inRange.length > 1 ? fmt(a) + ' – ' + fmt(b) : fmt(a)) + ')';
     });
-    if (hit.length && !confirm('Tímto přepíšete místo u dní: ' + hit.join(', ') + '.\nProgram, ubytování ani poznámky se nezmění. Pokračovat?')) return;
+    var key = name + '|' + from + '|' + to;
+    if (hit.length && overwriteOk !== key) {
+      stopWarn.textContent = 'Tímto přepíšete místo u dní: ' + hit.join(', ') + '. Program, ubytování ani poznámky se nezmění.';
+      stopWarn.hidden = false; stopSave.textContent = 'Přepsat'; overwriteOk = key;
+      return;
+    }
+    resetWarn();
     stopForm.hidden = true;
     setLok(rows.filter(function(r){ return r.id >= from && r.id <= to; }), name);
   });
   function renderDay(row){
-    var date = dateOf(row), today = new Date();
+    var date = dateOf(row), today = nowDate();
     var card = el('article', 'day'); card.id = 'day-' + row.id;
 
     var when = el('div', 'when');
     var dw = el('span', 'dw text-label-12 caps'); dw.appendChild(el('strong', null, DAYS[date.getDay()])); when.appendChild(dw);
     when.appendChild(el('span', 'dnum text-heading-24 tabular-nums', date.getDate()));
     when.appendChild(el('span', 'dmon text-label-12', MONTHS[date.getMonth()]));
-    if (row.id <= A2_LAST) { var a2 = el('span', 'tag a2 text-label-12'); a2.title = 'Špony a Adéla'; a2.appendChild(el('strong', null, 'A²')); when.appendChild(a2); }
+    if (row.id === 1 || row.id === A2_LAST) { var a2 = el('span', 'tag a2 text-label-12'); a2.title = 'Špony a Adéla jsou s námi dny 1–' + A2_LAST; a2.appendChild(el('strong', null, 'A²')); when.appendChild(a2); }
     card.appendChild(when);
 
     var dayName = 'den ' + row.id + ', ' + DAYS[date.getDay()] + ' ' + fmt(date);
@@ -678,7 +1182,17 @@ var SUPABASE_KEY = 'sb_publishable_7NDD7fqCwVlDIVxZ9vryHQ_ZsC2Db0C';
     var links = el('div'); renderLinks(links, row); stay.appendChild(links); body.appendChild(stay);
 
     var meta = el('div', 'row meta'); meta.appendChild(el('span', 'lbl text-label-13', 'Stav'));
-    meta.appendChild(makeSelect(STATUSES, stavKey(row.stav), function(v){ return STAV_CLASS[v] || ''; }, function(v){ row.stav = v; send(row.id, 'stav', v); renderOverview(); }, 'Stav ubytování, ' + dayName, 'Stav?'));
+    var stavSel = makeSelect(STATUSES, stavKey(row.stav), function(v){ return STAV_CLASS[v] || ''; }, function(v){ row.stav = v; send(row.id, 'stav', v); renderOverview(); }, 'Stav ubytování, ' + dayName, 'Stav?', function(o){ return STAV_LABEL[STAV_CLASS[o]] || o; });
+    var pick = el('span', 'stav-pick'); pick.appendChild(stavSel);
+    function syncFace(){
+      var sc = STAV_CLASS[stavSel.value] || '', old = pick.querySelector('.face');
+      if (old) old.remove();
+      pick.className = 'stav-pick' + (sc ? ' has-face ' + sc : '');
+      if (sc) pick.insertBefore(faceEl(sc), stavSel);
+      if (stavSel.isConnected) fitSelect(stavSel);
+    }
+    stavSel.addEventListener('change', syncFace); syncFace();
+    meta.appendChild(pick);
     meta.appendChild(makeSelect(PEOPLE, row.booked_by, personClass, function(v){ row.booked_by = v; send(row.id, 'booked_by', v); }, 'Kdo rezervoval, ' + dayName, 'Kdo?'));
     body.appendChild(meta);
 
@@ -704,6 +1218,22 @@ var SUPABASE_KEY = 'sb_publishable_7NDD7fqCwVlDIVxZ9vryHQ_ZsC2Db0C';
       seg.appendChild(head);
       var days = el('div', 'days');
       s.rows.forEach(function(r){ days.appendChild(renderDay(r)); });
+      if (s.name) {
+        var rm = el('button', 'seg-remove text-button-14', 'Odebrat zastávku ' + s.name); rm.type = 'button';
+        // confirmation inside the page: some in-app browsers (and this preview) suppress confirm() dialogs
+        rm.addEventListener('click', function(){
+          var a0 = dateOf(s.rows[0]), b0 = dateOf(s.rows[s.rows.length - 1]);
+          var box = el('div', 'seg-confirm'); box.setAttribute('role', 'alert');
+          box.appendChild(el('p', 'text-copy-14', 'Odebrat zastávku ' + s.name + ' (' + (s.rows.length > 1 ? fmt(a0) + ' – ' + fmt(b0) : fmt(a0)) + ')? U těchto dní se smaže jen místo, program a ubytování zůstanou.'));
+          var btns = el('div', 'btns'), yes = el('button', 'btn danger text-button-14', 'Odebrat'), no = el('button', 'btn text-button-14', 'Zrušit');
+          yes.type = no.type = 'button';
+          yes.addEventListener('click', function(){ setLok(s.rows, ''); });
+          no.addEventListener('click', function(){ box.replaceWith(rm); rm.focus(); if (needsRender && !busy()) { needsRender = false; render(); } });
+          btns.appendChild(yes); btns.appendChild(no); box.appendChild(btns);
+          rm.replaceWith(box); yes.focus();
+        });
+        days.appendChild(rm);
+      }
       seg.appendChild(days);
       timeline.appendChild(seg);
     });
@@ -712,7 +1242,7 @@ var SUPABASE_KEY = 'sb_publishable_7NDD7fqCwVlDIVxZ9vryHQ_ZsC2Db0C';
   // true while a re-render would throw away something the user is in the middle of
   function busy(){
     var a = document.activeElement;
-    return pending > 0 || Object.keys(timers).length > 0 || !stopForm.hidden || !!document.querySelector('.link-edit') ||
+    return pending > 0 || Object.keys(timers).length > 0 || !stopForm.hidden || !!document.querySelector('.link-edit, .seg-confirm') ||
       !!(a && (a.isContentEditable || /^(TEXTAREA|SELECT|INPUT)$/.test(a.tagName)));
   }
   // H: several updates in a row (e.g. a whole stop) cost one re-render
@@ -731,27 +1261,163 @@ var SUPABASE_KEY = 'sb_publishable_7NDD7fqCwVlDIVxZ9vryHQ_ZsC2Db0C';
     Object.keys(n).forEach(function(col){ if (!timers[n.id + ':' + col]) row[col] = n[col]; });
   }
   // I: catch up on anything missed while offline or asleep
-  function refetch(){
-    db.from('days').select('*').order('id').then(function(res){
-      if (res.error) { console.error('Supabase refresh failed:', res.error); return; }
-      res.data.forEach(applyRow); scheduleRender();
-    });
+  // the last loaded itinerary is kept on the phone for offline use
+  function saveCache(){ try { localStorage.setItem('ht-days', JSON.stringify(rows)); } catch (e) {} }
+  function show(data){
+    rows = data; render();
   }
-  db.from('days').select('*').order('id').then(function(res){
-    if (res.error) { console.error('Supabase load failed:', res.error); setSave('Data se nepodařilo načíst', true); showRetry(function(){ location.reload(); }); return; }
-    rows = res.data; render(); setSave('Uloženo');
-    var first = dateOf(rows[0]), last = dateOf(rows[rows.length - 1]), dates = document.getElementById('dates');
-    dates.firstChild.textContent = fmt(first) + ' – ' + fmt(last) + ' ' + last.getFullYear();
-    dates.lastChild.textContent = rows.length + ' ' + dny(rows.length);
-    var connected = false;
-    db.channel('days').on('postgres_changes', {event: 'UPDATE', schema: 'public', table: 'days'}, function(p){
-      applyRow(p.new); scheduleRender();
-    }).subscribe(function(status){
-      if (status === 'SUBSCRIBED') { if (connected) refetch(); connected = true; }
-    });
+  function showCached(){
+    var c = null;
+    try { c = JSON.parse(localStorage.getItem('ht-days')); } catch (e) {}
+    if (!c || !c.length) return false;
+    show(c); setSave('Offline – poslední uložená verze', true); showRetry(function(){ location.reload(); });
+    return true;
+  }
+  function failLoad(err){
+    console.error('Supabase load failed:', err);
+    if (showCached()) return;
+    setSave('Data se nepodařilo načíst', true); showRetry(function(){ location.reload(); });
+    document.querySelectorAll('.skel').forEach(function(k){ k.style.animation = 'none'; });
+  }
+  function refetch(){
+    api('GET', '?select=*&order=id').then(function(data){
+      data.forEach(applyRow); saveCache(); scheduleRender();
+    }, function(err){ console.error('Supabase refresh failed:', err); });
+  }
+  // live updates from the others; every (re)connect catches up on anything missed meanwhile
+  function startLive(){
+    var tag = document.createElement('script'); tag.src = SB_LIB; tag.async = true;
+    tag.onload = function(){
+      if (!window.supabase) return;
+      window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY).channel('days')
+        .on('postgres_changes', {event: 'UPDATE', schema: 'public', table: 'days'}, function(p){ applyRow(p.new); saveCache(); scheduleRender(); })
+        .subscribe(function(status){ if (status === 'SUBSCRIBED') refetch(); });
+    };
+    document.head.appendChild(tag);
+  }
+  api('GET', '?select=*&order=id').then(function(data){
+    show(data); saveCache(); setSave('Uloženo');
+    (window.requestIdleCallback || setTimeout)(startLive);
     document.addEventListener('visibilitychange', function(){ if (document.visibilityState === 'visible') refetch(); });
-  });
+  }, failLoad);
 })();
+</script>
+<script>
+// ====== Slovník ======
+(function(){
+  // each row is one line on screen: 1 phrase = full width, 2 = a pair side by side, 3 = thirds.
+  // pairs are deliberate (opposites, question + answer); the first-said / positive one goes left.
+  // a 4th value 'em' makes the card stand out.
+  var GROUPS = [
+    {title: 'Pomoc', rows: [
+      [['Pomoc!', 'ช่วยด้วย', 'čuaj duaj', 'em']],
+      [['Zavolejte policii', 'เรียกตำรวจ', 'riak tamruat'], ['Potřebuji lékaře', 'ต้องการหมอ', 'tongkan mó']]
+    ]},
+    {title: 'Základy', rows: [
+      [['Ahoj / dobrý den', 'สวัสดี', 'sawatdí'], ['Na shledanou', 'ลาก่อน', 'lá kon']],
+      [['Ano', 'ใช่', 'čaj'], ['Ne', 'ไม่ใช่', 'maj čaj']],
+      [['Děkuji', 'ขอบคุณ', 'khop khun'], ['Není zač / nevadí', 'ไม่เป็นไร', 'maj pen raj']],
+      [['Promiňte', 'ขอโทษ', 'khó thót'], ['Nerozumím', 'ไม่เข้าใจ', 'maj khau čaj']],
+      [['Mluvíte anglicky?', 'พูดภาษาอังกฤษได้ไหม', 'phút phásá angkrit daj maj']]
+    ]},
+    {title: 'Jídlo a pití', rows: [
+      [['Nepálivé, prosím', 'ไม่เผ็ด', 'maj phet'], ['Trochu pálivé', 'เผ็ดนิดหน่อย', 'phet nit noj']],
+      [['Voda', 'น้ำเปล่า', 'nám plau'], ['Pivo', 'เบียร์', 'bia']],
+      [['Bez ledu', 'ไม่ใส่น้ำแข็ง', 'maj saj nám kheng'], ['Jím vegetariánsky', 'กินมังสวิรัติ', 'kin mangsawirat']],
+      [['Chutné!', 'อร่อย', 'aroj'], ['Účet, prosím', 'เช็คบิลด้วย', 'ček bin duaj']]
+    ]},
+    {title: 'Nakupování', rows: [
+      [['Kolik to stojí?', 'เท่าไหร่', 'thau raj'], ['Je to moc drahé', 'แพงไป', 'pheng paj']],
+      [['Můžete dát slevu?', 'ลดหน่อยได้ไหม', 'lot noj daj maj']],
+      [['Vezmu si to', 'เอาอันนี้', 'au an ní'], ['Nechci, děkuji', 'ไม่เอา ขอบคุณ', 'maj au, khop khun']]
+    ]},
+    {title: 'Doprava', rows: [
+      [['Zapněte taxametr', 'เปิดมิเตอร์', 'pert míter'], ['Zastavte tady', 'จอดตรงนี้', 'čot trong ní']],
+      [['Doleva', 'ซ้าย', 'sáj'], ['Rovně', 'ตรงไป', 'trong paj'], ['Doprava', 'ขวา', 'khwá']],
+      [['Kde je toaleta?', 'ห้องน้ำอยู่ที่ไหน', 'hong nám jú thí naj']]
+    ]},
+    {title: 'Čísla', numbers: true, rows: [[
+      ['1', 'หนึ่ง', 'nung'], ['2', 'สอง', 'song'], ['3', 'สาม', 'sám'], ['4', 'สี่', 'sí'], ['5', 'ห้า', 'há'],
+      ['6', 'หก', 'hok'], ['7', 'เจ็ด', 'čet'], ['8', 'แปด', 'pet'], ['9', 'เก้า', 'kau'], ['10', 'สิบ', 'sip'],
+      ['20', 'ยี่สิบ', 'jí sip'], ['100', 'ร้อย', 'roj'], ['1000', 'พัน', 'phan']
+    ]]}
+  ];
+  var SIZE = {1: 'full', 2: 'half', 3: 'third'};
+  var box = document.getElementById('dict'), search = document.getElementById('dictSearch'), jump = document.getElementById('dictJump'), bar = document.getElementById('dictBar');
+  function plain(t){ return (t || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase(); }
+  function mk(tag, cls, text){ var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+  // full-screen view
+  var show = document.getElementById('show'), showTh = document.getElementById('showTh'), lastCard = null, pushed = false;
+  window.addEventListener('popstate', function(){ closeShow(true); });
+  function openShow(i, from){
+    document.getElementById('showCs').textContent = i[0]; showTh.textContent = i[1]; document.getElementById('showRom').textContent = i[2];
+    // size the Thai text to the screen: base characters only (vowel and tone marks sit above or below)
+    var n = Array.from(i[1]).filter(function(c){ return !/[\u0E31\u0E34-\u0E3A\u0E47-\u0E4E\s]/.test(c); }).length || 1;
+    showTh.style.fontSize = Math.round(Math.max(40, Math.min(140, (window.innerWidth - 48) / (n * 0.62)))) + 'px';
+    lastCard = from; show.hidden = false; document.body.style.overflow = 'hidden';
+    // a history entry, so the phone's back button closes the phrase instead of leaving the screen
+    try { history.pushState({htShow: 1}, ''); pushed = true; } catch (e) { pushed = false; }
+    document.getElementById('showClose').focus();
+  }
+  function closeShow(fromBack){
+    if (show.hidden) return;
+    show.hidden = true; document.body.style.overflow = '';
+    if (pushed && fromBack !== true) { pushed = false; history.back(); } else pushed = false;
+    if (lastCard) lastCard.focus({preventScroll: true});
+  }
+  show.addEventListener('click', function(){ closeShow(); });
+  document.addEventListener('keydown', function(e){ if (e.key === 'Escape') closeShow(); });
+  function card(i, size){
+    var li = mk('li', 'phrase ' + size + (i[3] === 'em' ? ' em' : ''));
+    li.tabIndex = 0; li.setAttribute('role', 'button'); li.setAttribute('aria-label', 'Ukázat na celé obrazovce: ' + i[0]);
+    li.addEventListener('click', function(){ openShow(i, li); });
+    li.addEventListener('keydown', function(e){ if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openShow(i, li); } });
+    li.appendChild(mk('span', 'cs text-label-14', i[0]));
+    var th = mk('span', 'th', i[1]); th.lang = 'th'; li.appendChild(th);
+    li.appendChild(mk('span', 'rom text-label-14', i[2]));
+    return li;
+  }
+  function draw(q){
+    q = plain(q).trim(); box.innerHTML = ''; jump.innerHTML = ''; jump.hidden = !!q; var any = false;
+    GROUPS.forEach(function(g, gi){
+      var cards = [];
+      g.rows.forEach(function(row){
+        if (!q) { row.forEach(function(i){ cards.push(card(i, g.numbers ? 'num' : SIZE[row.length])); }); return; }
+        // searching: a plain list, except a pair whose both halves match stays side by side
+        var hit = row.filter(function(i){ return plain(i.slice(0, 3).join(' ')).indexOf(q) >= 0; });
+        if (hit.length === 2 && row.length === 2) hit.forEach(function(i){ cards.push(card(i, 'half')); });
+        else hit.forEach(function(i){ cards.push(card(i, 'full')); });
+      });
+      if (!cards.length) return; any = true;
+      var sec = mk('section', 'dict-group'), h = mk('h3', 'text-label-12 caps'), ul = mk('ul', 'phrases');
+      sec.id = 'dict-' + gi;
+      h.appendChild(mk('strong', null, g.title)); sec.appendChild(h);
+      // shortcut chip: scroll the section to just below the sticky bar
+      var chip = mk('button', 'text-label-14', g.title); chip.type = 'button';
+      chip.addEventListener('click', function(){
+        var y = sec.getBoundingClientRect().top + window.scrollY - bar.offsetHeight - 8;
+        window.scrollTo({top: y, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'});
+      });
+      jump.appendChild(chip);
+      cards.forEach(function(c){ ul.appendChild(c); });
+      sec.appendChild(ul); box.appendChild(sec);
+    });
+    if (!any) box.appendChild(mk('p', 'dict-empty text-copy-14', 'Nic jsme nenašli.'));
+  }
+  search.addEventListener('input', function(){ draw(search.value); });
+  draw('');
+})();
+
+// Před odletem: open before departure (14. 2. 2027), collapsed afterwards; ?today=YYYY-MM-DD previews a date
+(function(){
+  var m = location.search.match(/[?&]today=(\d{4})-(\d{2})-(\d{2})/);
+  var now = m ? new Date(+m[1], +m[2] - 1, +m[3], 12) : new Date();
+  if (now >= new Date(2027, 1, 14)) document.getElementById('beforeTrip').open = false;
+})();
+</script>
+<script>
+// offline support: works once the app is hosted (not in a local file preview)
+if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) navigator.serviceWorker.register('sw.js').catch(function(e){ console.warn('Service worker not registered:', e); });
 </script>
 </body>
 </html>
