@@ -321,7 +321,7 @@ select option{background:var(--surface);color:var(--ink)}
 
 /* phone-first: below 760px one column capped at the iPhone 15 Pro width (393px); desktop from 760px */
 @media (min-width:760px){
-  .hero-in,.wrap{max-width:1040px}
+  .hero-in,.wrap{max-width:960px}
   .hero-in,.wrap{padding:0 24px}
   .hero{padding:calc(env(safe-area-inset-top,0px) + 56px) 0 48px}
   /* text-heading-72 values; the scale classes are not responsive on their own */
@@ -456,7 +456,7 @@ body[data-screen]:not([data-screen="domu"]) .hero{padding-bottom:20px}
 @media (min-width:760px){
   .nav{position:static;z-index:auto;margin-top:28px;background:none;padding-bottom:0}
   .nav::before{display:none}
-  .nav-in{display:flex;gap:8px;max-width:1040px;padding:0 24px}
+  .nav-in{display:flex;gap:8px;max-width:960px;padding:0 24px}
   .nav a{flex:none;flex-direction:row;gap:8px;min-height:0;padding:8px 16px;border-radius:999px;background:var(--surface);transition:background .15s,color .15s}
   .nav a:hover{color:var(--ink)}
   .nav a[aria-current="page"]{background:var(--accent-soft);color:var(--accent)}
@@ -468,10 +468,11 @@ body[data-screen]:not([data-screen="domu"]) .hero{padding-bottom:20px}
   .dict-bar{margin:0 -24px 16px;padding:8px 24px}
   .dict-jump{margin:0 -24px;padding:0 24px}
   .phrase.full{grid-column:span 12}
-  .phrase.half{grid-column:span 3}
+  .phrase.half{grid-column:span 6}
   .phrase.third{grid-column:span 4}
-  .phrase.num{grid-column:span 2}
-  .info{grid-template-columns:repeat(2,1fr);align-items:start}
+  .phrase.num{grid-column:span 3}
+  /* reading width: Dnes, Slovník, Průvodce and the Destinace list use 720px, the home overview the full 960px */
+  .screen:not([data-screen="domu"]) > *,#screen-domu > .sec-head,#timeline{max-width:720px}
   .fold{padding:0}
   .fold summary{padding:24px 28px}
   .fold .facts{margin:0 28px 28px}
@@ -528,7 +529,7 @@ button:focus-visible,select:focus-visible,a:focus-visible,input:focus-visible,te
       <div class="panel" id="calendar"><span class="skel skel-cal"></span></div>
     </div>
   </section>
-  <header class="sec-head"><h2 class="text-heading-32">Itinerář</h2></header>
+  <header class="sec-head"><h2 class="text-heading-32">Destinace</h2></header>
   <div id="timeline"><span class="skel skel-row"></span><span class="skel skel-row"></span><span class="skel skel-row"></span></div>
 </section>
 
@@ -632,7 +633,7 @@ button:focus-visible,select:focus-visible,a:focus-visible,input:focus-visible,te
     <header class="sec-head"><h2 class="text-heading-32">Jak to funguje</h2></header>
     <details>
       <summary class="text-label-16"><strong>Jak něco upravím?</strong></summary>
-      <div class="a text-copy-16"><p>Rozbalte místo v itineráři, ťukněte do textu u dne a pište. Upravit jde místo, program i poznámky.</p>
+      <div class="a text-copy-16"><p>Rozbalte místo v destinacích, ťukněte do textu u dne a pište. Upravit jde místo, program i poznámky.</p>
       <p>Ukládá se to samo. Jak to vypadá, ukazuje štítek dole na obrazovce: <strong class="ui">Ukládám…</strong> a pak <strong class="ui">Uloženo</strong>.</p></div>
     </details>
     <details>
@@ -661,7 +662,7 @@ button:focus-visible,select:focus-visible,a:focus-visible,input:focus-visible,te
     <details>
       <summary class="text-label-16"><strong>Jak upravím trasu?</strong></summary>
       <div class="a text-copy-16"><p><strong>Přidat:</strong> v kartě Trasa ťukněte na <strong class="ui">+ Přidat zastávku</strong>, napište místo a vyberte dny.</p>
-      <p><strong>Odebrat:</strong> rozbalte místo v itineráři a dole ťukněte na <strong class="ui">Odebrat zastávku</strong>. Smaže se jen místo, program a ubytování zůstanou.</p></div>
+      <p><strong>Odebrat:</strong> rozbalte místo v destinacích a dole ťukněte na <strong class="ui">Odebrat zastávku</strong>. Smaže se jen místo, program a ubytování zůstanou.</p></div>
     </details>
     <details>
       <summary class="text-label-16"><strong>Co když se něco neuloží?</strong></summary>
@@ -1004,7 +1005,7 @@ var SUPABASE_KEY = 'sb_publishable_7NDD7fqCwVlDIVxZ9vryHQ_ZsC2Db0C';
     }
     var notes = (row.notes || '').trim();
     if (notes) card.appendChild(el('p', 'text-copy-14 pre muted', notes));
-    var b = el('button', 'edit-links text-button-14', 'Otevřít v itineráři'); b.type = 'button';
+    var b = el('button', 'edit-links text-button-14', 'Otevřít v destinacích'); b.type = 'button';
     b.addEventListener('click', function(){ if (window.HT) window.HT.go('domu'); goToDay(row.id); });
     card.appendChild(b);
     return card;
