@@ -37,9 +37,7 @@
   --s-yes-bg:#ffd966; --s-yes-ink:#674700;
   --s-paid-bg:#a6f0d5; --s-paid-ink:#00684a;
   --s-x-bg:#f7b2d9; --s-x-ink:#8c1457;
-  /* person */
-  /* "Kdo rezervoval" pills are neutral; violet belongs to A² (Špony and Adéla, first part of the trip) */
-  --who-bg:var(--fill); --who-ink:var(--ink);
+  /* person: violet belongs to A² (Špony and Adéla, first part of the trip) */
   --a2-bg:#d9ccff; --a2-ink:#4b2fa0;
   color-scheme:light;
 }
@@ -53,7 +51,6 @@
   --s-yes-bg:#4d3a00; --s-yes-ink:#ffd966;
   --s-paid-bg:#0f4a3a; --s-paid-ink:#a6f0d5;
   --s-x-bg:#5a1440; --s-x-ink:#f7b2d9;
-  --who-bg:var(--fill); --who-ink:var(--ink);
   --a2-bg:#2f2266; --a2-ink:#d9ccff;
   color-scheme:dark;
   }
@@ -105,7 +102,7 @@ body{margin:0;background:var(--page);color:var(--ink);font-family:var(--font-gei
 /* ---------- hero ---------- */
 .hero{position:relative;overflow:hidden;color:var(--ink);padding:calc(env(safe-area-inset-top,0px) + 28px) 0 24px}
 .hero-in{position:relative;max-width:393px;margin:0 auto;padding:0 16px;container-type:inline-size}
-.toast{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:10;display:flex;align-items:center;gap:8px;transform:translateX(-50%);transition:opacity .25s,transform .25s}
+.toast{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:30;display:flex;align-items:center;gap:8px;transform:translateX(-50%);transition:opacity .25s,transform .25s}
 .toast.off{opacity:0;transform:translate(-50%,8px);pointer-events:none}
 .toast > *{box-shadow:0 2px 12px rgba(0,0,0,.12)}
 .retry{border:1px solid var(--danger);color:var(--danger);background:var(--page);border-radius:999px;padding:2px 12px;cursor:pointer}
@@ -123,6 +120,8 @@ body{margin:0;background:var(--page);color:var(--ink);font-family:var(--font-gei
 .overview .col{display:grid;gap:16px;align-content:start}
 /* let the swipeable route scroll inside its card instead of widening the column */
 .overview > *,.overview .col > *{min-width:0}
+/* phone: one column with the countdown on top, then Trasa, then the calendar */
+@media (max-width:759px){ .overview .col{display:contents} #stats{order:-1} }
 .panel{background:var(--surface);border-radius:20px;padding:20px}
 .panel h2{margin:0 0 16px;color:var(--muted)}
 .panel-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:-6px 0 16px}
@@ -155,20 +154,27 @@ a.rt-row:hover{background:var(--surface-2)}
 .stop-form[hidden]{display:none}
 .stop-form label{display:flex;flex-direction:column;gap:4px;min-width:0;color:var(--muted)}
 .stop-form input,.stop-form select{width:100%;min-width:0;min-height:40px;color:var(--ink);background:var(--surface);border:0;border-radius:8px;padding:8px 10px;outline:0;background-image:none}
-.stop-form input:focus-visible,.stop-form select:focus-visible{background:var(--accent-soft)}
 .stop-form .btns{display:flex;gap:8px}
 .stop-form .btns,.stop-form .stop-warn{grid-column:1 / -1}
 .btn{border-radius:8px;padding:8px 14px;cursor:pointer;border:0;background:none;color:var(--muted)}
 .btn.primary{background:var(--accent);color:var(--on-accent)}
 .stats{display:flex;flex-direction:column;gap:14px}
 /* Zbývá: collapsible; the whole summary row is the tap target */
-.zbyva{padding:0}
-.zbyva .zb-head{display:grid;grid-template-columns:auto 1fr;align-items:center;gap:12px;padding:20px}
-.zbyva .zb-head h2{margin:0}
-.zbyva .zb-val{justify-self:end;color:var(--ink)}
-.zb-bar{grid-column:1 / -1;display:flex;align-items:center;gap:10px}
-.zb-bar .meter{flex:1;height:8px}
-.zb-bar span{color:var(--muted);white-space:nowrap}
+/* countdown: the number of days as separate digit tiles, like a departures board */
+.cd-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:0 0 14px}
+.cd-head h2{margin:0}
+.cd-when{color:var(--muted);white-space:nowrap}
+.cd-num{display:flex;align-items:flex-end;flex-wrap:wrap;gap:8px 12px}
+.cd-digits{display:flex;gap:4px}
+.cd-digit{min-width:46px;height:64px;padding:0 4px;display:grid;place-items:center;border-radius:10px;background:var(--surface-2);color:var(--ink);font:600 44px/1 var(--font-geist-sans);letter-spacing:-0.04em;font-variant-numeric:tabular-nums}
+.cd-unit{color:var(--muted);padding-bottom:8px}
+.cd-text{margin:0;color:var(--ink)}
+/* accommodation progress under the calendar: one bar split into status portions, lined up with the day
+   columns (past the month labels), with the same small radius as the day cells and the count underneath */
+.cal-bar{display:grid;grid-template-columns:22px minmax(0,1fr);gap:6px 4px;margin:12px 0 0}
+.cal-bar > *{grid-column:2}
+.cal-bar .meter{height:10px;border-radius:5px}
+.cal-bar span{color:var(--muted)}
 .fold .chev{flex:none;box-sizing:border-box;width:24px;height:24px;display:grid;place-items:center;border:1.5px solid currentColor;border-radius:50%;color:var(--muted);transition:transform .2s}
 .fold .chev::before{content:"";width:16px;height:16px;background:currentColor;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6l6 -6'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6l6 -6'/%3E%3C/svg%3E") center/contain no-repeat}
 .fold[open] .chev{transform:rotate(180deg)}
@@ -192,15 +198,6 @@ button.cal-day:hover{filter:brightness(.94)}
 .cal-day.s-x{background:var(--s-x-bg);color:var(--s-x-ink)}
 .cal-day[data-mark]{padding-bottom:11px}
 .cal-day[data-mark]::before{content:attr(data-mark);position:absolute;left:0;right:0;bottom:3px;font-size:11px;font-weight:600;line-height:1}
-.cal-legend{display:flex;flex-wrap:wrap;gap:6px 12px;margin:12px 0 0;color:var(--muted)}
-.cal-legend > span{display:inline-flex;align-items:center;gap:5px}
-.cal-key{display:inline-grid;place-items:center;min-width:20px;height:18px;padding:0 4px;border-radius:5px;font-size:11px;font-weight:600;line-height:1}
-.cal-key.s-no{background:var(--s-no-bg);color:var(--s-no-ink)}
-.cal-key.s-yes{background:var(--s-yes-bg);color:var(--s-yes-ink)}
-.cal-key.s-paid{background:var(--s-paid-bg);color:var(--s-paid-ink)}
-.cal-key.s-x{background:var(--s-x-bg);color:var(--s-x-ink)}
-.cal-note{display:inline-flex;align-items:center;gap:6px;color:var(--muted)}
-.cal-note::before{content:"";width:5px;height:5px;border-radius:50%;background:var(--a2-ink)}
 .cal-day.a2::after{content:"";position:absolute;top:4px;right:4px;width:5px;height:5px;border-radius:50%;background:var(--a2-ink)}
 /* today: an accent ring on top of the day's status colour */
 .cal-day.today{box-shadow:0 0 0 2px var(--accent);font-weight:700}
@@ -259,7 +256,6 @@ button.cal-day:hover{filter:brightness(.94)}
 
 [contenteditable]{cursor:text;outline:none;white-space:pre-wrap;overflow-wrap:anywhere;min-height:1.4em;border-radius:6px;padding:2px 5px;margin:-2px -5px;transition:background .12s}
 [contenteditable]:hover{background:var(--surface-2)}
-[contenteditable]:focus{background:var(--surface-2);box-shadow:inset 0 -2px 0 var(--accent)}
 [contenteditable]:empty::before{content:attr(data-ph);color:var(--muted);font-style:italic;text-transform:none;letter-spacing:0}
 .edit-links{display:inline-flex;align-items:center;min-height:40px;color:var(--muted);background:none;border:1px solid var(--line);border-radius:999px;padding:0 14px;cursor:pointer;transition:border-color .15s,color .15s}
 .edit-links:hover{border-color:var(--ink);color:var(--ink)}
@@ -273,7 +269,6 @@ select.s-no{background-color:var(--s-no-bg);color:var(--s-no-ink)}
 select.s-yes{background-color:var(--s-yes-bg);color:var(--s-yes-ink)}
 select.s-paid{background-color:var(--s-paid-bg);color:var(--s-paid-ink)}
 select.s-x{background-color:var(--s-x-bg);color:var(--s-x-ink)}
-select.who{background-color:var(--who-bg);color:var(--who-ink)}
 select.fit{field-sizing:content;min-width:0}
 select option{background:var(--surface);color:var(--ink)}
 
@@ -297,9 +292,8 @@ select option{background:var(--surface);color:var(--ink)}
 .sw{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:3px 12px;white-space:nowrap}
 .face{width:16px;height:16px;flex:none}
 /* status <select> with its face drawn inside the pill */
-.stav-pick,.who-pick{position:relative;display:inline-flex;align-items:center;color:var(--muted)}
-.who-pick:has(select.who){color:var(--who-ink)}
-.stav-pick::after,.who-pick::after{content:"";position:absolute;right:10px;top:50%;width:14px;height:14px;margin-top:-7px;background:currentColor;pointer-events:none;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6l6 -6'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6l6 -6'/%3E%3C/svg%3E") center/contain no-repeat}
+.stav-pick{position:relative;display:inline-flex;align-items:center;color:var(--muted)}
+.stav-pick::after{content:"";position:absolute;right:10px;top:50%;width:14px;height:14px;margin-top:-7px;background:currentColor;pointer-events:none;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6l6 -6'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6l6 -6'/%3E%3C/svg%3E") center/contain no-repeat}
 .stav-pick .face{position:absolute;left:10px;pointer-events:none}
 .stav-pick.has-face select{padding-left:31px}
 .stav-pick.s-no{color:var(--s-no-ink)}
@@ -321,15 +315,14 @@ select option{background:var(--surface);color:var(--ink)}
 
 /* phone-first: below 760px one column capped at the iPhone 15 Pro width (393px); desktop from 760px */
 @media (min-width:760px){
-  .hero-in,.wrap{max-width:960px}
+  /* one centred frame on every screen, so the title, tabs and content always line up */
+  .hero-in,.wrap{max-width:880px}
   .hero-in,.wrap{padding:0 24px}
   .hero{padding:calc(env(safe-area-inset-top,0px) + 56px) 0 48px}
   /* text-heading-72 values; the scale classes are not responsive on their own */
   .hero h1{font:600 72px/72px var(--font-geist-sans);letter-spacing:-4.32px}
   .overview{grid-template-columns:1.35fr 1fr}
   .panel{padding:28px}
-  .zbyva{padding:0}
-  .zbyva .zb-head{padding:24px 28px}
   .day{grid-template-columns:84px 1fr}
   .body{padding:20px 24px 22px 4px}
   .seg{padding-left:34px}
@@ -376,13 +369,20 @@ select option{background:var(--surface);color:var(--ink)}
 .nav svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
 .nav a[aria-current="page"]{color:var(--accent)}
 body{padding-bottom:calc(58px + env(safe-area-inset-bottom,0px))}
+/* the save toast floats in front of the bar (z-index 30 over 20), just above its tabs */
 .toast{bottom:calc(70px + env(safe-area-inset-bottom,0px))}
 /* other screens: compact header */
 body[data-screen]:not([data-screen="domu"]) .hero{padding-bottom:20px}
 .lead{margin:0 0 16px;color:var(--muted)}
 .pre{white-space:pre-wrap;overflow-wrap:anywhere}
 .muted{color:var(--muted)}
-.sw.who{background:var(--who-bg);color:var(--who-ink)}
+/* who booked: initials in round bubbles; the chosen one turns black */
+.avatars{display:flex;flex-wrap:wrap;gap:6px}
+.avatar{width:40px;height:40px;padding:0;border:0;border-radius:50%;display:grid;place-items:center;background:var(--surface-2);color:var(--ink);font-weight:600;cursor:pointer;transition:background .15s,color .15s}
+.avatar:hover{background:var(--fill)}
+.avatar[aria-pressed="true"]{background:var(--ink);color:var(--page)}
+/* Dnes: who booked, as a plain name pill */
+.sw.who{background:var(--fill);color:var(--ink)}
 
 /* Dnes */
 .today{display:grid;gap:16px}
@@ -456,7 +456,7 @@ body[data-screen]:not([data-screen="domu"]) .hero{padding-bottom:20px}
 @media (min-width:760px){
   .nav{position:static;z-index:auto;margin-top:28px;background:none;padding-bottom:0}
   .nav::before{display:none}
-  .nav-in{display:flex;gap:8px;max-width:960px;padding:0 24px}
+  .nav-in{display:flex;gap:8px;max-width:880px;padding:0 24px}
   .nav a{flex:none;flex-direction:row;gap:8px;min-height:0;padding:8px 16px;border-radius:999px;background:var(--surface);transition:background .15s,color .15s}
   .nav a:hover{color:var(--ink)}
   .nav a[aria-current="page"]{background:var(--accent-soft);color:var(--accent)}
@@ -471,20 +471,19 @@ body[data-screen]:not([data-screen="domu"]) .hero{padding-bottom:20px}
   .phrase.half{grid-column:span 6}
   .phrase.third{grid-column:span 4}
   .phrase.num{grid-column:span 3}
-  /* reading width: Dnes, Slovník, Průvodce and the Destinace list use 720px, the home overview the full 960px */
-  .screen:not([data-screen="domu"]) > *,#screen-domu > .sec-head,#timeline{max-width:720px}
   .fold{padding:0}
   .fold summary{padding:24px 28px}
   .fold .facts{margin:0 28px 28px}
 }
 /* very narrow screens (< 360px): stack instead of squeezing side by side */
 @media (max-width:359px){
-  .zbyva .zb-head{grid-template-columns:1fr}
-  .zbyva .zb-val{justify-self:start}
   .faq-status li{grid-template-columns:1fr;gap:4px}
 }
 /* keyboard focus, everywhere */
 button:focus-visible,select:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,summary:focus-visible,[contenteditable]:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+/* fields you type in: on focus they turn white with a thin ink ring (no blue box), the same black-and-white
+   language as the selected avatar. Placed after the rule above so it replaces the blue outline for these */
+.stop-form input:focus,.stop-form select:focus,.dict-search:focus,.link-edit textarea:focus,[contenteditable]:focus{background:var(--surface-2);box-shadow:0 0 0 1.5px var(--ink);outline:none}
 </style>
 </head>
 <body class="text-copy-16">
@@ -525,7 +524,7 @@ button:focus-visible,select:focus-visible,a:focus-visible,input:focus-visible,te
     </div>
     <!-- right column on desktop: Zbývá above the calendar (phones keep the same order: Trasa, Zbývá, Kalendář) -->
     <div class="col">
-      <div class="panel zbyva" id="stats"><div class="zb-head"><h2 class="text-label-12 caps"><strong>Zbývá</strong></h2></div></div>
+      <div class="panel countdown" id="stats"><div class="cd-head"><h2 class="text-label-12 caps"><strong>Do odletu zbývá</strong></h2></div></div>
       <div class="panel" id="calendar"><span class="skel skel-cal"></span></div>
     </div>
   </section>
@@ -820,7 +819,6 @@ var SUPABASE_KEY = 'sb_publishable_7NDD7fqCwVlDIVxZ9vryHQ_ZsC2Db0C';
     if (/^zruš/i.test(v)) return STATUSES[3];
     return '';
   }
-  function personClass(n){ return n ? 'who' : ''; }
   function parseLinks(text){
     return (text || '').split('\n').map(function(line){
       line = line.trim(); var m = line.match(/^(.*?)\s*\|?\s*(https?:\/\/\S+)$/i);
@@ -839,6 +837,24 @@ var SUPABASE_KEY = 'sb_publishable_7NDD7fqCwVlDIVxZ9vryHQ_ZsC2Db0C';
   }
   function fitAll(){ if (!FIELD_SIZING) document.querySelectorAll('select.fit').forEach(fitSelect); }
   if (document.fonts) document.fonts.ready.then(fitAll);
+  // who booked: a row of initials in the day card. One tap picks, tapping the chosen one again clears it
+  function whoRow(row, dayName){
+    var wrap = el('div', 'row who-row'); wrap.appendChild(el('span', 'lbl text-label-13', 'Rezervoval(a)'));
+    var avatars = el('div', 'avatars'); avatars.setAttribute('role', 'group'); avatars.setAttribute('aria-label', 'Kdo rezervoval, ' + dayName);
+    avatars.dataset.day = row.id;
+    PEOPLE.forEach(function(n){
+      var b = el('button', 'avatar text-label-14', n.charAt(0)); b.type = 'button';
+      b.setAttribute('aria-label', n); b.setAttribute('aria-pressed', row.booked_by === n ? 'true' : 'false');
+      b.addEventListener('click', function(){
+        var v = row.booked_by === n ? '' : n;
+        row.booked_by = v; send(row.id, 'booked_by', v);
+        document.querySelectorAll('.avatars[data-day="' + row.id + '"] .avatar').forEach(function(x){ x.setAttribute('aria-pressed', x.getAttribute('aria-label') === v ? 'true' : 'false'); });
+      });
+      avatars.appendChild(b);
+    });
+    wrap.appendChild(avatars);
+    return wrap;
+  }
   function makeSelect(opts, val, cls, onch, label, hint, textOf){
     var s = document.createElement('select'); s.setAttribute('aria-label', label);
     var e = document.createElement('option'); e.value = ''; e.textContent = hint; s.appendChild(e);
@@ -951,35 +967,34 @@ var SUPABASE_KEY = 'sb_publishable_7NDD7fqCwVlDIVxZ9vryHQ_ZsC2Db0C';
     routeFoot.hidden = !hasFree;
     if (stopForm.hidden) addStop.hidden = !hasFree;
 
-    var total = rows.length, c = {};
-    STATUSES.forEach(function(st){ c[st] = 0; });
-    rows.forEach(function(r){ var k = stavKey(r.stav); if (k) c[k]++; });
-    var done = c[STATUSES[1]] + c[STATUSES[2]];
+    var total = rows.length;
     var today = nowDate(); today.setHours(0,0,0,0);
     var diff = Math.round((START - today) / 864e5), end = new Date(START); end.setDate(START.getDate() + total - 1);
-    var head = 'Zbývá', num, txt;
-    if (diff > 0) { num = diff; txt = dny(diff) + ' do odletu'; }
+    // countdown: before the trip days to departure, during it days to the flight home, afterwards the trip length
+    var head, when, num = null, unit = '', text = '';
+    function zbyva(n){ return n >= 2 && n <= 4 ? 'zbývají' : 'zbývá'; }
+    if (diff > 0) { head = 'Do odletu ' + zbyva(diff); when = ''; num = diff; unit = dny(diff); }
     else if (today <= end) {
-      var left = Math.round((end - today) / 864e5);
-      if (left > 0) { num = left; txt = dny(left) + ' do návratu'; } else { num = ''; txt = 'poslední den cesty'; }
+      var left = Math.round((end - today) / 864e5), n = total - left;
+      when = 'den ' + n + ' z ' + total;
+      if (left > 0) { head = 'Do návratu ' + zbyva(left); num = left; unit = dny(left); } else { head = 'Dnes'; text = 'Poslední den cesty'; }
     }
-    else { head = 'Za námi'; num = total; txt = dny(total) + ' cesty'; }
+    else { head = 'Cesta trvala'; when = ''; num = total; unit = dny(total); }
 
     statsEl.innerHTML = '';
-    var sum = el('div', 'zb-head'), h = el('h2', 'text-label-12 caps'), val = el('span', 'zb-val text-label-16');
-    h.appendChild(el('strong', null, head)); sum.appendChild(h);
-    if (num !== '') { val.appendChild(el('strong', 'tabular-nums', num)); val.appendChild(document.createTextNode(' ')); }
-    val.appendChild(document.createTextNode(txt)); sum.appendChild(val);
-    statsEl.appendChild(sum);
-    // the per-status breakdown lives in the calendar and its legend right next to this card
-    var bar = el('span', 'zb-bar'), meter = el('span', 'meter');
-    [2, 1, 0, 3].forEach(function(k){
-      var st = STATUSES[k], sc = STAV_CLASS[st];
-      if (!c[st]) return;
-      var i = el('i'); i.style.width = (c[st] / total * 100) + '%'; i.style.background = 'var(--' + sc + '-bg)'; i.title = STAV_LABEL[sc] + ': ' + c[st]; meter.appendChild(i);
-    });
-    bar.appendChild(meter); bar.appendChild(el('span', 'text-label-12 tabular-nums', total - done ? (total - done) + ' bez ubytování' : 'Ubytko zařízené'));
-    sum.appendChild(bar);
+    var top = el('div', 'cd-head'), h = el('h2', 'text-label-12 caps');
+    h.appendChild(el('strong', null, head)); top.appendChild(h);
+    if (when) top.appendChild(el('span', 'cd-when text-label-13 tabular-nums', when));
+    statsEl.appendChild(top);
+    if (num !== null) {
+      var box = el('div', 'cd-num'), digits = el('span', 'cd-digits');
+      digits.setAttribute('aria-hidden', 'true');
+      String(num).split('').forEach(function(ch){ digits.appendChild(el('span', 'cd-digit', ch)); });
+      box.appendChild(digits);
+      box.appendChild(el('span', 'sr', num + ' '));
+      box.appendChild(el('span', 'cd-unit text-label-16', unit));
+      statsEl.appendChild(box);
+    } else statsEl.appendChild(el('p', 'cd-text text-heading-24', text));
     calEl.innerHTML = ""; calEl.appendChild(renderCalendar());
     renderToday();
   }
@@ -998,6 +1013,7 @@ var SUPABASE_KEY = 'sb_publishable_7NDD7fqCwVlDIVxZ9vryHQ_ZsC2Db0C';
       var stay = el('div', 'today-stay'), meta = el('div', 'row');
       stay.appendChild(el('span', 'lbl text-label-13', 'Ubytování'));
       if (st) meta.appendChild(stavPill(STAV_CLASS[st]));
+      // who booked: shown as a name, not editable here; it's changed in the day card under Destinace
       if (row.booked_by) meta.appendChild(el('span', 'sw who text-label-14', row.booked_by));
       if (st || row.booked_by) stay.appendChild(meta);
       if (links.length) { var box = el('div', 'links'); links.forEach(function(l){ box.appendChild(linkEl(l)); }); stay.appendChild(box); }
@@ -1082,13 +1098,22 @@ var SUPABASE_KEY = 'sb_publishable_7NDD7fqCwVlDIVxZ9vryHQ_ZsC2Db0C';
       }
     });
     cal.appendChild(grid);
-    // legend next to the colours it explains
-    var key = el('p', 'cal-legend text-label-12');
-    [['s-paid', 'zaplaceno'], ['s-yes', 'rezervováno'], ['s-no', 'nerezervováno'], ['s-x', 'zrušeno']].forEach(function(k){
-      var item = el('span'); item.appendChild(el('span', 'cal-key ' + k[0], STAV_MARK[k[0]])); item.appendChild(document.createTextNode(k[1])); key.appendChild(item);
+    // how much accommodation is sorted, in the status colours of the days above
+    var c = {}, total = rows.length;
+    STATUSES.forEach(function(st){ c[st] = 0; });
+    rows.forEach(function(r){ var k = stavKey(r.stav); if (k) c[k]++; });
+    var done = c[STATUSES[1]] + c[STATUSES[2]];
+    var bar = el('div', 'cal-bar'), meter = el('span', 'meter');
+    [2, 1, 0, 3].forEach(function(k){
+      var st = STATUSES[k], sc = STAV_CLASS[st];
+      if (!c[st]) return;
+      var i = el('i'); i.style.width = (c[st] / total * 100) + '%'; i.style.background = 'var(--' + sc + '-bg)'; i.title = STAV_LABEL[sc] + ': ' + c[st]; meter.appendChild(i);
     });
-    key.appendChild(el('span', 'cal-note', 'dny s A²'));
-    cal.appendChild(key);
+    bar.appendChild(meter);
+    var left = total - done, note = el('span', 'text-label-12 tabular-nums');
+    if (left) { note.appendChild(el('strong', null, left)); note.appendChild(document.createTextNode(' ' + dny(left) + ' bez ubytování')); } else note.textContent = 'Ubytko zařízené';
+    bar.appendChild(note);
+    cal.appendChild(bar);
     return cal;
   }
   function goToDay(id){
@@ -1181,10 +1206,9 @@ var SUPABASE_KEY = 'sb_publishable_7NDD7fqCwVlDIVxZ9vryHQ_ZsC2Db0C';
     }
     stavSel.addEventListener('change', syncFace); syncFace();
     meta.appendChild(pick);
-    var whoPick = el('span', 'who-pick');
-    whoPick.appendChild(makeSelect(PEOPLE, row.booked_by, personClass, function(v){ row.booked_by = v; send(row.id, 'booked_by', v); }, 'Kdo rezervoval, ' + dayName, 'Kdo?'));
-    meta.appendChild(whoPick);
     body.appendChild(meta);
+
+    body.appendChild(whoRow(row, dayName));
 
     editable(body, 'notes text-copy-14', row, 'notes', 'Poznámky…', null, 'Poznámky, ' + dayName, true);
     card.appendChild(body);
