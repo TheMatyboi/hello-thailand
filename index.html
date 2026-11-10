@@ -167,12 +167,10 @@ body{margin:0;background:var(--page);color:var(--ink);font-family:var(--font-gei
 /* countdown: the number of days as separate digit tiles, like a departures board */
 .cd-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:0 0 14px}
 .cd-head h2{margin:0;color:var(--muted);font:400 14px/20px var(--font-geist-sans)}
-.cd-when{color:var(--muted);white-space:nowrap}
 .cd-num{display:flex;align-items:flex-end;flex-wrap:wrap;gap:8px 12px}
 .cd-digits{display:flex;gap:4px}
 .cd-digit{min-width:46px;height:64px;padding:0 4px;display:grid;place-items:center;border:1px solid var(--line);border-radius:10px;background:var(--surface);box-shadow:var(--shadow);color:var(--ink);font:600 44px/1 var(--font-geist-sans);letter-spacing:-0.04em;font-variant-numeric:tabular-nums}
 .cd-unit{color:var(--muted);padding-bottom:8px}
-.cd-text{margin:0;color:var(--ink)}
 /* accommodation progress under the calendar: one bar split into status portions, lined up with the day
    columns (past the month labels), with the same small radius as the day cells and the count underneath */
 .cal-bar{display:grid;grid-template-columns:22px minmax(0,1fr);gap:6px 4px;margin:12px 0 0}
@@ -733,6 +731,8 @@ button:focus-visible,select:focus-visible,a:focus-visible,input:focus-visible,te
 // ====== screens: #/domu, #/dnes, #/slovnik, #/prakticke ======
 // trip dates and "today" (?today=2027-02-20 in the address fakes the date for testing), shared by both scripts
 var TRIP_START = new Date(2027,1,14), TRIP_END = new Date(2027,2,17);
+// flights: leave Prague so 13. 2. 12:40, land in Bangkok ne 14. 2. 10:25 (= 03:25 UTC), fly home st 17. 3. 11:25
+var FLIGHT_OUT = new Date(2027,1,13), LANDED = new Date(Date.UTC(2027,1,14,3,25)), OUT_TIME = '12:40', HOME_TIME = '11:25';
 function nowDate(){
   var m = location.search.match(/[?&]today=(\d{4})-(\d{2})-(\d{2})/);
   return m ? new Date(+m[1], +m[2] - 1, +m[3], 12) : new Date();
@@ -842,7 +842,7 @@ var SUPABASE_KEY = 'sb_publishable_7NDD7fqCwVlDIVxZ9vryHQ_ZsC2Db0C';
       }
       if (pending) return;
       if (failed.length) setSave(failed.every(function(x){ return x.net; }) ? 'Bez signálu – uloží se po připojení' : 'Uložení se nepovedlo', true);
-      else { setSave('Uloženo'); saveCache(); keepFailed(); if (needsRender && !busy()) { needsRender = false; render(); } }
+      else { setSave('Uloženo'); showRetry(null); saveCache(); keepFailed(); if (needsRender && !busy()) { needsRender = false; render(); } }
     }
     api('PATCH', '?id=in.(' + ids.join(',') + ')', patch).then(function(){ done(null); }, done);
   }
@@ -866,7 +866,7 @@ var SUPABASE_KEY = 'sb_publishable_7NDD7fqCwVlDIVxZ9vryHQ_ZsC2Db0C';
   function dateOf(row){ var d = new Date(START); d.setDate(START.getDate() + row.id - 1); return d; }
   function fmt(d){ return d.getDate() + '. ' + (d.getMonth()+1) + '.'; }
   function sameDay(a, b){ return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate(); }
-  function dny(n){ return n === 1 ? 'den' : n < 5 ? 'dny' : 'dní'; }
+  function dny(n){ return n === 1 ? 'den' : n >= 2 && n <= 4 ? 'dny' : 'dní'; }
   // map any saved variant ("Nerezervováno.", "Zrušené!" …) to the current label
   function stavKey(v){
     v = v || '';
@@ -974,6 +974,8 @@ var SUPABASE_KEY = 'sb_publishable_7NDD7fqCwVlDIVxZ9vryHQ_ZsC2Db0C';
     });
     box.appendChild(b);
   }
+  // the last day we fly home, so it needs no bed: left out of the accommodation counts and of Dnes' bed card
+  function isHomeDay(row){ return row.id === rows.length; }
   function segments(){
     var segs = [];
     rows.forEach(function(row){
@@ -990,35 +992,22 @@ var SUPABASE_KEY = 'sb_publishable_7NDD7fqCwVlDIVxZ9vryHQ_ZsC2Db0C';
     routeFoot.hidden = !hasFree;
     if (stopForm.hidden) addStop.hidden = !hasFree;
 
-    var total = rows.length;
     var today = nowDate(); today.setHours(0,0,0,0);
-    var diff = Math.round((START - today) / 864e5), end = new Date(START); end.setDate(START.getDate() + total - 1);
-    // countdown: before the trip days to departure, during it days to the flight home, afterwards the trip length
-    var head, when, num = null, unit = '', text = '';
+    var diff = Math.round((FLIGHT_OUT - today) / 864e5);
+    // countdown to leaving Prague: 000 on the day we fly, gone once we've landed in Bangkok (Dnes takes over)
     function zbyva(n){ return n >= 2 && n <= 4 ? 'zbývají' : 'zbývá'; }
-    if (diff > 0) { head = 'Do odletu ' + zbyva(diff); when = ''; num = diff; unit = dny(diff); }
-    else if (today <= end) {
-      var left = Math.round((end - today) / 864e5), n = total - left;
-      when = 'den ' + n + ' z ' + total;
-      if (left > 0) { head = 'Do návratu ' + zbyva(left); num = left; unit = dny(left); } else { head = 'Dnes'; text = 'Poslední den cesty'; }
-    }
-    else { head = 'Cesta trvala'; when = ''; num = total; unit = dny(total); }
-
     statsEl.innerHTML = '';
-    statsEl.hidden = diff <= 0 && today <= end;
+    statsEl.hidden = nowDate() >= LANDED;
     var top = el('div', 'cd-head'), h = el('h2', 'text-label-12 caps');
-    h.appendChild(el('strong', null, head)); top.appendChild(h);
-    if (when) top.appendChild(el('span', 'cd-when text-label-13 tabular-nums', when));
+    h.appendChild(el('strong', null, 'Do odletu ' + zbyva(diff))); top.appendChild(h);
     statsEl.appendChild(top);
-    if (num !== null) {
-      var box = el('div', 'cd-num'), digits = el('span', 'cd-digits');
-      digits.setAttribute('aria-hidden', 'true');
-      String(num).padStart(3, '0').split('').forEach(function(ch){ digits.appendChild(el('span', 'cd-digit', ch)); });
-      box.appendChild(digits);
-      box.appendChild(el('span', 'sr', num + ' '));
-      box.appendChild(el('span', 'cd-unit text-label-16', unit));
-      statsEl.appendChild(box);
-    } else statsEl.appendChild(el('p', 'cd-text text-heading-24', text));
+    var box = el('div', 'cd-num'), digits = el('span', 'cd-digits');
+    digits.setAttribute('aria-hidden', 'true');
+    String(Math.max(diff, 0)).padStart(3, '0').split('').forEach(function(ch){ digits.appendChild(el('span', 'cd-digit', ch)); });
+    box.appendChild(digits);
+    box.appendChild(el('span', 'sr', Math.max(diff, 0) + ' '));
+    box.appendChild(el('span', 'cd-unit text-label-16', dny(Math.max(diff, 0))));
+    statsEl.appendChild(box);
     calEl.innerHTML = ""; calEl.appendChild(renderCalendar());
     renderToday();
   }
@@ -1049,7 +1038,7 @@ var SUPABASE_KEY = 'sb_publishable_7NDD7fqCwVlDIVxZ9vryHQ_ZsC2Db0C';
     }
     // tonight's bed, its own card: status, who booked, other links, then the Navigovat button where the thumb is
     var links = parseLinks(row.links), st = stavKey(row.stav);
-    if (links.length || st || row.booked_by || (row.checkin || '').trim()) {
+    if (!isHomeDay(row) && (links.length || st || row.booked_by || (row.checkin || '').trim())) {
       var stay = el('div', 'panel today-stay'), top = el('div', 'stay-top'), sh = el('h2', 'text-label-14');
       sh.appendChild(el('strong', null, prev ? 'Nové ubytování' : 'Ubytování')); top.appendChild(sh);
       if (st) top.appendChild(stavPill(STAV_CLASS[st]));
@@ -1083,7 +1072,7 @@ var SUPABASE_KEY = 'sb_publishable_7NDD7fqCwVlDIVxZ9vryHQ_ZsC2Db0C';
     var total = rows.length, diff = Math.round((START - t) / 864e5), n = 1 - diff;
     if (diff > 0) {
       // before departure: what still needs sorting out
-      var open = rows.filter(function(r){ var k = stavKey(r.stav); return k !== STATUSES[1] && k !== STATUSES[2]; });
+      var open = rows.filter(function(r){ var k = stavKey(r.stav); return !isHomeDay(r) && k !== STATUSES[1] && k !== STATUSES[2]; });
       // the count and the countdown are on Plán; Dnes shows only what to act on
       if (!open.length) { var p = el('div', 'panel'); p.appendChild(el('p', 'text-copy-16', 'Ubytování máme na všechny dny.')); todayEl.appendChild(p); }
       if (open.length) todayEl.appendChild(dayCard(open[0], 'Nejbližší noc bez ubytování'));
@@ -1131,23 +1120,29 @@ var SUPABASE_KEY = 'sb_publishable_7NDD7fqCwVlDIVxZ9vryHQ_ZsC2Db0C';
       for (var i = 0; i < 7; i++) {
         var day = new Date(w.start); day.setDate(day.getDate() + i);
         var id = Math.round((day - START) / 864e5) + 1, row = rows[id - 1];
+        // the day we leave Prague comes before day 1: shown with a plane, like the flight home
+        if (!row && sameDay(day, FLIGHT_OUT)) {
+          var out = el('span', 'cal-day text-label-13 tabular-nums', day.getDate()); out.setAttribute('data-mark', '✈'); out.title = 'Odlet z Prahy ' + OUT_TIME;
+          out.appendChild(el('span', 'sr', ', ' + DAYS[day.getDay()] + ' ' + fmt(day) + ', odlet z Prahy')); grid.appendChild(out); continue;
+        }
         if (!row) { var off = el('span', 'cal-day off'); off.setAttribute('aria-hidden', 'true'); grid.appendChild(off); continue; }
-        var st = stavKey(row.stav), sc = STAV_CLASS[st] || '';
+        var home = isHomeDay(row), st = home ? '' : stavKey(row.stav), sc = STAV_CLASS[st] || '';
         var b = el('button', 'cal-day text-label-13 tabular-nums ' + sc, day.getDate()); b.type = 'button';
         if (row.id <= A2_LAST) b.classList.add('a2');
         if (sameDay(day, today)) b.classList.add('today');
         b.title = 'Den ' + row.id + (row.lok ? ', ' + placeName(row.lok) : '') + (sc ? ', ' + STAV_LABEL[sc] : '');
-        b.setAttribute('aria-label', DAYS[day.getDay()] + ' ' + fmt(day) + ', den ' + row.id + (row.lok ? ', ' + placeName(row.lok) : '') + ', ' + (st ? st.replace(/[.!].*$/,'') : 'bez stavu') + (row.id <= A2_LAST ? ', s A²' : ''));
+        b.setAttribute('aria-label', DAYS[day.getDay()] + ' ' + fmt(day) + ', den ' + row.id + (row.lok ? ', ' + placeName(row.lok) : '') + ', ' + (home ? 'odlet domů' : st ? st.replace(/[.!].*$/,'') : 'bez stavu') + (row.id <= A2_LAST ? ', s A²' : ''));
         if (sc) b.setAttribute('data-mark', STAV_MARK[sc]);
+        if (home) { b.setAttribute('data-mark', '✈'); b.title = 'Den ' + row.id + ', odlet domů'; }
         b.addEventListener('click', goToDay.bind(null, row.id));
         grid.appendChild(b);
       }
     });
     cal.appendChild(grid);
     // how much accommodation is sorted, in the status colours of the days above
-    var c = {}, total = rows.length;
+    var nights = rows.filter(function(r){ return !isHomeDay(r); }), c = {}, total = nights.length;
     STATUSES.forEach(function(st){ c[st] = 0; });
-    rows.forEach(function(r){ var k = stavKey(r.stav); if (k) c[k]++; });
+    nights.forEach(function(r){ var k = stavKey(r.stav); if (k) c[k]++; });
     var done = c[STATUSES[1]] + c[STATUSES[2]];
     var bar = el('div', 'cal-bar'), meter = el('span', 'meter');
     [2, 1, 0, 3].forEach(function(k){
@@ -1285,15 +1280,16 @@ var SUPABASE_KEY = 'sb_publishable_7NDD7fqCwVlDIVxZ9vryHQ_ZsC2Db0C';
   }
   // Trasa: one list, the flights as the first and last rows, every stop a row that opens into its days
   function flightRow(kind){
-    var d = kind === 'land' ? dateOf(rows[0]) : dateOf(rows[rows.length - 1]);
+    // both rows show when the plane takes off: from Prague, then from Bangkok
+    var d = kind === 'land' ? FLIGHT_OUT : dateOf(rows[rows.length - 1]);
     var row = el('div', 'rt-row flight'), mark = el('span', 'rt-mark'), plane = el('span', 'rt-plane');
     plane.innerHTML = kind === 'land' ? '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.157 11.81l4.83 1.295a2 2 0 1 1 -1.036 3.863l-14.489 -3.882l-1.345 -6.572l2.898 .776l1.414 2.45l2.898 .776l-.12 -7.279l2.898 .777l2.052 7.797"/><path d="M3 21h18"/></svg>' : '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.639 10.258l4.83 -1.294a2 2 0 1 1 1.035 3.863l-14.489 3.883l-4.45 -5.02l2.897 -.776l2.45 1.414l2.897 -.776l-3.743 -6.244l2.898 -.777l5.675 5.727"/><path d="M3 21h18"/></svg>';
     mark.appendChild(plane); row.appendChild(mark);
     var name = el('span', 'rt-name text-label-14');
-    name.appendChild(el('span', 'sr', kind === 'land' ? 'Přílet, ' : 'Odlet, '));
+    name.appendChild(el('span', 'sr', kind === 'land' ? 'Let tam, ' : 'Let domů, '));
     name.appendChild(document.createTextNode(kind === 'land' ? 'PRG → BKK' : 'BKK → PRG'));
     row.appendChild(name);
-    row.appendChild(el('span', 'rt-dates text-label-13 tabular-nums', DAYS[d.getDay()] + ' ' + fmt(d)));
+    row.appendChild(el('span', 'rt-dates text-label-13 tabular-nums', DAYS[d.getDay()] + ' ' + fmt(d) + ' · ' + (kind === 'land' ? OUT_TIME : HOME_TIME)));
     row.appendChild(el('span', 'rt-len'));
     return row;
   }
@@ -1534,7 +1530,7 @@ var SUPABASE_KEY = 'sb_publishable_7NDD7fqCwVlDIVxZ9vryHQ_ZsC2Db0C';
       var chip = mk('button', 'text-label-14', g.title); chip.type = 'button';
       chip.addEventListener('click', function(){
         var y = sec.getBoundingClientRect().top + window.scrollY - bar.offsetHeight - 8;
-        window.scrollTo({top: y, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'});
+        (document.scrollingElement || document.documentElement).scrollTo({top: y, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'});
       });
       jump.appendChild(chip);
       cards.forEach(function(c){ ul.appendChild(c); });
@@ -1546,12 +1542,8 @@ var SUPABASE_KEY = 'sb_publishable_7NDD7fqCwVlDIVxZ9vryHQ_ZsC2Db0C';
   draw('');
 })();
 
-// Před odletem: open before departure (14. 2. 2027), collapsed afterwards; ?today=YYYY-MM-DD previews a date
-(function(){
-  var m = location.search.match(/[?&]today=(\d{4})-(\d{2})-(\d{2})/);
-  var now = m ? new Date(+m[1], +m[2] - 1, +m[3], 12) : new Date();
-  if (now >= new Date(2027, 1, 14)) document.getElementById('beforeTrip').open = false;
-})();
+// Před odletem: open until we've landed and passed immigration (TDAC, cash), collapsed afterwards
+if (nowDate() >= LANDED) document.getElementById('beforeTrip').open = false;
 </script>
 <script>
 // ====== Přepočet ฿ ↔ Kč ======
