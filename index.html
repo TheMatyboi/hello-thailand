@@ -490,6 +490,9 @@ body{padding-bottom:calc(70px + env(safe-area-inset-bottom,0px))}
 .call:first-of-type{border-top:0}
 .call{gap:12px}
 .call b{color:var(--accent);white-space:nowrap}
+/* which language the line speaks, next to the number */
+.call .lang{margin-left:auto;flex:none;padding:1px 6px;border-radius:6px;background:var(--surface-2);color:var(--muted);font-size:11px;line-height:16px;font-weight:600;letter-spacing:.04em}
+.call .lang + b{margin-left:-4px}
 .facts{margin:0;padding-left:18px;display:grid;gap:8px}
 .embassy{margin:8px 0 0;color:var(--muted)}
 .checked{margin:-4px 16px 16px;color:var(--muted)}
@@ -606,13 +609,13 @@ button:focus-visible,select:focus-visible,a:focus-visible,input:focus-visible,te
     </div>
     <div class="panel">
       <h2 class="text-label-12 caps"><strong>Tísňová volání</strong></h2>
-      <a class="call text-copy-16" href="tel:1155"><span>Turistická policie</span><b class="tabular-nums">1155</b></a>
-      <a class="call text-copy-16" href="tel:191"><span>Policie</span><b class="tabular-nums">191</b></a>
-      <a class="call text-copy-16" href="tel:1669"><span>Záchranná služba</span><b class="tabular-nums">1669</b></a>
-      <a class="call text-copy-16" href="tel:199"><span>Hasiči</span><b class="tabular-nums">199</b></a>
-      <a class="call text-copy-16" href="tel:+6622509223"><span>Velvyslanectví ČR v Bangkoku</span><b class="tabular-nums">+66 2 250 9223</b></a>
-      <a class="call text-copy-16" href="tel:+420222420222"><span>24/7 Nouzová linka MZV</span><b class="tabular-nums">+420 222 420 222</b></a>
-      <p class="embassy text-copy-14">Velvyslanectví: 71/6 Ruam Rudee Soi 2, Ploenchit Rd., Lumpini, Bangkok</p>
+      <a class="call text-copy-16" href="tel:1155"><span>Turistická policie</span><span class="lang" title="Mluví anglicky"><span class="sr">mluví anglicky, </span><span aria-hidden="true">EN</span></span><b class="tabular-nums">1155</b></a>
+      <a class="call text-copy-16" href="tel:191"><span>Policie</span><span class="lang" title="Mluví thajsky"><span class="sr">mluví thajsky, </span><span aria-hidden="true">TH</span></span><b class="tabular-nums">191</b></a>
+      <a class="call text-copy-16" href="tel:1669"><span>Záchranná služba</span><span class="lang" title="Mluví thajsky"><span class="sr">mluví thajsky, </span><span aria-hidden="true">TH</span></span><b class="tabular-nums">1669</b></a>
+      <a class="call text-copy-16" href="tel:199"><span>Hasiči</span><span class="lang" title="Mluví thajsky"><span class="sr">mluví thajsky, </span><span aria-hidden="true">TH</span></span><b class="tabular-nums">199</b></a>
+      <a class="call text-copy-16" href="tel:+420222420222"><span>Nouzová linka MZV</span><span class="lang" title="Mluví česky"><span class="sr">mluví česky, </span><span aria-hidden="true">CZ</span></span><b class="tabular-nums">+420 222 420 222</b></a>
+      <a class="call text-copy-16" href="tel:+6622509223"><span>Česká ambasáda</span><span class="lang" title="Mluví česky"><span class="sr">mluví česky, </span><span aria-hidden="true">CZ</span></span><b class="tabular-nums">+66 2 250 9223</b></a>
+      <p class="embassy text-copy-14">Česká ambasáda: 71/6 Ruam Rudee Soi 2, Ploenchit Rd., Lumpini, Bangkok</p>
     </div>
     <div class="panel folds">
     <!-- open until departure, collapsed once the trip starts -->
