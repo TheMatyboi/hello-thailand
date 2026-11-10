@@ -13,19 +13,20 @@
 <meta name="apple-mobile-web-app-title" content="Thailand">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#0e0e10" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#0a0a0a" media="(prefers-color-scheme: dark)">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://wjlezsrlfoiwxpnftgiv.supabase.co" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400..600&display=swap" rel="stylesheet">
 <style>
-/* Design system: white + near-black neutrals, one UI accent, semantic accents for status and people */
+/* Design system: shadcn/ui "neutral" look in plain CSS (white cards with hairline borders, 8–12px corners),
+   one UI accent (the HT blue), semantic accents for status and people */
 :root{
   /* neutrals */
-  --white:#ffffff; --gray-50:#f5f5f6; --gray-100:#ebebed; --gray-200:#e2e2e5; --gray-600:#5f5f67; --near-black:#111113;
+  --white:#ffffff; --gray-50:#f5f5f5; --gray-100:#ebebeb; --gray-200:#e5e5e5; --gray-500:#737373; --near-black:#0a0a0a;
   /* roles */
-  --page:var(--white); --surface:var(--gray-50); --surface-2:var(--white); --fill:var(--gray-100); --line:var(--gray-200);
-  --ink:var(--near-black); --muted:var(--gray-600);
+  --page:var(--white); --surface:var(--white); --surface-2:var(--gray-50); --well:var(--gray-50); --fill:var(--gray-100); --line:var(--gray-200);
+  --ink:var(--near-black); --muted:var(--gray-500); --shadow:0 1px 2px rgba(0,0,0,.05);
   /* UI accent: links, save state, day pills, actions */
   --accent:#1e5bd7; --accent-soft:#e3ecfc; --on-accent:var(--white);
   /* danger: today, weekend labels, remove */
@@ -43,8 +44,8 @@
 }
 @media (prefers-color-scheme: dark){
   :root{
-  --page:#0e0e10; --surface:#18181b; --surface-2:#26262b; --fill:#36363d; --line:#2e2e33;
-  --ink:#f2f2f3; --muted:#a1a1aa;
+  --page:#0a0a0a; --surface:#171717; --surface-2:#262626; --well:#262626; --fill:#333333; --line:rgba(255,255,255,.1);
+  --ink:#fafafa; --muted:#a1a1a1; --shadow:none;
   --accent:#7fa8ff; --accent-soft:#1b2a4a; --on-accent:#0e0e10;
   --danger:#ff7a8f; --on-danger:#0e0e10;
   --s-no-bg:#5c2414; --s-no-ink:#ffb199;
@@ -100,16 +101,16 @@ html{scroll-behavior:smooth;scroll-padding-top:16px;background:var(--page)}
 body{margin:0;background:var(--page);color:var(--ink);font-family:var(--font-geist-sans);padding-bottom:env(safe-area-inset-bottom,0px)}
 
 /* ---------- hero ---------- */
-.hero{position:relative;overflow:hidden;color:var(--ink);padding:calc(env(safe-area-inset-top,0px) + 28px) 0 24px}
+.hero{position:relative;overflow:hidden;color:var(--ink);padding:calc(env(safe-area-inset-top,0px) + 28px) 0 20px}
 .hero-in{position:relative;max-width:393px;margin:0 auto;padding:0 16px;container-type:inline-size}
 .toast{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:30;display:flex;align-items:center;gap:8px;transform:translateX(-50%);transition:opacity .25s,transform .25s}
 .toast.off{opacity:0;transform:translate(-50%,8px);pointer-events:none}
 .toast > *{box-shadow:0 2px 12px rgba(0,0,0,.12)}
-.retry{border:1px solid var(--danger);color:var(--danger);background:var(--page);border-radius:999px;padding:2px 12px;cursor:pointer}
+.retry{border:1px solid var(--danger);color:var(--danger);background:var(--page);border-radius:8px;padding:2px 12px;cursor:pointer}
 .retry[hidden]{display:none}
-/* phone: the title fills the column edge to edge. "Hello Thailand! 2027" in Geist 600 at -0.06em
-   is 8.53× its font size wide, so 11.7% of the column width makes it exactly fit */
-.hero h1{margin:0;white-space:nowrap;font-size:11.7cqw;line-height:1.2;letter-spacing:-0.06em}
+/* the same compact title on every screen. "Hello Thailand! 2027" in Geist 600 at -0.06em is 8.53× its
+   font size wide, so 7% of the column width takes up about 60% of it on a phone */
+.hero h1{margin:0;white-space:nowrap;font-size:7cqw;line-height:1.2;letter-spacing:-0.06em}
 .hero h1 span{color:var(--accent)}
 .save.err{background:color-mix(in srgb,var(--danger) 8%,var(--page));color:var(--danger)}
 .save{flex:none;padding:6px 14px;border-radius:999px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
@@ -122,14 +123,17 @@ body{margin:0;background:var(--page);color:var(--ink);font-family:var(--font-gei
 .overview > *,.overview .col > *{min-width:0}
 /* phone: one column with the countdown on top, then Trasa, then the calendar */
 @media (max-width:759px){ .overview .col{display:contents} #stats{order:-1} }
-.panel{background:var(--surface);border-radius:20px;padding:20px}
-.panel h2{margin:0 0 16px;color:var(--muted)}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px;box-shadow:var(--shadow)}
+/* card titles: sentence case, semibold (shadcn CardTitle) */
+.panel h2{margin:0 0 16px;color:var(--ink);font-size:15px;line-height:20px;font-weight:600;letter-spacing:-.01em;text-transform:none}
+.panel h2 strong{font-weight:600}
 .panel-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:-6px 0 16px}
 .panel-head h2{margin:0}
 /* Trasa: a vertical route, one compact row per stop, flights as the first and last rows */
 .route{position:relative;display:grid;gap:6px;margin:0;padding:0;list-style:none}
-.route::before{content:"";position:absolute;left:15px;top:20px;bottom:20px;width:2px;background:color-mix(in srgb,var(--muted) 45%,var(--surface))}
-.rt-row{display:grid;grid-template-columns:32px minmax(0,1fr) auto 52px;align-items:center;column-gap:10px;min-height:40px;padding-right:4px;border-radius:10px;color:var(--ink);text-decoration:none}
+.route{--route-line:color-mix(in srgb,var(--muted) 45%,var(--surface))}
+.route::before{content:"";position:absolute;left:15px;top:20px;bottom:20px;width:2px;background:var(--route-line)}
+.rt-row{display:grid;grid-template-columns:32px minmax(0,1fr) auto 52px;align-items:center;column-gap:10px;min-height:40px;padding-right:4px;border-radius:8px;color:var(--ink);text-decoration:none}
 .rt-mark{position:relative;z-index:1;display:grid;place-items:center}
 .rt-dot{box-sizing:border-box;width:12px;height:12px;border-radius:50%;background:var(--ink);box-shadow:0 0 0 4px var(--surface)}
 .seg.free .rt-dot{background:var(--surface);border:2px solid var(--muted)}
@@ -139,67 +143,69 @@ body{margin:0;background:var(--page);color:var(--ink);font-family:var(--font-gei
 .rt-row.flight .rt-name{color:var(--accent);letter-spacing:.04em}
 .seg.free .rt-name{font-weight:400;color:var(--muted)}
 .rt-dates{color:var(--muted);white-space:nowrap}
-.rt-len{justify-self:end;padding:1px 8px;border-radius:999px;background:var(--fill);color:var(--muted);font-weight:600;white-space:nowrap}
+.rt-len{justify-self:end;padding:1px 8px;border-radius:6px;background:var(--surface-2);color:var(--muted);font-weight:600;white-space:nowrap}
 .rt-len:empty{display:none}
 /* screen-reader-only text */
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 /* overview of unplanned days + the add button, together on the right */
 .route-foot{display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-end;gap:8px 12px;margin-top:10px}
 .route-foot[hidden]{display:none}
-.add-stop{white-space:nowrap;color:var(--accent);background:none;border:1px solid var(--accent);border-radius:999px;padding:9px 16px;cursor:pointer;transition:background .15s}
-.add-stop:hover{background:var(--accent-soft)}
-.stop-form{display:grid;grid-template-columns:minmax(0,1fr);gap:12px;margin-top:18px;padding:18px;border-radius:14px;background:var(--surface-2)}
+.add-stop{white-space:nowrap;min-height:40px;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:0 14px;cursor:pointer;box-shadow:var(--shadow);transition:background .15s}
+.add-stop:hover{background:var(--surface-2)}
+.stop-form{display:grid;grid-template-columns:minmax(0,1fr);gap:12px;margin-top:18px;padding:16px;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
 .stop-form[hidden]{display:none}
-.stop-form label{display:flex;flex-direction:column;gap:4px;min-width:0;color:var(--muted)}
-.stop-form input,.stop-form select{width:100%;min-width:0;min-height:40px;color:var(--ink);background:var(--surface);border:0;border-radius:8px;padding:8px 10px;outline:0;background-image:none}
+.stop-form label{display:flex;flex-direction:column;gap:6px;min-width:0;color:var(--ink);font-weight:500}
+.stop-form input,.stop-form select{width:100%;min-width:0;min-height:40px;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px 12px;outline:0;background-image:none;box-shadow:var(--shadow);font-weight:400}
 .stop-form .btns{display:flex;gap:8px}
 .stop-form .btns,.stop-form .stop-warn{grid-column:1 / -1}
-.btn{border-radius:8px;padding:8px 14px;cursor:pointer;border:0;background:none;color:var(--muted)}
+.btn{border-radius:8px;padding:8px 14px;cursor:pointer;border:1px solid transparent;background:none;color:var(--ink);transition:background .15s}
+.btn:hover{background:var(--surface-2)}
 .btn.primary{background:var(--accent);color:var(--on-accent)}
+.btn.primary:hover,.btn.danger:hover{filter:brightness(.95)}
 .stats{display:flex;flex-direction:column;gap:14px}
 /* Zbývá: collapsible; the whole summary row is the tap target */
 /* countdown: the number of days as separate digit tiles, like a departures board */
 .cd-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:0 0 14px}
-.cd-head h2{margin:0}
+.cd-head h2{margin:0;color:var(--muted);font:400 14px/20px var(--font-geist-sans)}
 .cd-when{color:var(--muted);white-space:nowrap}
 .cd-num{display:flex;align-items:flex-end;flex-wrap:wrap;gap:8px 12px}
 .cd-digits{display:flex;gap:4px}
-.cd-digit{min-width:46px;height:64px;padding:0 4px;display:grid;place-items:center;border-radius:10px;background:var(--surface-2);color:var(--ink);font:600 44px/1 var(--font-geist-sans);letter-spacing:-0.04em;font-variant-numeric:tabular-nums}
+.cd-digit{min-width:46px;height:64px;padding:0 4px;display:grid;place-items:center;border:1px solid var(--line);border-radius:10px;background:var(--surface);box-shadow:var(--shadow);color:var(--ink);font:600 44px/1 var(--font-geist-sans);letter-spacing:-0.04em;font-variant-numeric:tabular-nums}
 .cd-unit{color:var(--muted);padding-bottom:8px}
 .cd-text{margin:0;color:var(--ink)}
 /* accommodation progress under the calendar: one bar split into status portions, lined up with the day
    columns (past the month labels), with the same small radius as the day cells and the count underneath */
 .cal-bar{display:grid;grid-template-columns:22px minmax(0,1fr);gap:6px 4px;margin:12px 0 0}
 .cal-bar > *{grid-column:2}
-.cal-bar .meter{height:10px;border-radius:5px}
+.cal-bar .meter{height:8px;border-radius:999px}
 .cal-bar span{color:var(--muted)}
-.fold .chev{flex:none;box-sizing:border-box;width:24px;height:24px;display:grid;place-items:center;border:1.5px solid currentColor;border-radius:50%;color:var(--muted);transition:transform .2s}
+.fold .chev{flex:none;box-sizing:border-box;width:24px;height:24px;display:grid;place-items:center;color:var(--muted);transition:transform .2s}
 .fold .chev::before{content:"";width:16px;height:16px;background:currentColor;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6l6 -6'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6l6 -6'/%3E%3C/svg%3E") center/contain no-repeat}
 .fold[open] .chev{transform:rotate(180deg)}
 .stats h2{margin:0}
 .count{display:flex;align-items:baseline;gap:8px}
 .count b{color:var(--ink)}
 .count span{color:var(--muted)}
-.meter{display:flex;height:10px;border-radius:999px;overflow:hidden;background:var(--surface-2);gap:2px}
+.meter{display:flex;height:8px;border-radius:999px;overflow:hidden;background:var(--surface-2);gap:2px}
 .meter i{display:block;height:100%}
-.cal-title{margin:0 0 12px;color:var(--muted)}
+.cal-title{margin:0 0 12px}
 .cal-grid{display:grid;grid-template-columns:22px repeat(7,1fr);gap:4px}
 .cal-month{writing-mode:vertical-rl;transform:rotate(180deg);display:flex;align-items:center;justify-content:center;color:var(--muted);margin:2px 0}
 .cal-wd{color:var(--muted);text-align:center;padding-bottom:2px;text-transform:uppercase;letter-spacing:.06em}
-.cal-day{min-height:40px;padding:2px;border:0;border-radius:8px;background:var(--surface-2);color:var(--ink);display:flex;align-items:center;justify-content:center;text-align:center;position:relative}
+.cal-day{min-height:40px;padding:2px;border:0;border-radius:6px;background:var(--surface);box-shadow:inset 0 0 0 1px var(--line);color:var(--ink);display:flex;align-items:center;justify-content:center;text-align:center;position:relative}
 button.cal-day{cursor:pointer;transition:filter .12s}
 button.cal-day:hover{filter:brightness(.94)}
-.cal-day.off{background:none;color:var(--muted);opacity:.4}
-.cal-day.s-no{background:var(--s-no-bg);color:var(--s-no-ink)}
-.cal-day.s-yes{background:var(--s-yes-bg);color:var(--s-yes-ink)}
-.cal-day.s-paid{background:var(--s-paid-bg);color:var(--s-paid-ink)}
-.cal-day.s-x{background:var(--s-x-bg);color:var(--s-x-ink)}
+.cal-day.off{background:none;box-shadow:none;color:var(--muted);opacity:.4}
+.cal-day.s-no{background:var(--s-no-bg);color:var(--s-no-ink);box-shadow:none}
+.cal-day.s-yes{background:var(--s-yes-bg);color:var(--s-yes-ink);box-shadow:none}
+.cal-day.s-paid{background:var(--s-paid-bg);color:var(--s-paid-ink);box-shadow:none}
+.cal-day.s-x{background:var(--s-x-bg);color:var(--s-x-ink);box-shadow:none}
 .cal-day[data-mark]{padding-bottom:11px}
 .cal-day[data-mark]::before{content:attr(data-mark);position:absolute;left:0;right:0;bottom:3px;font-size:11px;font-weight:600;line-height:1}
 .cal-day.a2::after{content:"";position:absolute;top:4px;right:4px;width:5px;height:5px;border-radius:50%;background:var(--a2-ink)}
 /* today: an accent ring on top of the day's status colour */
 .cal-day.today{box-shadow:0 0 0 2px var(--accent);font-weight:700}
-@keyframes flash{0%,40%{background:var(--accent-soft)}100%{background:var(--page)}}
+@keyframes flash{0%,40%{background:var(--accent-soft)}100%{background:var(--well)}}
 .day.flash{animation:flash 1.8s ease-out}
 
 /* ---------- timeline ---------- */
@@ -210,15 +216,26 @@ summary.rt-row::-webkit-details-marker{display:none}
 summary.rt-row:hover,.seg[open] > summary.rt-row{background:var(--surface-2)}
 /* an open stop covers the route line, so it doesn't run between the day cards */
 .seg[open] > .days{position:relative;z-index:1;margin:0;padding:8px 0 16px;background:var(--surface)}
+/* the route line only reaches an open stop's dot from above and restarts at the next dot: the open stop (and the
+   6px gap under it) covers the line, its row redraws the piece down into its dot, and the next row covers its
+   own top half and draws only from its dot down */
+.seg[open]{z-index:1;background:var(--surface);padding-bottom:6px;margin-bottom:-6px}
+.seg[open] > summary.rt-row{position:relative}
+.seg[open] > summary.rt-row::before,.seg[open] + .seg:not([open]) > summary.rt-row::before{content:"";position:absolute;left:15px;width:2px;background:var(--route-line)}
+.seg[open] > summary.rt-row::before{top:0;height:50%}
+.seg[open] + .seg:not([open]) > summary.rt-row,.seg[open] + .rt-row.flight{position:relative;z-index:1;background:var(--surface)}
+.seg[open] + .seg:not([open]) > summary.rt-row:hover{background:var(--surface-2)}
+.seg[open] + .seg:not([open]) > summary.rt-row::before{top:50%;bottom:0}
+.seg[open] + .seg[open] > summary.rt-row::before{display:none}
 /* actions for the whole stop, at the top of the open stop */
 .seg-tools{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:4px 16px}
-.seg-edit{min-height:40px;padding:0 16px;border:1px solid var(--accent);border-radius:999px;background:var(--page);color:var(--accent);cursor:pointer;transition:background .15s}
-.seg-edit:hover{background:var(--accent-soft)}
+.seg-edit{min-height:40px;padding:0 14px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink);cursor:pointer;box-shadow:var(--shadow);transition:background .15s}
+.seg-edit:hover{background:var(--surface-2)}
 .days > .stop-form{margin-top:0}
 .days{display:grid;gap:16px}
-.seg-remove{justify-self:start;min-height:40px;padding:0 4px;border:0;background:none;color:var(--muted);cursor:pointer;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px;border-radius:8px}
-.seg-remove:hover{color:var(--danger)}
-.seg-confirm{justify-self:start;max-width:480px;display:flex;flex-direction:column;gap:10px;padding:14px 16px;border-radius:14px;background:color-mix(in srgb,var(--danger) 8%,var(--surface));color:var(--danger)}
+.seg-remove{justify-self:start;min-height:40px;padding:0 12px;border:0;background:none;color:var(--danger);cursor:pointer;border-radius:8px;transition:background .15s}
+.seg-remove:hover{background:color-mix(in srgb,var(--danger) 10%,transparent)}
+.seg-confirm{justify-self:start;max-width:480px;display:flex;flex-direction:column;gap:10px;padding:14px 16px;border-radius:10px;background:color-mix(in srgb,var(--danger) 8%,var(--surface));color:var(--danger)}
 .seg-confirm p{margin:0}
 .seg-confirm .btns{display:flex;gap:8px}
 .btn{min-height:40px}
@@ -226,14 +243,14 @@ summary.rt-row:hover,.seg[open] > summary.rt-row{background:var(--surface-2)}
 .stop-warn{margin:0;padding:10px 12px;border-radius:10px;background:color-mix(in srgb,var(--danger) 8%,var(--surface-2));color:var(--danger)}
 .stop-warn[hidden]{display:none}
 
-.day{--surface-2:var(--surface);display:grid;grid-template-columns:52px 1fr;background:var(--page);border-radius:16px;overflow:hidden}
+.day{--surface-2:var(--surface);display:grid;grid-template-columns:52px 1fr;background:var(--well);border-radius:10px;overflow:hidden}
 .when{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:20px 6px;text-align:center}
 .when .dw{color:var(--danger)}
 .when .dmon{color:var(--muted)}
 .when .tag{margin-top:8px}
 .body{padding:18px 16px 20px 2px;min-width:0;display:flex;flex-direction:column;gap:12px}
 .top{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px}
-.tag{border-radius:999px;padding:1px 9px}
+.tag{border-radius:6px;padding:1px 8px}
 .tag.a2{background:var(--a2-bg);color:var(--a2-ink)}
 .tag.now{background:var(--accent);color:var(--on-accent)}
 .row{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px}
@@ -247,14 +264,14 @@ summary.rt-row:hover,.seg[open] > summary.rt-row{background:var(--surface-2)}
 [contenteditable]{cursor:text;outline:none;white-space:pre-wrap;overflow-wrap:anywhere;min-height:1.4em;border-radius:6px;padding:2px 5px;margin:-2px -5px;transition:background .12s}
 [contenteditable]:hover{background:var(--surface-2)}
 [contenteditable]:empty::before{content:attr(data-ph);color:var(--muted);font-style:italic;text-transform:none;letter-spacing:0}
-.edit-links{display:inline-flex;align-items:center;min-height:40px;color:var(--muted);background:none;border:1px solid var(--line);border-radius:999px;padding:0 14px;cursor:pointer;transition:border-color .15s,color .15s}
-.edit-links:hover{border-color:var(--ink);color:var(--ink)}
+.edit-links{display:inline-flex;align-items:center;min-height:40px;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:0 14px;cursor:pointer;box-shadow:var(--shadow);transition:background .15s}
+.edit-links:hover{background:var(--surface-2)}
 .link-edit{display:flex;flex-direction:column;gap:6px;width:100%}
 .link-err{margin:0;color:var(--danger)}
-textarea{width:100%;min-height:90px;background:var(--surface-2);color:var(--ink);border:0;outline:0;border-radius:10px;padding:10px}
+textarea{width:100%;min-height:90px;background:var(--surface);color:var(--ink);border:1px solid var(--line);outline:0;border-radius:8px;padding:10px 12px;box-shadow:var(--shadow)}
 .link-btns{display:flex;gap:8px;align-items:center}
 
-select{border:0;border-radius:999px;padding:4px 28px 4px 12px;cursor:pointer;appearance:none;-webkit-appearance:none;color:var(--muted);background-image:none;outline:0;background-color:var(--surface-2)}
+select{border:0;border-radius:6px;padding:4px 28px 4px 10px;cursor:pointer;appearance:none;-webkit-appearance:none;color:var(--muted);background-image:none;outline:0;background-color:var(--surface-2)}
 select.s-no{background-color:var(--s-no-bg);color:var(--s-no-ink)}
 select.s-yes{background-color:var(--s-yes-bg);color:var(--s-yes-ink)}
 select.s-paid{background-color:var(--s-paid-bg);color:var(--s-paid-ink)}
@@ -264,7 +281,7 @@ select option{background:var(--surface);color:var(--ink)}
 
 /* ---------- faq ---------- */
 .faq{margin:48px 0 0}
-.faq details{background:var(--surface);border-radius:16px;margin-bottom:8px}
+.faq details{background:var(--surface);border:1px solid var(--line);border-radius:12px;margin-bottom:8px;box-shadow:var(--shadow)}
 .faq summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:12px;min-height:52px;padding:14px 18px}
 .faq summary::-webkit-details-marker{display:none}
 .faq summary::after{content:"+";margin-left:auto;font-size:20px;line-height:1;color:var(--muted)}
@@ -279,8 +296,8 @@ select option{background:var(--surface);color:var(--ink)}
 .faq-status .sw{justify-self:start}
 .faq .steps{margin:0;padding-left:20px;display:grid;gap:8px}
 .faq .steps code{display:inline-block;margin-top:6px}
-.sw{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:3px 12px;white-space:nowrap}
-.face{width:16px;height:16px;flex:none}
+.sw{display:inline-flex;align-items:center;gap:6px;border-radius:6px;padding:2px 8px;white-space:nowrap;font-size:12px;line-height:18px}
+.face{width:14px;height:14px;flex:none}
 /* status <select> with its face drawn inside the pill */
 .stav-pick{position:relative;display:inline-flex;align-items:center;color:var(--muted)}
 .stav-pick::after{content:"";position:absolute;right:10px;top:50%;width:14px;height:14px;margin-top:-7px;background:currentColor;pointer-events:none;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6l6 -6'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6l6 -6'/%3E%3C/svg%3E") center/contain no-repeat}
@@ -309,11 +326,11 @@ select option{background:var(--surface);color:var(--ink)}
   /* one centred frame on every screen, so the title, tabs and content always line up */
   .hero-in,.wrap{max-width:880px}
   .hero-in,.wrap{padding:0 24px}
-  .hero{padding:calc(env(safe-area-inset-top,0px) + 56px) 0 48px}
-  /* text-heading-72 values; the scale classes are not responsive on their own */
-  .hero h1{font:600 72px/72px var(--font-geist-sans);letter-spacing:-4.32px}
+  .hero{padding:calc(env(safe-area-inset-top,0px) + 56px) 0 28px}
+  /* text-heading-40 values; the scale classes are not responsive on their own */
+  .hero h1{font:600 40px/48px var(--font-geist-sans);letter-spacing:-2.4px}
   .overview{grid-template-columns:1.35fr 1fr}
-  .panel{padding:28px}
+  .panel{padding:24px}
   .day{grid-template-columns:84px 1fr}
   .body{padding:20px 24px 22px 4px}
   .lbl{min-width:82px;width:auto}
@@ -323,23 +340,23 @@ select option{background:var(--surface);color:var(--ink)}
 /* phones: 16px in fields people type into or pick from, otherwise iPhone Safari zooms the page */
 .stop-form input,.stop-form select,.day-stay select,.link-edit textarea{font-size:16px}
 /* status / who pills: 40px tall tap targets */
-.day-stay select{min-height:40px;padding-top:0;padding-bottom:0}
-.notes,.checkin{font-size:16px;line-height:24px}
+.day-stay select{min-height:36px;padding-top:0;padding-bottom:0;font-weight:500}
+.notes,.checkin,.checkout{font-size:16px;line-height:24px}
 @media (min-width:760px){
   .stop-form input,.stop-form select,.day-stay select{font-size:14px}
   /* desktop: Místo across the top, Od and Do side by side under it */
   .stop-form{grid-template-columns:repeat(2,minmax(0,1fr))}
   .stop-form label:first-of-type{grid-column:1 / -1}
   .link-edit textarea{font-size:13px}
-  .notes,.checkin{font-size:14px;line-height:20px}
+  .notes,.checkin,.checkout{font-size:14px;line-height:20px}
 }
 /* ---------- screens + navbar ---------- */
 .screen{padding-bottom:32px}
 /* loading placeholders, shown until the itinerary arrives */
-.skel{display:block;background:var(--fill);border-radius:10px;animation:skel 1.4s ease-in-out infinite}
+.skel{display:block;background:var(--surface-2);border-radius:8px;animation:skel 1.4s ease-in-out infinite}
 .route .skel{height:28px;margin:6px 0 6px 40px}
 .skel-cal{height:280px}
-.skel-card{height:180px;border-radius:20px}
+.skel-card{height:180px;border-radius:12px}
 @keyframes skel{50%{opacity:.45}}
 .screen[hidden]{display:none}
 .screen:focus{outline:none}
@@ -348,45 +365,57 @@ select option{background:var(--surface);color:var(--ink)}
 .nav::before{content:"";position:absolute;left:0;right:0;bottom:100%;height:28px;background:linear-gradient(to top,var(--page),color-mix(in srgb,var(--page) 0%,transparent));pointer-events:none}
 /* tuned for iPhone 15 Pro (393px): four equal tabs, every label on one line. On narrower screens a label
    may wrap; icons are top-aligned so they stay in one row either way */
-.nav-in{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));max-width:520px;margin:0 auto}
-.nav a{min-width:0;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:3px;min-height:58px;padding:8px 4px 6px;color:var(--muted);text-decoration:none;-webkit-tap-highlight-color:transparent}
+.nav-in{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:2px;max-width:520px;margin:6px 12px 8px;padding:3px;border-radius:14px;background:var(--surface-2)}
+@media (min-width:545px){ .nav-in{margin:6px auto 8px} }
+.nav a{min-width:0;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:2px;min-height:50px;padding:6px 4px 4px;border-radius:11px;color:var(--muted);text-decoration:none;-webkit-tap-highlight-color:transparent;transition:background .15s,color .15s}
 .nav svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
-.nav a[aria-current="page"]{color:var(--accent)}
-body{padding-bottom:calc(58px + env(safe-area-inset-bottom,0px))}
+.nav a[aria-current="page"]{background:var(--page);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.08)}
+body{padding-bottom:calc(70px + env(safe-area-inset-bottom,0px))}
 /* the save toast floats in front of the bar (z-index 30 over 20), just above its tabs */
-.toast{bottom:calc(70px + env(safe-area-inset-bottom,0px))}
-/* other screens: compact header */
-body[data-screen]:not([data-screen="domu"]) .hero{padding-bottom:20px}
-body[data-screen]:not([data-screen="domu"]) .hero h1{font-size:7cqw}
+.toast{bottom:calc(78px + env(safe-area-inset-bottom,0px))}
 .lead{margin:0 0 16px;color:var(--muted)}
 .pre{white-space:pre-wrap;overflow-wrap:anywhere}
 .muted{color:var(--muted)}
 /* who booked: initials in round bubbles; the chosen one turns black */
 .avatars{display:flex;flex-wrap:wrap;gap:6px}
-.avatar{width:40px;height:40px;padding:0;border:0;border-radius:50%;display:grid;place-items:center;background:var(--surface-2);color:var(--ink);font-weight:600;cursor:pointer;transition:background .15s,color .15s}
-.avatar:hover{background:var(--fill)}
-.avatar[aria-pressed="true"]{background:var(--ink);color:var(--page)}
+.avatar{width:40px;height:40px;padding:0;border:0;border-radius:50%;display:grid;place-items:center;background:var(--surface);box-shadow:inset 0 0 0 1px var(--line);color:var(--ink);font-weight:600;cursor:pointer;transition:background .15s,color .15s}
+@media (hover:hover){ .avatar:hover{background:var(--surface-2)} }
+.avatar[aria-pressed="true"]{background:var(--ink);color:var(--page);box-shadow:none}
 
 /* Dnes */
 .today{display:grid;gap:16px}
 .today-card{display:flex;flex-direction:column;gap:12px}
 .today-card p{margin:0}
 .today-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
-.today-card .today-head h2{margin:0}
+.today-card .today-head h2{margin:0;color:var(--muted);font:400 14px/20px var(--font-geist-sans)}
+.today-day{display:grid;gap:12px}
 /* tonight's bed: its own white box inside the day card */
-.today-stay{display:flex;flex-direction:column;gap:10px;padding:14px;border-radius:14px;background:var(--surface-2)}
-.navigate{display:flex;align-items:center;justify-content:center;gap:8px;min-height:48px;border-radius:12px;background:var(--accent);color:var(--on-accent);text-decoration:none}
+.today-stay{display:flex;flex-direction:column;gap:10px}
+.today-stay h2{margin:0}
+/* no signal: how old the data on screen is */
+.offline{display:flex;align-items:center;gap:8px;margin:0;padding:8px 12px;border-radius:8px;background:var(--surface-2);color:var(--muted)}
+.offline strong{color:var(--ink);font-weight:500}
+/* one tappable row (Před odletem before the trip) */
+.row-link{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;min-height:48px;padding:0 16px;border:0;background:none;color:var(--ink);font:inherit;text-align:left;cursor:pointer;border-radius:12px;transition:background .15s}
+.row-link:hover{background:var(--surface-2)}
+.row-link span{color:var(--muted);text-align:right}
+.row-link span::after{content:"›";margin-left:8px}
+.panel.flush{padding:0}
+.navigate{display:flex;align-items:center;justify-content:center;gap:8px;min-height:48px;border-radius:10px;background:var(--accent);color:var(--on-accent);text-decoration:none}
 .navigate::before{content:"";width:20px;height:20px;background:currentColor;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 11a3 3 0 1 0 6 0a3 3 0 0 0 -6 0'/%3E%3Cpath d='M17.657 16.657l-4.243 4.243a2 2 0 0 1 -2.827 0l-4.244 -4.243a8 8 0 1 1 11.314 0z'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 11a3 3 0 1 0 6 0a3 3 0 0 0 -6 0'/%3E%3Cpath d='M17.657 16.657l-4.243 4.243a2 2 0 0 1 -2.827 0l-4.244 -4.243a8 8 0 1 1 11.314 0z'/%3E%3C/svg%3E") center/contain no-repeat}
 .today-stay .lbl{width:auto}
 /* the day card's accommodation box: outlined, so the grey controls inside stay visible */
-.day-stay{display:flex;flex-direction:column;gap:12px;padding:12px;border:1px solid var(--line);border-radius:14px}
+.day-stay{display:flex;flex-direction:column;gap:12px;padding:12px;border:1px solid var(--line);border-radius:12px}
 .day-stay .lbl{width:auto}
 .day-stay .row{gap:4px 12px}
 .day-stay .row.ci{flex-wrap:nowrap}
 .day-stay .row.ci .checkin{flex:1;min-width:0}
+.day .row.co{flex-wrap:nowrap;gap:4px 12px}
+.day .row.co .lbl{width:auto;flex:none}
+.day .row.co .checkout{flex:1;min-width:0}
 .day-stay .who-row .lbl{width:100%}
 /* the stop's box sits on the grey stop area: white like the day cards, grey controls inside */
-.days > .day-stay{--surface-2:var(--surface);background:var(--page);border-color:transparent;border-radius:16px;padding:16px}
+.days > .day-stay{background:var(--surface);border-radius:12px;padding:16px}
 .stay-top{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
 .stay-who{margin:0;color:var(--muted)}
 .stay-who strong{color:var(--ink)}
@@ -397,7 +426,7 @@ body[data-screen]:not([data-screen="domu"]) .hero h1{font-size:7cqw}
 .place-link::after{content:"";flex:none;width:.7em;height:.7em;background:var(--muted);-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 6l6 6l-6 6'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 6l6 6l-6 6'/%3E%3C/svg%3E") center/contain no-repeat}
 
 /* Slovník */
-.dict-search{display:block;width:100%;margin:0 0 8px;padding:12px 16px;border:0;border-radius:12px;background:var(--surface);color:var(--ink);outline:0}
+.dict-search{display:block;width:100%;margin:0 0 8px;padding:10px 12px 10px 38px;border:1px solid var(--line);border-radius:8px;background:var(--surface) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='m20 20-3.5-3.5'/%3E%3C/svg%3E") 12px center/16px no-repeat;color:var(--ink);outline:0;box-shadow:var(--shadow)}
 .dict-search::placeholder{color:var(--muted)}
 .dict-group{margin:0 0 24px}
 .dict-group:last-child{margin-bottom:0}
@@ -413,9 +442,10 @@ body[data-screen]:not([data-screen="domu"]) .hero h1{font-size:7cqw}
 .dict-jump{display:flex;gap:6px;overflow-x:auto;margin:0 -16px;padding:0 16px;scrollbar-width:none;-webkit-mask-image:linear-gradient(to right,transparent,#000 16px,#000 calc(100% - 16px),transparent);mask-image:linear-gradient(to right,transparent,#000 16px,#000 calc(100% - 16px),transparent)}
 .dict-jump::-webkit-scrollbar{display:none}
 .dict-jump[hidden]{display:none}
-.dict-jump button{flex:none;min-height:40px;padding:0 14px;border:0;border-radius:999px;background:var(--surface);color:var(--ink);cursor:pointer}
+.dict-jump button{flex:none;min-height:36px;padding:0 12px;border:1px solid var(--line);border-radius:999px;background:var(--surface);color:var(--ink);cursor:pointer;transition:background .15s}
+.dict-jump button:hover{background:var(--surface-2)}
 .phrase{cursor:pointer;transition:background .15s}
-.phrase:hover{background:var(--fill)}
+.phrase:hover{background:var(--surface-2)}
 .phrase:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 /* full-screen phrase */
 .show{position:fixed;inset:0;z-index:50;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:24px 24px calc(96px + env(safe-area-inset-bottom,0px));background:var(--page);text-align:center;cursor:pointer}
@@ -424,19 +454,19 @@ body[data-screen]:not([data-screen="domu"]) .hero h1{font-size:7cqw}
 .show-cs{color:var(--muted)}
 .show-th{font-weight:600;line-height:1.5;color:var(--ink);overflow-wrap:anywhere}
 .show-rom{color:var(--ink)}
-.show-say{display:inline-flex;align-items:center;gap:8px;min-height:44px;margin-top:8px;padding:0 22px;border:0;border-radius:999px;background:var(--accent);color:var(--on-accent);cursor:pointer}
+.show-say{display:inline-flex;align-items:center;gap:8px;min-height:44px;margin-top:8px;padding:0 22px;border:0;border-radius:10px;background:var(--accent);color:var(--on-accent);cursor:pointer}
 .show-say[hidden]{display:none}
 .show-say::before{content:"";width:20px;height:20px;background:currentColor;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M15 8a5 5 0 0 1 0 8'/%3E%3Cpath d='M17.7 5a9 9 0 0 1 0 14'/%3E%3Cpath d='M6 15h-2a1 1 0 0 1 -1 -1v-4a1 1 0 0 1 1 -1h2l3.5 -4.5a.8 .8 0 0 1 1.5 .5v14a.8 .8 0 0 1 -1.5 .5l-3.5 -4.5'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M15 8a5 5 0 0 1 0 8'/%3E%3Cpath d='M17.7 5a9 9 0 0 1 0 14'/%3E%3Cpath d='M6 15h-2a1 1 0 0 1 -1 -1v-4a1 1 0 0 1 1 -1h2l3.5 -4.5a.8 .8 0 0 1 1.5 .5v14a.8 .8 0 0 1 -1.5 .5l-3.5 -4.5'/%3E%3C/svg%3E") center/contain no-repeat}
-.show-close{position:absolute;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);min-height:44px;padding:0 24px;border:1px solid var(--line);border-radius:999px;background:var(--surface);color:var(--ink);cursor:pointer}
+.show-close{position:absolute;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);min-height:44px;padding:0 24px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);cursor:pointer}
 .dict-group h3{margin:0 0 10px;color:var(--muted)}
 .phrases{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:8px}
-.phrase{background:var(--surface);border-radius:14px;padding:12px 16px;display:grid;align-content:start;gap:2px;min-width:0;overflow-wrap:anywhere}
+.phrase{background:var(--surface);border:1px solid var(--line);box-shadow:var(--shadow);border-radius:12px;padding:12px 14px;display:grid;align-content:start;gap:2px;min-width:0;overflow-wrap:anywhere}
 .phrase.full{grid-column:span 12}
 .phrase.half{grid-column:span 6}
 .phrase.third{grid-column:span 4;padding:12px}
 .phrase.num{grid-column:span 3;padding:10px 12px}
 .phrase.num .th{font-size:22px}
-.phrase.em{box-shadow:inset 0 0 0 2px var(--danger)}
+.phrase.em{border-color:var(--danger);box-shadow:inset 0 0 0 1px var(--danger)}
 .phrase.em .cs,.phrase.em .rom{color:var(--danger)}
 .phrase.em .th{font-size:32px}
 .phrase .cs{color:var(--muted)}
@@ -447,11 +477,14 @@ body[data-screen]:not([data-screen="domu"]) .hero h1{font-size:7cqw}
 /* Průvodce */
 .info{display:grid;gap:16px}
 .info .panel h2{margin:0 0 12px}
-.fold{padding:0}
-.fold summary{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:20px;cursor:pointer;list-style:none;border-radius:20px}
+.folds{padding:0;overflow:hidden}
+.fold{padding:0;border-top:1px solid var(--line)}
+.fold:first-child{border-top:0}
+.fold summary{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:52px;padding:0 16px;cursor:pointer;list-style:none;transition:background .15s}
+.fold summary:hover{background:var(--surface-2)}
 .fold summary::-webkit-details-marker{display:none}
-.info .fold summary h2{margin:0}
-.fold .facts{margin:0 20px 20px}
+.info .fold summary h2{margin:0;font-size:15px;font-weight:500}
+.fold .facts{margin:0 16px 16px}
 .facts a{color:var(--accent);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px;overflow-wrap:anywhere}
 .call{display:flex;align-items:center;justify-content:space-between;min-height:48px;color:var(--ink);text-decoration:none;border-top:1px solid var(--line)}
 .call:first-of-type{border-top:0}
@@ -459,37 +492,34 @@ body[data-screen]:not([data-screen="domu"]) .hero h1{font-size:7cqw}
 .call b{color:var(--accent);white-space:nowrap}
 .facts{margin:0;padding-left:18px;display:grid;gap:8px}
 .embassy{margin:8px 0 0;color:var(--muted)}
-.checked{margin:12px 20px 20px;color:var(--muted)}
+.checked{margin:-4px 16px 16px;color:var(--muted)}
 .checked a{color:var(--accent)}
 /* converter: two fields side by side, typing in one fills the other */
 .convert{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.convert label{display:flex;flex-direction:column;gap:4px;color:var(--muted)}
-.convert input{width:100%;min-width:0;min-height:48px;padding:8px 12px;border:0;border-radius:10px;background:var(--surface-2);color:var(--ink);font-size:20px;outline:0}
-.convert input:focus{box-shadow:0 0 0 1.5px var(--ink)}
+.convert label{display:flex;flex-direction:column;gap:6px;color:var(--ink);font-weight:500}
+.convert input{width:100%;min-width:0;min-height:48px;padding:8px 12px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink);font-size:20px;font-weight:400;outline:0;box-shadow:var(--shadow)}
 .cv-rate{margin:10px 0 0;color:var(--muted)}
 
 @media (min-width:760px){
   .nav{position:static;z-index:auto;margin-top:28px;background:none;padding-bottom:0}
   .nav::before{display:none}
-  .nav-in{display:flex;gap:8px;max-width:880px;padding:0 24px}
-  .nav a{flex:none;flex-direction:row;gap:8px;min-height:0;padding:8px 16px;border-radius:999px;background:var(--surface);transition:background .15s,color .15s}
+  .nav{max-width:880px;margin:28px auto 0;padding:0 24px}
+  .nav-in{display:inline-flex;gap:2px;margin:0}
+  .nav a{flex:none;flex-direction:row;gap:8px;min-height:0;padding:6px 14px;border-radius:11px}
   .nav a:hover{color:var(--ink)}
-  .nav a[aria-current="page"]{background:var(--accent-soft);color:var(--accent)}
   .nav svg{width:18px;height:18px}
   .nav a span{font:500 14px/20px var(--font-geist-sans)}
   body{padding-bottom:env(safe-area-inset-bottom,0px)}
   .toast{bottom:calc(16px + env(safe-area-inset-bottom,0px))}
-  body[data-screen]:not([data-screen="domu"]) .hero{padding-bottom:28px}
-  body[data-screen]:not([data-screen="domu"]) .hero h1{font-size:40px;line-height:48px;letter-spacing:-2.4px}
   .dict-bar{margin:0 -24px 16px;padding:8px 24px}
   .dict-jump{margin:0 -24px;padding:0 24px}
   .phrase.full{grid-column:span 12}
   .phrase.half{grid-column:span 6}
   .phrase.third{grid-column:span 4}
   .phrase.num{grid-column:span 3}
-  .fold{padding:0}
-  .fold summary{padding:24px 28px}
-  .fold .facts{margin:0 28px 28px}
+  .fold summary{padding:0 20px}
+  .fold .facts{margin:0 20px 20px}
+  .checked{margin:-4px 20px 20px}
 }
 /* very narrow screens (< 360px): stack instead of squeezing side by side */
 @media (max-width:359px){
@@ -499,7 +529,8 @@ body[data-screen]:not([data-screen="domu"]) .hero h1{font-size:7cqw}
 button:focus-visible,select:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,summary:focus-visible,[contenteditable]:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 /* fields you type in: on focus they turn white with a thin ink ring (no blue box), the same black-and-white
    language as the selected avatar. Placed after the rule above so it replaces the blue outline for these */
-.stop-form input:focus,.stop-form select:focus,.dict-search:focus,.link-edit textarea:focus,[contenteditable]:focus{background:var(--surface-2);box-shadow:0 0 0 1.5px var(--ink);outline:none}
+.stop-form input:focus,.stop-form select:focus,.dict-search:focus,.link-edit textarea:focus,.convert input:focus{border-color:var(--muted);box-shadow:0 0 0 3px color-mix(in srgb,var(--muted) 30%,transparent);outline:none}
+[contenteditable]:focus{background:var(--surface);box-shadow:0 0 0 1px var(--muted),0 0 0 4px color-mix(in srgb,var(--muted) 25%,transparent);outline:none}
 </style>
 </head>
 <body class="text-copy-16">
@@ -566,6 +597,14 @@ button:focus-visible,select:focus-visible,a:focus-visible,input:focus-visible,te
   <header class="sec-head"><h2 class="text-heading-32">Průvodce</h2></header>
   <div class="info">
     <div class="panel">
+      <h2 class="text-label-12 caps"><strong>Přepočet</strong></h2>
+      <div class="convert">
+        <label class="text-label-13">Bahty (฿)<input id="cvThb" class="text-label-16 tabular-nums" inputmode="decimal" autocomplete="off" placeholder="0"></label>
+        <label class="text-label-13">Koruny (Kč)<input id="cvCzk" class="text-label-16 tabular-nums" inputmode="decimal" autocomplete="off" placeholder="0"></label>
+      </div>
+      <p class="cv-rate text-label-12" id="cvRate"></p>
+    </div>
+    <div class="panel">
       <h2 class="text-label-12 caps"><strong>Tísňová volání</strong></h2>
       <a class="call text-copy-16" href="tel:1155"><span>Turistická policie (anglicky)</span><b class="tabular-nums">1155</b></a>
       <a class="call text-copy-16" href="tel:191"><span>Policie</span><b class="tabular-nums">191</b></a>
@@ -575,16 +614,9 @@ button:focus-visible,select:focus-visible,a:focus-visible,input:focus-visible,te
       <a class="call text-copy-16" href="tel:+420222420222"><span>Nonstop linka MZV (jen v nouzi)</span><b class="tabular-nums">+420 222 420 222</b></a>
       <p class="embassy text-copy-14">Velvyslanectví: 71/6 Ruam Rudee Soi 2, Ploenchit Rd., Lumpini, Bangkok</p>
     </div>
-    <div class="panel">
-      <h2 class="text-label-12 caps"><strong>Přepočet</strong></h2>
-      <div class="convert">
-        <label class="text-label-13">Bahty (฿)<input id="cvThb" class="text-label-16 tabular-nums" inputmode="decimal" autocomplete="off" placeholder="0"></label>
-        <label class="text-label-13">Koruny (Kč)<input id="cvCzk" class="text-label-16 tabular-nums" inputmode="decimal" autocomplete="off" placeholder="0"></label>
-      </div>
-      <p class="cv-rate text-label-12" id="cvRate"></p>
-    </div>
+    <div class="panel folds">
     <!-- open until departure, collapsed once the trip starts -->
-    <details class="panel fold" id="beforeTrip" open>
+    <details class="fold" id="beforeTrip" open>
       <summary><h2 class="text-label-12 caps"><strong>Před odletem</strong></h2><span class="chev" aria-hidden="true"></span></summary>
       <ul class="facts text-copy-16">
         <li><strong>Pozor na vízum:</strong> od 15. 9. 2026 můžeme bez víza zůstat nejvýš 30 dní. Cesta má 32 dní, takže si během pobytu sami zařídíme prodloužení o 30 dní na imigračním úřadě (bez agentur). Podrobnosti na webu <a href="https://mzv.gov.cz/jnp/cz/encyklopedie_statu/asie/thajsko/cestovani/visa.html" target="_blank" rel="noopener">MZV ČR</a>.</li>
@@ -596,7 +628,7 @@ button:focus-visible,select:focus-visible,a:focus-visible,input:focus-visible,te
       </ul>
       <p class="checked text-label-12">Ověřeno 11/2026 na <a href="https://mzv.gov.cz/jnp/cz/encyklopedie_statu/asie/thajsko/cestovani/visa.html" target="_blank" rel="noopener">mzv.gov.cz</a></p>
     </details>
-    <details class="panel fold">
+    <details class="fold">
       <summary><h2 class="text-label-12 caps"><strong>Peníze</strong></h2><span class="chev" aria-hidden="true"></span></summary>
       <ul class="facts text-copy-16">
         <li><strong>Měna:</strong> thajský baht (THB, ฿).</li>
@@ -607,7 +639,7 @@ button:focus-visible,select:focus-visible,a:focus-visible,input:focus-visible,te
         <li><strong>Společné výdaje:</strong> zapisujeme do <a href="https://join.settleup.app/emK3YxMagTSm8ag3PE7E" target="_blank" rel="noopener">SettleUp</a>.</li>
       </ul>
     </details>
-    <details class="panel fold">
+    <details class="fold">
       <summary><h2 class="text-label-12 caps"><strong>Doprava</strong></h2><span class="chev" aria-hidden="true"></span></summary>
       <ul class="facts text-copy-16">
         <li><strong>Taxi:</strong> přes aplikace Grab nebo Bolt, cenu vidíte předem. V běžném taxíku trvejte na taxametru.</li>
@@ -615,7 +647,7 @@ button:focus-visible,select:focus-visible,a:focus-visible,input:focus-visible,te
         <li><strong>Podvod s tuk-tukem:</strong> když řidič tvrdí, že chrám je dnes zavřený, a nabízí jinou cestu, skončíte v obchodě.</li>
       </ul>
     </details>
-    <details class="panel fold">
+    <details class="fold">
       <summary><h2 class="text-label-12 caps"><strong>Zdraví a podnebí</strong></h2><span class="chev" aria-hidden="true"></span></summary>
       <ul class="facts text-copy-16">
         <li><strong>Počasí:</strong> únor a březen jsou období sucha, kolem 30–34 °C.</li>
@@ -626,7 +658,7 @@ button:focus-visible,select:focus-visible,a:focus-visible,input:focus-visible,te
         <li><strong>Jídlo:</strong> street food je v pohodě tam, kde jedí místní.</li>
       </ul>
     </details>
-    <details class="panel fold">
+    <details class="fold">
       <summary><h2 class="text-label-12 caps"><strong>Tabu</strong></h2><span class="chev" aria-hidden="true"></span></summary>
       <ul class="facts text-copy-16">
         <li><strong>Chrámy:</strong> zakrytá ramena a kolena, u vstupu se zujte.</li>
@@ -636,7 +668,7 @@ button:focus-visible,select:focus-visible,a:focus-visible,input:focus-visible,te
         <li><strong>Bankovky:</strong> nešlapejte na ně, je na nich král.</li>
       </ul>
     </details>
-    <details class="panel fold">
+    <details class="fold">
       <summary><h2 class="text-label-12 caps"><strong>Zákony a pokuty</strong></h2><span class="chev" aria-hidden="true"></span></summary>
       <ul class="facts text-copy-16">
         <li><strong>Monarchie:</strong> o královské rodině nemluvte hanlivě, v Thajsku je to trestné.</li>
@@ -647,7 +679,7 @@ button:focus-visible,select:focus-visible,a:focus-visible,input:focus-visible,te
         <li><strong>Svátky:</strong> o buddhistických svátcích se alkohol neprodává vůbec. Jeden z nich, Makha Bucha, připadá na únor nebo březen; datum pro rok 2027 si ověřte před cestou.</li>
       </ul>
     </details>
-    <details class="panel fold">
+    <details class="fold">
       <summary><h2 class="text-label-12 caps"><strong>Základní údaje</strong></h2><span class="chev" aria-hidden="true"></span></summary>
       <ul class="facts text-copy-16">
         <li><strong>Časový posun:</strong> +6 hodin oproti Česku (po dobu našeho pobytu).</li>
@@ -656,13 +688,14 @@ button:focus-visible,select:focus-visible,a:focus-visible,input:focus-visible,te
         <li><strong>Mobil:</strong> turistická eSIM nebo SIM karta na letišti (AIS, True) je levná a hned vám pojede Grab i mapy.</li>
       </ul>
     </details>
+    </div>
   </div>
   <section class="faq" id="faq">
     <header class="sec-head"><h2 class="text-heading-32">Jak to funguje</h2></header>
     <details>
       <summary class="text-label-16"><strong>Jak něco upravím?</strong></summary>
       <div class="a text-copy-16"><p><strong>Místo a dny:</strong> rozbalte zastávku v Trase a ťukněte na <strong class="ui">Upravit zastávku</strong>. Nová zastávka: <strong class="ui">+ Přidat zastávku</strong> pod Trasou.</p>
-      <p><strong>Ubytování</strong> (stav, odkazy, check-in, kdo rezervoval) se zadává jednou pro celou zastávku, hned pod jejími tlačítky. Odkaz z Google Map se na obrazovce Dnes ukáže jako tlačítko <strong class="ui">Navigovat</strong>.</p>
+      <p><strong>Ubytování</strong> (stav, odkazy, check-in, kdo rezervoval) se zadává jednou pro celou zastávku, hned pod jejími tlačítky. Check-out se píše k poslednímu dni zastávky. Odkaz z Google Map se na obrazovce Dnes ukáže jako tlačítko <strong class="ui">Navigovat</strong>.</p>
       <p><strong>Den:</strong> ťukněte do textu a pište program nebo poznámky.</p>
       <p>Ukládá se to samo a ostatní to hned uvidí. Bez signálu se změny odešlou, až se připojíte.</p></div>
     </details>
@@ -898,8 +931,8 @@ var SUPABASE_KEY = 'sb_publishable_7NDD7fqCwVlDIVxZ9vryHQ_ZsC2Db0C';
     parent.appendChild(d);
     return d;
   }
-  // Google Maps or Apple Maps link: shown on Dnes as the big Navigovat button
-  var MAP_URL = /^https?:\/\/(maps\.app\.goo\.gl|goo\.gl\/maps|(www\.)?google\.[a-z.]+\/maps|maps\.google\.[a-z.]+|maps\.apple\.com)/i;
+  // Google Maps link: shown on Dnes as the big Navigovat button
+  var MAP_URL = /^https?:\/\/(maps\.app\.goo\.gl|goo\.gl\/maps|(www\.)?google\.[a-z.]+\/maps|maps\.google\.[a-z.]+)/i;
   function linkEl(l){
     var a = el('a', 'text-label-14', l.label || l.url.replace(/^https?:\/\/(www\.)?/,'').split('/')[0]);
     a.href = l.url; a.target = '_blank'; a.rel = 'noopener'; a.setAttribute('aria-label', a.textContent + ' (otevře se v novém okně)');
@@ -969,6 +1002,7 @@ var SUPABASE_KEY = 'sb_publishable_7NDD7fqCwVlDIVxZ9vryHQ_ZsC2Db0C';
     else { head = 'Cesta trvala'; when = ''; num = total; unit = dny(total); }
 
     statsEl.innerHTML = '';
+    statsEl.hidden = diff <= 0 && today <= end;
     var top = el('div', 'cd-head'), h = el('h2', 'text-label-12 caps');
     h.appendChild(el('strong', null, head)); top.appendChild(h);
     if (when) top.appendChild(el('span', 'cd-when text-label-13 tabular-nums', when));
@@ -976,7 +1010,7 @@ var SUPABASE_KEY = 'sb_publishable_7NDD7fqCwVlDIVxZ9vryHQ_ZsC2Db0C';
     if (num !== null) {
       var box = el('div', 'cd-num'), digits = el('span', 'cd-digits');
       digits.setAttribute('aria-hidden', 'true');
-      String(num).split('').forEach(function(ch){ digits.appendChild(el('span', 'cd-digit', ch)); });
+      String(num).padStart(3, '0').split('').forEach(function(ch){ digits.appendChild(el('span', 'cd-digit', ch)); });
       box.appendChild(digits);
       box.appendChild(el('span', 'sr', num + ' '));
       box.appendChild(el('span', 'cd-unit text-label-16', unit));
@@ -986,13 +1020,14 @@ var SUPABASE_KEY = 'sb_publishable_7NDD7fqCwVlDIVxZ9vryHQ_ZsC2Db0C';
     renderToday();
   }
   // ---------- Dnes screen ----------
-  function dayCard(row, label, compact){
+  // prev = yesterday's row on a moving day (the place changes today), else nothing
+  function dayCard(row, label, compact, prev){
     var d = dateOf(row), card = el('div', 'panel today-card'), head = el('div', 'today-head');
     var h = el('h2', 'text-label-12 caps'); h.appendChild(el('strong', null, label)); head.appendChild(h);
     head.appendChild(el('span', 'text-label-14 tabular-nums', DAYS[d.getDay()] + ' ' + fmt(d)));
     card.appendChild(head);
     // the place name opens this day in Plán
-    var title = el('a', 'place-link ' + (compact ? 'text-heading-24' : 'text-heading-32'), placeName(row.lok) || 'Místo zatím není určeno');
+    var title = el('a', 'place-link ' + (compact ? 'text-heading-24' : 'text-heading-32'), (prev ? placeName(prev.lok) + ' → ' : '') + (placeName(row.lok) || 'Místo zatím není určeno'));
     title.href = '#day-' + row.id; title.setAttribute('aria-label', title.textContent + ', otevřít v plánu');
     title.addEventListener('click', function(e){ e.preventDefault(); if (window.HT) window.HT.go('domu'); goToDay(row.id); });
     card.appendChild(title);
@@ -1001,11 +1036,19 @@ var SUPABASE_KEY = 'sb_publishable_7NDD7fqCwVlDIVxZ9vryHQ_ZsC2Db0C';
     if (compact) return card;
     var notes = (row.notes || '').trim();
     if (notes) card.appendChild(el('p', 'text-copy-14 pre muted', notes));
-    // tonight's bed, last in the card: status, who booked, other links, then the Navigovat button where the thumb is
+    var wrap = el('div', 'today-day'); wrap.appendChild(card);
+    // moving day: check-out from the stop we leave (saved on its last day)
+    if (prev) {
+      var from = el('div', 'panel today-stay'), fh = el('h2', 'text-label-14'); fh.appendChild(el('strong', null, 'Odjezd z ' + placeName(prev.lok)));
+      from.appendChild(fh);
+      if ((prev.checkout || '').trim()) { var cout = el('p', 'stay-who text-label-14', 'Check-out '); cout.appendChild(el('strong', null, prev.checkout.trim())); from.appendChild(cout); }
+      wrap.appendChild(from);
+    }
+    // tonight's bed, its own card: status, who booked, other links, then the Navigovat button where the thumb is
     var links = parseLinks(row.links), st = stavKey(row.stav);
     if (links.length || st || row.booked_by || (row.checkin || '').trim()) {
-      var stay = el('div', 'today-stay'), top = el('div', 'stay-top');
-      top.appendChild(el('span', 'lbl text-label-13', 'Ubytování'));
+      var stay = el('div', 'panel today-stay'), top = el('div', 'stay-top'), sh = el('h2', 'text-label-14');
+      sh.appendChild(el('strong', null, prev ? 'Nové ubytování' : 'Ubytování')); top.appendChild(sh);
       if (st) top.appendChild(stavPill(STAV_CLASS[st]));
       stay.appendChild(top);
       // who booked: shown, not editable here; it's changed in the day card on Plán
@@ -1019,13 +1062,20 @@ var SUPABASE_KEY = 'sb_publishable_7NDD7fqCwVlDIVxZ9vryHQ_ZsC2Db0C';
         nav.setAttribute('aria-label', 'Navigovat na ubytování (otevře mapy)');
         stay.appendChild(nav);
       }
-      card.appendChild(stay);
+      wrap.appendChild(stay);
     }
-    return card;
+    return wrap;
   }
   function renderToday(){
     if (!todayEl || !rows.length) return;
     todayEl.innerHTML = '';
+    // no signal: say how old the data on screen is
+    if (offlineAt || !navigator.onLine) {
+      var off = el('p', 'offline text-label-14', 'Bez signálu'), at = staleLabel(offlineAt || loadedAt);
+      off.setAttribute('role', 'status');
+      if (at) { off.appendChild(document.createTextNode(' · data ' + at[0] + ' ')); off.appendChild(el('strong', null, at[1])); }
+      todayEl.appendChild(off);
+    }
     var t = nowDate(); t.setHours(0,0,0,0);
     var total = rows.length, diff = Math.round((START - t) / 864e5), n = 1 - diff;
     if (diff > 0) {
@@ -1034,10 +1084,9 @@ var SUPABASE_KEY = 'sb_publishable_7NDD7fqCwVlDIVxZ9vryHQ_ZsC2Db0C';
       // the count and the countdown are on Plán; Dnes shows only what to act on
       if (!open.length) { var p = el('div', 'panel'); p.appendChild(el('p', 'text-copy-16', 'Ubytování máme na všechny dny.')); todayEl.appendChild(p); }
       if (open.length) todayEl.appendChild(dayCard(open[0], 'Nejbližší noc bez ubytování'));
-      var pre = el('div', 'panel today-card'), ph = el('h2', 'text-label-12 caps');
-      ph.appendChild(el('strong', null, 'Před odletem')); pre.appendChild(ph);
-      pre.appendChild(el('p', 'text-copy-16', 'Vízum, příletová karta TDAC, pas, hotovost a pojištění.'));
-      var go = el('button', 'edit-links text-button-14', 'Otevřít Průvodce'); go.type = 'button';
+      // one row that opens the full list in Průvodce
+      var pre = el('div', 'panel flush'), go = el('button', 'row-link text-label-16'); go.type = 'button';
+      go.appendChild(el('strong', null, 'Před odletem')); go.appendChild(el('span', 'text-label-14', 'vízum, TDAC, pas, hotovost'));
       go.addEventListener('click', function(){
         if (!window.HT) return;
         window.HT.go('prakticke');
@@ -1045,7 +1094,9 @@ var SUPABASE_KEY = 'sb_publishable_7NDD7fqCwVlDIVxZ9vryHQ_ZsC2Db0C';
       });
       pre.appendChild(go); todayEl.appendChild(pre);
     } else if (n <= total) {
-      todayEl.appendChild(dayCard(rows[n - 1], 'Dnes · den ' + n + ' z ' + total));
+      var row = rows[n - 1], prev = n > 1 ? rows[n - 2] : null;
+      var moving = prev && placeName(prev.lok) && placeName(row.lok) && placeName(prev.lok) !== placeName(row.lok);
+      todayEl.appendChild(dayCard(row, 'Dnes · den ' + n + ' z ' + total, false, moving ? prev : null));
       if (n < total) todayEl.appendChild(dayCard(rows[n], 'Zítra', true));
     } else {
       var q = el('div', 'panel stats'), qh = el('h2', 'text-heading-24', 'Jsme doma! Díky za vzpomínky!'), qc = el('div', 'count');
@@ -1175,7 +1226,8 @@ var SUPABASE_KEY = 'sb_publishable_7NDD7fqCwVlDIVxZ9vryHQ_ZsC2Db0C';
     if (dropped.length) setLok(dropped, '');
     setLok(rows.filter(function(r){ return r.id >= from && r.id <= to; }), name);
   });
-  function renderDay(row){
+  // last = this is the stop's last night: it gets the Check-out field
+  function renderDay(row, last){
     var date = dateOf(row), today = nowDate();
     var card = el('article', 'day'); card.id = 'day-' + row.id;
 
@@ -1193,6 +1245,11 @@ var SUPABASE_KEY = 'sb_publishable_7NDD7fqCwVlDIVxZ9vryHQ_ZsC2Db0C';
     editable(body, 'prog text-copy-16', row, 'prog', 'Program dne…', null, 'Program, ' + dayName, true);
 
     editable(body, 'notes text-copy-14', row, 'notes', 'Poznámky…', null, 'Poznámky, ' + dayName, true);
+    if (last) {
+      var co = el('div', 'row co'); co.appendChild(el('span', 'lbl text-label-13', 'Check-out'));
+      editable(co, 'checkout text-copy-14', row, 'checkout', 'např. do 11:00', null, 'Check-out, ' + dayName);
+      body.appendChild(co);
+    }
 
     card.appendChild(body);
     return card;
@@ -1259,7 +1316,7 @@ var SUPABASE_KEY = 'sb_publishable_7NDD7fqCwVlDIVxZ9vryHQ_ZsC2Db0C';
       ed.addEventListener('click', function(){ openStopForm(s.name, a1, b1, s.name ? s.rows : null, tools); });
       tools.appendChild(ed);
       if (s.name) days.appendChild(stayBox(s.rows, s.name));
-      s.rows.forEach(function(r){ days.appendChild(renderDay(r)); });
+      s.rows.forEach(function(r, ri){ days.appendChild(renderDay(r, !!s.name && ri === s.rows.length - 1)); });
       if (s.name) {
         var rm = el('button', 'seg-remove text-button-14', 'Odebrat zastávku'); rm.type = 'button'; rm.setAttribute('aria-label', 'Odebrat zastávku ' + s.name);
         // confirmation inside the page: some in-app browsers (and this preview) suppress confirm() dialogs
@@ -1306,6 +1363,13 @@ var SUPABASE_KEY = 'sb_publishable_7NDD7fqCwVlDIVxZ9vryHQ_ZsC2Db0C';
   // I: catch up on anything missed while offline or asleep
   // the last loaded itinerary is kept on the phone for offline use
   function saveCache(){ try { localStorage.setItem('ht-days', JSON.stringify(rows)); } catch (e) {} }
+  var loadedAt = null, offlineAt = null;
+  function markLoaded(){
+    loadedAt = Date.now(); try { localStorage.setItem('ht-days-at', String(loadedAt)); } catch (e) {}
+    if (offlineAt) { offlineAt = null; showRetry(null); toastEl.classList.add('off'); }
+  }
+  window.addEventListener('offline', renderToday);
+  window.addEventListener('online', function(){ renderToday(); refetch(); });
   function show(data){
     rows = data; render();
   }
@@ -1313,8 +1377,21 @@ var SUPABASE_KEY = 'sb_publishable_7NDD7fqCwVlDIVxZ9vryHQ_ZsC2Db0C';
     var c = null;
     try { c = JSON.parse(localStorage.getItem('ht-days')); } catch (e) {}
     if (!c || !c.length) return false;
+    try { offlineAt = +localStorage.getItem('ht-days-at') || null; } catch (e) {}
+    if (!offlineAt) offlineAt = -1; // a saved copy of unknown age
     applyPending(c); show(c); setSave('Offline – poslední uložená verze', true); showRetry(function(){ location.reload(); });
     return true;
+  }
+  // how old the data is, for "Bez signálu · data z 7:42" / "data ze včera 21:10" / "data z 20. 2. 7:42".
+  // ts = when it was last loaded from the server (ms), -1 = a saved copy of unknown age, null = unknown.
+  // Returns [preposition, bold part], or null to show just "Bez signálu"
+  function staleLabel(ts){
+    if (!ts || ts < 0) return null;
+    var d = new Date(ts), now = nowDate(), y = new Date(now); y.setDate(now.getDate() - 1);
+    var time = d.toLocaleTimeString('cs', {hour: 'numeric', minute: '2-digit'});
+    if (sameDay(d, now)) return ['z', time];
+    if (sameDay(d, y)) return ['ze', 'včera ' + time];
+    return ['z', fmt(d) + ' ' + time];
   }
   function failLoad(err){
     console.error('Supabase load failed:', err);
@@ -1324,7 +1401,8 @@ var SUPABASE_KEY = 'sb_publishable_7NDD7fqCwVlDIVxZ9vryHQ_ZsC2Db0C';
   }
   function refetch(){
     api('GET', '?select=*&order=id').then(function(data){
-      data.forEach(applyRow); applyPending(rows); saveCache(); scheduleRender();
+      data.forEach(applyRow);
+      applyPending(rows); saveCache(); markLoaded(); scheduleRender();
     }, function(err){ console.error('Supabase refresh failed:', err); });
   }
   // live updates from the others; every (re)connect catches up on anything missed meanwhile
@@ -1339,7 +1417,7 @@ var SUPABASE_KEY = 'sb_publishable_7NDD7fqCwVlDIVxZ9vryHQ_ZsC2Db0C';
     document.head.appendChild(tag);
   }
   api('GET', '?select=*&order=id').then(function(data){
-    applyPending(data); show(data); saveCache(); setSave('Uloženo'); resendFailed();
+    applyPending(data); markLoaded(); show(data); saveCache(); setSave('Uloženo'); resendFailed();
     (window.requestIdleCallback || setTimeout)(startLive);
     document.addEventListener('visibilitychange', function(){ if (document.visibilityState === 'visible') refetch(); });
   }, failLoad);
